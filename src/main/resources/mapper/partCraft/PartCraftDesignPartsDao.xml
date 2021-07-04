@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCraft.PartCraftDesignPartsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.partCraft.PartCraftDesignParts" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="designCode" column="design_code"/>
+        <result property="designName" column="design_name"/>
+        <result property="patternMode" column="pattern_mode"/>
+        <result property="partCraftMainRandomCode" column="part_craft_main_random_code"/>
+        <result property="remark" column="remark"/>
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <resultMap type="com.ylzs.vo.partCraft.DesignPartVO" id="resultDesignPartVO">
+        <result property="status" column="status"/>
+        <result property="designCode" column="design_code"/>
+        <result property="designName" column="design_name"/>
+        <result property="partCraftMainRandomCode" column="part_craft_main_random_code"/>
+    </resultMap>
+
+    <select id="getDesignPartsRandomList" resultType="com.ylzs.entity.partCraft.PartCraftDesignParts">
+        SELECT * FROM
+        part_craft_design_parts
+        WHERE
+        random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="randomCode">
+            #{randomCode}
+        </foreach>
+    </select>
+    <select id="getDataByDesignCode" parameterType="java.lang.String" resultMap="resultDesignPartVO">
+        SELECT part.design_code,part.design_name,part.part_craft_main_random_code,mas.`status` FROM `part_craft_design_parts` as part
+    INNER JOIN part_craft_master_data as mas on mas.random_code=part.part_craft_main_random_code
+    where part.design_code=#{designCode} and mas.`status`=1020
+    </select>
+    <select id="getCountByDesignPartAndPosition" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM `part_craft_design_parts` as part
+        INNER JOIN part_craft_master_data as mas on mas.random_code=part.part_craft_main_random_code
+        INNER JOIN part_craft_position as pos on pos.part_craft_main_random_code=mas.random_code
+        where part.design_code=#{designCode} and pos.part_position_code=#{positionCode} and mas.`status`=1020 and position(#{clothingCategory} in pos.clothing_category_code)>0
+    </select>
+
+    <select id="getPartCraftByDesignPartAndPosition" resultType="com.ylzs.entity.thinkstyle.ThinkStyleCraft">
+        SELECT detail.craft_code as craftCode,detail.craft_name as craftName,detail.craft_remark as craftDesc,detail.craft_flow_num as craftFlowNum  FROM `part_craft_detail` as detail
+        INNER JOIN `part_craft_design_parts` as part on part.part_craft_main_random_code = detail.part_craft_main_random_code
+        INNER JOIN part_craft_master_data as mas on mas.random_code=part.part_craft_main_random_code
+        INNER JOIN part_craft_position as pos on pos.part_craft_main_random_code=mas.random_code
+        where part.design_code=#{designCode} and pos.part_position_code=#{positionCode} and mas.`status`=1020 and position(#{clothingCategory} in pos.clothing_category_code)>0
+    </select>
+    <select id="getPartCraftRulesByDesignPartAndPosition" resultType="com.ylzs.entity.thinkstyle.ThinkStyleProcessRule">
+        SELECT rule.source_craft_code as sourceCraftCode,rule.source_craft_name as sourceCraftName,rule.action_craft_code as actionCraftCode,rule.action_craft_name as actionCraftName,rule.process_type as processType
+          FROM `part_craft_rule` as rule
+        INNER JOIN `part_craft_design_parts` as part on part.part_craft_main_random_code = rule.part_craft_main_random_code
+        INNER JOIN part_craft_master_data as mas on mas.random_code=part.part_craft_main_random_code
+        INNER JOIN part_craft_position as pos on pos.part_craft_main_random_code=mas.random_code
+        where part.design_code=#{designCode} and pos.part_position_code=#{positionCode} and mas.`status`=1020 and position(#{clothingCategory} in pos.clothing_category_code)>0
+    </select>
+    <select id="getPartPriceAndTImeByDesignPartAndPosition" resultType="com.ylzs.entity.thinkstyle.ThinkStylePart">
+        SELECT mas.standard_time,mas.standard_price from part_craft_master_data as mas
+        INNER JOIN `part_craft_design_parts` as part on part.part_craft_main_random_code = mas.random_code
+        INNER JOIN part_craft_position as pos on pos.part_craft_main_random_code=mas.random_code
+        where part.design_code=#{designCode} and pos.part_position_code=#{positionCode} and mas.`status`=1020 and position(#{clothingCategory} in pos.clothing_category_code)>0
+    </select>
+    <select id="getDesignPartsVoBatchList" resultType="com.ylzs.vo.partCraft.PartCraftDesignPartsVo">
+        SELECT ifnull(a.pattern_type,b.pattern_type) pattern_type,
+            ifnull(a.pattern_mode, b.pattern_mode) pattern_mode,
+            a.*,b.design_image
+        FROM part_craft_design_parts a
+            left join design_part b on a.design_code=b.design_code
+        WHERE
+        ifnull(a.status,1000) != 1030
+        AND a.part_craft_main_random_code in
+        <if test="mainRandomCodes">
+            <foreach collection="mainRandomCodes" separator="," open="(" close=")" item="mainRandomCode">
+                #{mainRandomCode}
+            </foreach>
+        </if>
+    </select>
+    <select id="getDataByDesignPartCode" resultMap="resultDesignPartVO">
+        select  * from part_craft_design_parts
+        <where>
+            ifnull(status,1000) != 1030 and
+            design_code in
+            <if test="codeList !=null and codeList.size()>0">
+                <foreach collection="codeList" separator="," open="(" close=")" item="_code">
+                    #{_code}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <update id="updateDesignPartName">
+        update  part_craft_design_parts set design_name=#{designName} where design_code=#{designCode}
+    </update>
+
+</mapper>

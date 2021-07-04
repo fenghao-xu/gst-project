@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseMotionDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.sewingcraft.SewingCraftAction">
+    <id column="id" jdbcType="BIGINT" property="id" />
+<!--    <result column="random_code" jdbcType="BIGINT" property="randomCode" />-->
+    <result column="sewing_craft_random_code" jdbcType="BIGINT" property="sewingCraftRandomCode" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="motion_code" jdbcType="VARCHAR" property="motionCode" />
+    <result column="motion_name" jdbcType="VARCHAR" property="motionName" />
+    <result column="frequency" jdbcType="DECIMAL" property="frequency" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="speed" jdbcType="INTEGER" property="speed" />
+    <result column="machine_time" jdbcType="INTEGER" property="machineTime" />
+    <result column="manual_time" jdbcType="INTEGER" property="manualTime" />
+<!--    <result column="status" jdbcType="INTEGER" property="status" />-->
+<!--    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />-->
+<!--    <result column="audit_time" jdbcType="VARCHAR" property="auditTime" />-->
+<!--    <result column="audit_date" jdbcType="TIMESTAMP" property="auditDate" />-->
+<!--    <result column="create_user" jdbcType="VARCHAR" property="createUser" />-->
+<!--    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />-->
+<!--    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />-->
+<!--    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />-->
+<!--    <result column="version" jdbcType="VARCHAR" property="version" />-->
+<!--    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />-->
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+    <result column="manual_time_base" jdbcType="DECIMAL" property="manualTimeBase" />
+    <result column="machine_time_base" jdbcType="DECIMAL" property="machineTimeBase" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,
+--     random_code,
+    sewing_craft_random_code, craft_code, order_num, motion_code, motion_name,
+    frequency, description, speed, machine_time, manual_time,
+--     `status`, is_invalid, audit_time,
+--     audit_date, create_user, create_time, update_user, update_time, version, ct_style_code,
+    part_craft_main_code, manual_time_base, machine_time_base, mark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_motion
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_motion
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftAction" useGeneratedKeys="true">
+    insert into history_big_style_analyse_motion (random_code, sewing_craft_random_code, 
+      craft_code, order_num, motion_code, 
+      motion_name, frequency, description, 
+      speed, machine_time, manual_time, 
+      `status`, is_invalid, audit_time, 
+      audit_date, create_user, create_time, 
+      update_user, update_time, version, 
+      ct_style_code, part_craft_main_code, manual_time_base, 
+      machine_time_base, mark)
+    values (#{randomCode,jdbcType=BIGINT}, #{sewingCraftRandomCode,jdbcType=BIGINT}, 
+      #{craftCode,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{motionCode,jdbcType=VARCHAR}, 
+      #{motionName,jdbcType=VARCHAR}, #{frequency,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR}, 
+      #{speed,jdbcType=INTEGER}, #{machineTime,jdbcType=INTEGER}, #{manualTime,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{isInvalid,jdbcType=BIT}, #{auditTime,jdbcType=VARCHAR}, 
+      #{auditDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=VARCHAR}, 
+      #{ctStyleCode,jdbcType=VARCHAR}, #{partCraftMainCode,jdbcType=VARCHAR}, #{manualTimeBase,jdbcType=DECIMAL}, 
+      #{machineTimeBase,jdbcType=DECIMAL}, #{mark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftAction" useGeneratedKeys="true">
+    insert into history_big_style_analyse_motion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        random_code,
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code,
+      </if>
+      <if test="craftCode != null">
+        craft_code,
+      </if>
+      <if test="orderNum != null">
+        order_num,
+      </if>
+      <if test="motionCode != null">
+        motion_code,
+      </if>
+      <if test="motionName != null">
+        motion_name,
+      </if>
+      <if test="frequency != null">
+        frequency,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="speed != null">
+        speed,
+      </if>
+      <if test="machineTime != null">
+        machine_time,
+      </if>
+      <if test="manualTime != null">
+        manual_time,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="isInvalid != null">
+        is_invalid,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="auditDate != null">
+        audit_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+      <if test="manualTimeBase != null">
+        manual_time_base,
+      </if>
+      <if test="machineTimeBase != null">
+        machine_time_base,
+      </if>
+      <if test="mark != null">
+        mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="motionCode != null">
+        #{motionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="motionName != null">
+        #{motionName,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null">
+        #{frequency,jdbcType=DECIMAL},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null">
+        #{speed,jdbcType=INTEGER},
+      </if>
+      <if test="machineTime != null">
+        #{machineTime,jdbcType=INTEGER},
+      </if>
+      <if test="manualTime != null">
+        #{manualTime,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=VARCHAR},
+      </if>
+      <if test="auditDate != null">
+        #{auditDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manualTimeBase != null">
+        #{manualTimeBase,jdbcType=DECIMAL},
+      </if>
+      <if test="machineTimeBase != null">
+        #{machineTimeBase,jdbcType=DECIMAL},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.sewingcraft.SewingCraftAction">
+    update history_big_style_analyse_motion
+    <set>
+      <if test="randomCode != null">
+        random_code = #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        craft_code = #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null">
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="motionCode != null">
+        motion_code = #{motionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="motionName != null">
+        motion_name = #{motionName,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null">
+        frequency = #{frequency,jdbcType=DECIMAL},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null">
+        speed = #{speed,jdbcType=INTEGER},
+      </if>
+      <if test="machineTime != null">
+        machine_time = #{machineTime,jdbcType=INTEGER},
+      </if>
+      <if test="manualTime != null">
+        manual_time = #{manualTime,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        is_invalid = #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=VARCHAR},
+      </if>
+      <if test="auditDate != null">
+        audit_date = #{auditDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manualTimeBase != null">
+        manual_time_base = #{manualTimeBase,jdbcType=DECIMAL},
+      </if>
+      <if test="machineTimeBase != null">
+        machine_time_base = #{machineTimeBase,jdbcType=DECIMAL},
+      </if>
+      <if test="mark != null">
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.sewingcraft.SewingCraftAction">
+    update history_big_style_analyse_motion
+    set random_code = #{randomCode,jdbcType=BIGINT},
+      sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      craft_code = #{craftCode,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      motion_code = #{motionCode,jdbcType=VARCHAR},
+      motion_name = #{motionName,jdbcType=VARCHAR},
+      frequency = #{frequency,jdbcType=DECIMAL},
+      description = #{description,jdbcType=VARCHAR},
+      speed = #{speed,jdbcType=INTEGER},
+      machine_time = #{machineTime,jdbcType=INTEGER},
+      manual_time = #{manualTime,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER},
+      is_invalid = #{isInvalid,jdbcType=BIT},
+      audit_time = #{auditTime,jdbcType=VARCHAR},
+      audit_date = #{auditDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=VARCHAR},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      manual_time_base = #{manualTimeBase,jdbcType=DECIMAL},
+      machine_time_base = #{machineTimeBase,jdbcType=DECIMAL},
+      mark = #{mark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

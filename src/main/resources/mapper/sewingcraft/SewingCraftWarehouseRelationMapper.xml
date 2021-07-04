@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftWarehouseRelationDao">
+
+    <update id="updateByRandomCode">
+        update sewing_craft_warehouse_relation
+        <set>
+            update_user = #{userName},
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        where random_code =#{parseLong}
+    </update>
+
+
+    <delete id="deleteByRandomCode">
+        delete wr,wrc from
+        sewing_craft_warehouse_relation wr
+        inner join
+        sewing_craft_warehouse_relation_craft  wrc
+        on wr.random_code = wrc.sewing_craft_relation_random_code
+        where wr.sewing_craft_random_code = #{randomCodeLong}
+    </delete>
+
+    <select id="selectRelationBySewingCraftRandomCode"
+            resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseRelation">
+        select * from sewing_craft_warehouse_relation
+        where sewing_craft_random_code = #{randomCode}
+        <if test="relationCreateUser != null and relationCreateUser != ''">
+            and create_user like CONCAT('%',#{relationCreateUser},'%')
+        </if>
+        <if test="relationBeginDate != null and relationBeginDate != '' ">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')>=DATE_FORMAT(#{relationBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="relationEndDate != null and relationEndDate != '' ">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')<=DATE_FORMAT(#{relationEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+    </select>
+
+</mapper>

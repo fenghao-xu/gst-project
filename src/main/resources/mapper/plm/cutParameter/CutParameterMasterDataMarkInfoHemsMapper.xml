@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataMarketInfoHemsDao">
+    <resultMap type="CutParameterMasterDataMarkInfoHems" id="CutParameterMasterDataMarkInfoResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+			<result column="hems_code" property="hemsCode" />
+			<result column="value" property="value" />
+    </resultMap>
+
+	<insert id="addOrUpdateCutParameterMasterDataMarketInfoHems" parameterType="CutParameterMasterDataMarkInfoHems">
+		insert into capp_pi_cut_parameter_markerinfo_hems (
+		order_id,order_line_id,hems_code,value
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.orderId}, #{item.orderLineId}, #{item.hemsCode},#{item.value}
+			)
+		</foreach>
+		on duplicate key update
+		order_id=values(order_id), order_line_id=values(order_line_id),
+		hems_code=values(hems_code),value= values(value)
+	</insert>
+
+
+
+
+
+</mapper>

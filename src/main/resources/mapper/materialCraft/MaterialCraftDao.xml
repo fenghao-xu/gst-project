@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.materialCraft.MaterialCraftDao">
+
+    <resultMap type="com.ylzs.entity.materialCraft.resp.MaterialCraftAllDataResp" id="getMaterialCraftAll">
+        <id column="id" property="id"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="material_craft_code" property="materialCraftCode"/>
+        <result column="material_craft_name" property="materialCraftKindName"/>
+        <result column="material_craft_kind_code" property="materialCraftKindCode"/>
+        <result column="material_craft_kind_name" property="materialCraftKindName"/>
+        <result column="clothing_category_code" property="clothingCategoryCode"/>
+        <result column="clothing_category_name" property="clothingCategoryName"/>
+        <result column="material_craft_desc" property="materialCraftDesc"/>
+        <result column="material_version" property="materialVersion"/>
+        <result column="material_version_desc" property="materialVersionDesc"/>
+        <result column="plan_number" property="planNumber"/>
+        <result column="effective_time" property="effectiveTime"/>
+        <result column="invalid_time" property="invalidTime"/>
+        <result column="release_user" property="releaseUser"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="status" property="status"/>
+        <!-- 属性 -->
+        <collection property="properties" javaType="list"
+                    ofType="com.ylzs.entity.materialCraft.MaterialCraftProperty">
+            <result column="material_craft_random_code" property="materialCraftRandomCode"/>
+            <result column="fabric_property_data_code" property="fabricPropertyDataCode"/>
+            <result column="fabric_property_data" property="fabricPropertyData"/>
+            <result column="fabric_property_code" property="fabricPropertyCode"/>
+            <result column="fabric_property_name" property="fabricPropertyName"/>
+            <result column="property_index" property="propertyIndex"/>
+        </collection>
+        <!-- 部件 -->
+        <collection property="parts" javaType="list"
+                    ofType="com.ylzs.entity.materialCraft.MaterialCraftRulePart">
+            <result column="material_craft_random_code" property="materialCraftRandomCode"/>
+            <result column="material_craft_rule_random_codes" property="materialCraftRuleRandomCodes"/>
+            <result column="design_code" property="designCode"/>
+            <result column="design_name" property="designName"/>
+            <result column="part_position_code" property="partPositionCode"/>
+            <result column="part_position_name" property="partPositionName"/>
+            <result column="clothing_category" property="clothingCategory"/>
+            <result column="special_plan_numbers" property="specialPlanNumber"/>
+            <result column="part_index" property="partIndex"/>
+        </collection>
+        <!-- 规则 -->
+        <collection property="rules" javaType="list" ofType="com.ylzs.entity.materialCraft.MaterialCraftRule">
+            <result column="material_craft_random_code" property="materialCraftRandomCode"/>
+            <result column="source_craft_code" property="sourceCraftCode"/>
+            <result column="source_craft_name" property="sourceCraftName"/>
+            <result column="action_craft_code" property="actionCraftCode"/>
+            <result column="action_craft_name" property="actionCraftName"/>
+            <result column="processing_sort_num" property="processingSortNum"/>
+            <result column="source_craft_flow_num" property="sourceCraftFlowNum"/>
+            <result column="action_craft_flow_num" property="actionCraftFlowNum"/>
+            <result column="rule_index" property="ruleIndex"/>
+            <result column="rule_type" property="ruleType"/>
+            <result column="special_plan_number" property="specialPlanNumber"/>
+            <result column="process_type" property="processType"/>
+            <result column="material_craft_rule_random_code" property="randomCode" />
+        </collection>
+    </resultMap>
+
+    <sql id="queryMaterial">
+        mc.id,
+        mc.random_code,
+        mc.material_craft_code,
+        mc.material_craft_name,
+        mc.material_craft_kind_code,
+        mc.material_craft_kind_name,
+        mc.clothing_category_code,
+        mc.clothing_category_name,
+        mc.material_craft_desc,
+        mc.material_version,
+        mc.material_version_desc,
+        mc.plan_number,
+        mc.effective_time,
+        mc.invalid_time,
+        mc.release_user,
+        mc.release_time,
+        mc.status,
+
+        mcp.material_craft_random_code,
+        mcp.fabric_property_data_code,
+        mcp.fabric_property_data,
+        mcp.fabric_property_code,
+        mcp.fabric_property_name,
+        mcp.property_index,
+
+        mcrp.material_craft_random_code,
+        mcrp.material_craft_rule_random_codes,
+        mcrp.design_code,
+        mcrp.design_name,
+        mcrp.part_position_code,
+        mcrp.part_position_name,
+        mcrp.clothing_category,
+        mcrp.special_plan_number AS special_plan_numbers,
+        mcrp.part_index,
+
+        mcr.material_craft_random_code,
+        mcr.source_craft_code,
+        mcr.source_craft_name,
+        mcr.action_craft_code,
+        mcr.action_craft_name,
+        mcr.processing_sort_num,
+        mcr.source_craft_flow_num,
+        mcr.action_craft_flow_num,
+        mcr.rule_index,
+        mcr.rule_type,
+        mcr.special_plan_number,
+        mcr.process_type,
+        mcr.random_code as material_craft_rule_random_code
+    </sql>
+
+
+    <sql id="craftAndProperty">
+        mc.id materialCraftId,
+        mc.random_code materialCraftRandomCode,
+        mc.material_craft_code,
+        mc.material_craft_name,
+        mc.material_craft_kind_code,
+        mc.material_craft_kind_name,
+        mc.clothing_category_code,
+        mc.clothing_category_name,
+        mc.material_craft_desc,
+        mc.status,
+        mc.material_version,
+        mc.material_version_desc,
+        mc.effective_time,
+        mc.invalid_time,
+        mc.create_user,
+        mc.create_time
+    </sql>
+
+    <update id="updatePublishStatus">
+        update material_craft
+        <set>
+            effective_time = CURRENT_TIMESTAMP,
+            update_time = CURRENT_TIMESTAMP,
+            status = 1020
+        </set>
+        where status = 1040
+        <![CDATA[and DATE_FORMAT(effective_time,'%Y%m%d%H%i%s') <= DATE_FORMAT(CURRENT_TIMESTAMP,'%Y%m%d%H%i%s')]]>
+    </update>
+
+    <update id="updateNotActiveStatus">
+        update material_craft
+        <set>
+            invalid_time = CURRENT_TIMESTAMP,
+            update_time = CURRENT_TIMESTAMP,
+            status = 1030
+        </set>
+        where status = 1020 and random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+
+    </update>
+
+    <select id="selectCraftAndProperty"
+            resultType="com.ylzs.entity.materialCraft.resp.MaterialCraftAndPropertyResp" parameterType="java.util.List">
+        select
+        <include refid="craftAndProperty"></include>
+        from material_craft mc
+        where mc.random_code in
+        <foreach collection="randomCodes" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="selectPropertyAndCategoryCode"
+            resultType="com.ylzs.entity.materialCraft.resp.FabricPropertyAndPropertyResp">
+        select
+        mc1.random_code,
+        c.code1 fabricPropertyDataCodes ,
+        c.code2 fabricPropertyCodes,
+        mc1.clothing_category_code clothingCategoryCode,
+        mc1.material_craft_kind_code
+        from material_craft mc1
+        left join
+        (
+            select mcp1.material_craft_random_code ,
+            group_concat(mcp1.fabric_property_data_code) code1,
+            group_concat(mcp1.fabric_property_code) code2
+            from material_craft_property mcp1 group by mcp1.material_craft_random_code
+        ) c on c.material_craft_random_code = mc1.random_code
+        where mc1.status not in (1030,1090)
+        <if test="status != null">
+            and mc1.status = #{status}
+        </if>
+    </select>
+
+    <select id="selectByCodeAndStatus" resultType="com.ylzs.entity.materialCraft.MaterialCraft" parameterType="map">
+        select * from material_craft
+        <where>
+            <if test="materialCraftKindCode !='' and materialCraftKindCode !=null">
+                material_craft_kind_code=#{materialCraftKindCode}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+
+    <sql id="craftPage">
+        mc.id,
+        mc.random_code,
+        mc.material_craft_code,
+        mc.material_craft_name,
+        mc.material_craft_kind_name,
+        mc.material_craft_desc,
+        mc.status,
+        mc.material_version,
+        mc.material_version_desc,
+        u.user_name createUser,
+        group_concat(mcp.fabric_property_name) fabricPropertyNames
+    </sql>
+
+    <select id="selectMaterialCraftChecklist"
+            resultType="com.ylzs.entity.materialCraft.resp.QueryMaterialCraftDataResp" parameterType="map">
+        select
+        <include refid="craftPage"></include>
+        from material_craft mc
+        left join material_craft_property mcp on mcp.material_craft_random_code = mc.random_code
+        left join user u on u.user_code = mc.update_user
+        <where>
+            mc.status != 1090 and mcp.status != 1090
+            <if test="status !=null and status !=0 ">
+                and mc.status = #{status}
+            </if>
+            <if test="materialCraftCodeAndName != null and materialCraftCodeAndName !='' ">
+                and mc.material_craft_code like concat('%',#{materialCraftCodeAndName},'%')
+                or  mc.material_craft_name like concat('%',#{materialCraftCodeAndName},'%')
+            </if>
+            <if test="materialCraftKindCodes != null and materialCraftKindCodes.size()>0">
+                and mc.material_craft_kind_code in
+                <foreach collection="materialCraftKindCodes" open="(" separator="," close=")" item="code">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="fabricPropertyCodes != null and fabricPropertyCodes.size()>0">
+                and mcp.fabric_property_code in
+                <foreach collection="fabricPropertyCodes" open="(" separator="," close=")" item="code">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+        group by mc.random_code order by mc.update_time desc
+    </select>
+
+    <select id="selectRandomCode" resultType="long">
+        select random_code from material_craft where status = 1040
+        <![CDATA[and DATE_FORMAT(effective_time,'%Y%m%d%H%i%s') <= DATE_FORMAT(CURRENT_TIMESTAMP,'%Y%m%d%H%i%s')]]>
+    </select>
+
+    <select id="selectPublishRandomCode" resultType="long">
+        select random_code from material_craft where status = 1020 and material_craft_code in
+        (
+          select material_craft_code from material_craft where status = 1040
+          <![CDATA[and DATE_FORMAT(effective_time,'%Y%m%d%H%i%s') <= DATE_FORMAT(CURRENT_TIMESTAMP,'%Y%m%d%H%i%s')]]>
+        )
+    </select>
+
+    <select id="selectHistoryByRandomCode"
+            resultType="com.ylzs.entity.materialCraft.resp.MaterialCraftHistoryVersionResp">
+        select
+        mc.random_code,
+        mc.material_craft_code,
+        mc.material_craft_name,
+        mc.clothing_category_code,
+        mc.clothing_category_name,
+        mc.material_version,
+        mc.material_version_desc,
+        u.user_name releaseUser,
+        mc.release_time,
+        mc.effective_time,
+        mc.invalid_time,
+        mc.release_time
+        from material_craft mc
+        left join user u on u.user_code = mc.update_user
+        join
+        (
+            select material_craft_code
+            from material_craft
+            where random_code = #{randomCode}
+        ) c on c.material_craft_code = mc.material_craft_code
+        where mc.status not in (1000,1090)
+    </select>
+
+
+    <sql id="materilaSql">
+        mc.id,
+        mc.random_code,
+        mc.material_craft_code,
+        mc.material_craft_name,
+        mc.material_craft_kind_code,
+        mc.material_craft_kind_name,
+        mc.clothing_category_code,
+        mc.clothing_category_name,
+        mc.material_version,
+        mc.material_version_desc,
+        mc.material_craft_desc,
+        mc.plan_number,
+        mc.status,
+        if(mc.release_user!='',u1.user_name,'') releaseUser,
+        mc.release_time,
+        mc.effective_time,
+        mc.invalid_time,
+        u.user_name createUser,
+        mc.create_time,
+        mc.update_time,
+        u.user_name updateUser,
+        mc.is_invalid
+    </sql>
+
+    <select id="selectMaterialCraft" resultType="com.ylzs.entity.materialCraft.MaterialCraft">
+        select
+        <include refid="materilaSql"></include>
+        from material_craft mc
+        left join user u on u.user_code = mc.create_user
+        left join user u1 on u1.user_code = mc.update_user
+        where mc.random_code = #{parseLong}
+    </select>
+
+    <select id="selectListByKindCode" resultMap="getMaterialCraftAll">
+        select <include refid="queryMaterial"></include>
+        from material_craft mc
+        left join material_craft_property mcp on mc.random_code = mcp.material_craft_random_code
+        left join material_craft_rule mcr on mc.random_code = mcr.material_craft_random_code
+        left join material_craft_rule_part mcrp on mc.random_code = mcrp.material_craft_random_code
+        where mc.material_craft_kind_code = #{kindCode}
+        and mc.status = 1020 and mcp.status = 1020 and mcr.status = 1020
+        <if test="clothesCategoryCode != null and clothesCategoryCode != ''">
+            and mc.clothing_category_code=#{clothesCategoryCode}
+        </if>
+    </select>
+
+    <select id="selectNameCount" resultType="java.lang.Integer">
+        select count(*) from material_craft
+        <where>
+            material_craft_name = #{name} and status not in (1030,1090)
+            <if test="randomCode !=null and randomCode != 0">
+                and random_code != #{randomCode}
+            </if>
+            <if test="clothesCategoryCode != null and clothesCategoryCode != ''">
+                and clothing_category_code=#{clothesCategoryCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLatestVersion" resultType="java.lang.String">
+        select ifnull((
+            select material_version from material_craft where create_time =
+            (
+                select Max(create_time)
+                from material_craft
+                where material_craft_code = #{materialCraftCode} and status in(1020,1040)
+            ) limit 1),'') material_version
+		from dual
+    </select>
+
+</mapper>

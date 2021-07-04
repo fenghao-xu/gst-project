@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftStdDao">
+    <resultMap type="SewingCraftStd" id="SewingCraftStdResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="craft_std_code" property="craftStdCode"/>
+        <result column="craft_std_name" property="craftStdName"/>
+
+    </resultMap>
+    <insert id="addSewingCraftStd" parameterType="hashmap">
+        insert into sewing_craft_warehouse_std
+         (sewing_craft_random_code,craft_std_code,craft_std_name)
+         values
+         (#{sewingCraftRandomCode},#{craftStdCode},#{craftStdName})
+    </insert>
+    <update id="updateSewingCraftStd" parameterType="hashmap">
+        update sewing_craft_warehouse_std set craft_std_code=#{craftStdCode},craft_std_name=#{craftStdName}
+        where sewing_craft_random_code = #{sewingCraftRandomCode}
+    </update>
+    <select id="getDataBySewingCraftRandomCode" parameterType="java.lang.Long" resultMap="SewingCraftStdResult">
+        select  * from sewing_craft_warehouse_std where sewing_craft_random_code = #{0}
+    </select>
+    <select id="getSewingCraftStdList" resultType="com.ylzs.entity.sewingcraft.SewingCraftStd">
+        select  * from sewing_craft_warehouse_std
+        <where>
+             sewing_craft_random_code in
+            <foreach collection="sewRandomCodes" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+    </select>
+    <select id="getDataCountByCraftStdId" resultType="java.lang.Integer">
+        select count(*) from sewing_craft_warehouse_std c
+        inner join craft_std d on c.craft_std_code=d.craft_std_code
+        where d.id = #{id}
+    </select>
+
+    <select id="getCraftDataBySewingCraftRandomCode" resultType="java.lang.Long">
+        select d.id from sewing_craft_warehouse_std c
+        inner join craft_std_raw_data d on c.craft_std_code=d.craft_std_code
+        where c.sewing_craft_random_code = #{randomCode}
+    </select>
+
+    <delete id="deleteDataBySewingCraftRandomCode"  parameterType="java.lang.Long">
+       delete from sewing_craft_warehouse_std where sewing_craft_random_code = #{0}
+    </delete>
+</mapper>

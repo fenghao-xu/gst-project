@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.BigStyleMasterDataDao">
+        <resultMap type="BigStyleMasterData" id="BigStyleMasterDataResult">
+            <result column="id" property="id" />
+            <result column="oem_client_code" property="OEMClientCode" />
+            <result column="oem_style_code" property="OEMStyleCode" />
+            <result column="yq_combination_type" property="yqCombinationType" />
+            <result column="action_type" property="actionType" />
+            <result column="category_type" property="categoryType" />
+            <result column="style_type" property="styleType" />
+            <result column="ct_style_code" property="ctStyleCode" />
+            <result column="style_name" property="styleName" />
+            <result column="brand" property="brand" />
+            <result column="main_material_type" property="mainMaterialType" />
+            <result column="sub_brand" property="subBrand" />
+            <result column="year" property="year" />
+            <result column="belong_with_customer" property="belongWithCustomer" />
+            <result column="band" property="band" />
+            <result column="season" property="season" />
+            <result column="body_type" property="bodyType" />
+            <result column="collar" property="collar" />
+            <result column="sleeve" property="sleeve" />
+            <result column="way_of_taking_off" property="wayOfTakingOff" />
+            <result column="cuff" property="cuff" />
+            <result column="malibu" property="malibu" />
+            <result column="pocket" property="pocket" />
+            <result column="dege" property="dege" />
+            <result column="belt" property="belt" />
+            <result column="trouser_loop" property="trouserLoop" />
+            <result column="stitch" property="stitch" />
+            <result column="decorate" property="decorate" />
+            <result column="patterning" property="patterning" />
+            <result column="foot_mouth" property="footMouth" />
+            <result column="waist_band" property="waistBand" />
+            <result column="waist_mouth_type" property="waistMouthType" />
+            <result column="lumbar_position" property="lumbarPosition" />
+            <result column="trouser_leg_type" property="trouserLegType" />
+            <result column="rain_type" property="rainType" />
+            <result column="entrance_guard" property="entranceGuard" />
+            <result column="weave2" property="weave2" />
+            <result column="grand_category" property="grandCategory" />
+            <result column="mid_category" property="midCategory" />
+            <result column="small_category" property="smallCategory" />
+            <result column="big_goods_price" property="bigGoodsPrice" />
+            <result column="int_process_fee" property="intProcessFee" />
+            <result column="out_process_fee" property="outProcessFee" />
+            <result column="weave" property="weave" />
+            <result column="is_knit_tat_match" property="isKnitTatMatch" />
+            <result column="supply_source_new" property="supplySourceNew" />
+            <result column="ornament_explain" property="ornamentExplain" />
+            <result column="no_discount_new" property="noDiscountNew" />
+            <result column="packing_method_coat" property="packingMethodCoat" />
+            <result column="is_have_wx" property="isHaveWX" />
+            <result column="set_stylecode" property="setStylecode" />
+            <result column="is_customizable" property="isCustomizable" />
+            <result column="is_personal_tailor" property="isPersonalTailor" />
+            <result column="intellectualizationIdentification" property="intellectualizationIdentification" />
+            <result column="intelligent_production" property="intelligentProduction" />
+            <result column="material_grade" property="materialGrade" />
+            <result column="weft_elastic_grade" property="weftElasticGrade" />
+            <result column="warp_elastic_grade" property="warpElasticGrade" />
+            <result column="receive_time" property="receiveTime" />
+
+            <collection property="skc" javaType="java.util.ArrayList" ofType="com.ylzs.entity.plm.BigStyleMasterDataSKC">
+                <!-- 款色-->
+                <result column="style_skc_code" property="styleSKCcode" />
+                <result column="skc_color_code" property="skcColorCode" />
+                <result column="skc_color_name" property="skcColorName" />
+                <result column="skc_image_url" property="skcImageURL" />
+                <result column="brightness" property="brightness" />
+            </collection>
+
+    </resultMap>
+
+    <!-- 查找所有的款色，并且分页-->
+    <select id="getAllDataForPage" resultMap="BigStyleMasterDataResult">
+        SELECT style.* ,skc.style_skc_code,skc.skc_color_name,skc.skc_color_code,skc.skc_image_url,material.material_grade,material.weft_elastic_grade,material.warp_elastic_grade FROM `capp_pi_big_style` as style
+        LEFT JOIN  capp_pi_big_style_skc as skc on style.ct_style_code = skc.ct_style_code
+        LEFT JOIN capp_pi_big_style_skc_material as material on material.style_skc_code=skc.style_skc_code
+        <where>
+             material.material_use in('主料','主料1')
+            <if test="ctStyleCode != null and ctStyleCode != '' ">
+                and style.ct_style_code like concat('%', #{ctStyleCode},'%')
+            </if>
+        </where>
+        order by skc.id desc
+    </select>
+    <!-- 获取款式工艺和大货工单工艺里面的款的主料的 经向弹力等级和纬向弹力等级-->
+    <select id="getDataByStyleRandomCode" resultMap="BigStyleMasterDataResult" >
+       SELECT material.weft_elastic_grade,material.warp_elastic_grade FROM `capp_pi_big_style_skc_material` as material
+        INNER JOIN ${tableName} as skc on skc.style_skc_code=material.style_skc_code
+        where skc.style_random_code = #{styleRandomCode} and material.material_use='主料'
+    </select>
+    <insert id="addOrUpdateBigStyleData" parameterType="BigStyleMasterData">
+		insert into capp_pi_big_style (
+		oem_client_code,oem_style_code,yq_combination_type, action_type, category_type,style_type,ct_style_code,style_name,
+		brand,main_material_type,sub_brand,year,belong_with_customer,band,season,body_type,collar,sleeve,way_of_taking_off,
+		cuff,malibu,pocket,dege,belt,trouser_loop,stitch,decorate,patterning,foot_mouth,waist_band,waist_mouth_type,lumbar_position,
+		trouser_leg_type,rain_type,entrance_guard,weave2,grand_category,mid_category,small_category,big_goods_price,int_process_fee,
+		out_process_fee,weave,is_knit_tat_match,supply_source_new,ornament_explain,no_discount_new,packing_method_coat,is_have_wx,
+		set_stylecode,is_customizable,is_personal_tailor,intellectualizationIdentification,intelligent_production,
+		receive_time
+		)
+		values (
+		#{OEMClientCode}, #{OEMStyleCode},#{yqCombinationType}, #{actionType},#{categoryType},#{styleType},#{ctStyleCode},#{styleName},
+		#{brand},#{mainMaterialType},#{subBrand},#{year},#{belongWithCustomer},#{band},#{season},#{bodyType},#{collar},#{sleeve},#{wayOfTakingOff},
+		#{cuff},#{malibu},#{pocket},#{dege},#{belt},#{trouserLoop},#{stitch},#{decorate},#{patterning},#{footMouth},#{waistBand},#{waistMouthType},#{lumbarPosition},
+		#{trouserLegType},#{rainType},#{entranceGuard},#{weave2},#{grandCategory},#{midCategory},#{smallCategory},#{bigGoodsPrice},#{intProcessFee},
+		#{outProcessFee},#{weave},#{isKnitTatMatch},#{supplySourceNew},#{ornamentExplain},#{noDiscountNew},#{packingMethodCoat},#{isHaveWX},
+		#{setStylecode},#{isCustomizable},#{isPersonalTailor},#{intellectualizationIdentification},#{intelligentProduction},
+		#{receiveTime}
+		)
+		on duplicate key update
+		oem_client_code=#{OEMClientCode}, oem_style_code=#{OEMStyleCode},yq_combination_type=#{yqCombinationType},action_type= #{actionType},category_type=#{categoryType},style_type=#{styleType},style_name=#{styleName},
+		brand=#{brand},main_material_type=#{mainMaterialType},sub_brand=#{subBrand},year=#{year},belong_with_customer=#{belongWithCustomer},band=#{band},season=#{season},body_type=#{bodyType},collar=#{collar},sleeve=#{sleeve},way_of_taking_off=#{wayOfTakingOff},
+		cuff=#{cuff},malibu=#{malibu},pocket=#{pocket},dege=#{dege},belt=#{belt},trouser_loop=#{trouserLoop},stitch=#{stitch},decorate=#{decorate},patterning=#{patterning},foot_mouth=#{footMouth},waist_band=#{waistBand},waist_mouth_type=#{waistMouthType},lumbar_position=#{lumbarPosition},
+		trouser_leg_type=#{trouserLegType},rain_type=#{rainType},entrance_guard=#{entranceGuard},weave2=#{weave2},grand_category=#{grandCategory},mid_category=#{midCategory},small_category=#{smallCategory},big_goods_price=#{bigGoodsPrice},int_process_fee=#{intProcessFee},
+		out_process_fee=#{outProcessFee},weave=#{weave},is_knit_tat_match=#{isKnitTatMatch},supply_source_new=#{supplySourceNew},ornament_explain=#{ornamentExplain},no_discount_new=#{noDiscountNew},packing_method_coat=#{packingMethodCoat},is_have_wx=#{isHaveWX},
+		set_stylecode=#{setStylecode},is_customizable=#{isCustomizable},is_personal_tailor=#{isPersonalTailor},intellectualizationIdentification=#{intellectualizationIdentification},intelligent_production=#{intelligentProduction},
+		receive_time=#{receiveTime}
+	</insert>
+
+    <select id="getBigStyleMasterDataOne" resultType="com.ylzs.entity.plm.BigStyleMasterData">
+    select * from capp_pi_big_style where ct_style_code=#{styleCode} order by id limit 1
+    </select>
+
+
+</mapper>

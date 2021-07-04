@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.BigStyleAnalyseMasterSKCDao">
+    <resultMap type="BigStyleAnalyseSkc" id="BigStyleAnalyseSkcResult">
+        <result column="style_random_code" property="styleRandomCode"/>
+        <result column="ct_style_code" property="ctStyleCode"/>
+        <result column="id" property="id"/>
+        <result column="style_skc_code" property="styleSKCcode"/>
+        <result column="skc_color_code" property="skcColorCode"/>
+        <result column="skc_color_name" property="skcColorName"/>
+    </resultMap>
+    <insert id="insertSKCForeach" parameterType="java.util.List">
+        insert into big_style_analyse_master_skc
+        (style_skc_code,style_random_code,ct_style_code,skc_color_code,skc_color_name)
+        values
+        <foreach collection="skcList" item="skc" separator=",">
+            (#{skc.styleSKCcode},#{skc.styleRandomCode},#{skc.ctStyleCode},#{skc.skcColorCode},#{skc.skcColorName})
+        </foreach>
+    </insert>
+    <delete id="deleteByStyleRandomCode" parameterType="java.lang.Long">
+        delete from big_style_analyse_master_skc where style_random_code = #{0}
+    </delete>
+    <delete id="deleteByID">
+        delete from big_style_analyse_master_skc where id = #{id}
+    </delete>
+    <select id="selectDataByStyleRandomCode" parameterType="java.lang.Long" resultMap="BigStyleAnalyseSkcResult">
+     select id,style_random_code,ct_style_code,style_skc_code,skc_color_code,skc_color_name from big_style_analyse_master_skc where style_random_code = #{0}
+    </select>
+    <select id="getPublishedBigStyleRandomCode" resultType="java.lang.Long">
+        select t.style_random_code
+        from (
+            select a.style_random_code,b.release_time
+                from big_style_analyse_master_skc a
+                inner join big_style_analyse_master b on a.style_random_code=b.random_code
+            where a.style_skc_code=#{styleSkcCode} and ifnull(b.status, 1000)=1020
+            union
+            select a.style_random_code,b.release_time
+                from big_style_analyse_master_style_cover a
+                inner join big_style_analyse_master b on a.style_random_code=b.random_code
+            where a.style_skc_code=#{styleSkcCode} and ifnull(b.status, 1000)=1020
+            ) t
+        order by t.release_time desc
+    </select>
+
+
+</mapper>

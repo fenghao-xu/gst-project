@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataSizesDao">
+    <resultMap type="CutParameterMasterDataSizes" id="CutParameterMasterDataSizesResult">
+            <result column="id1" property="id1" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="id" property="id" />
+		    <result column="name" property="name" />
+    </resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterDataSizes" parameterType="CutParameterMasterDataSizes">
+		insert into capp_pi_cut_parameter_sizes (
+		order_id,order_line_id,id,name
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.orderId}, #{item.orderLineId}, #{item.id},#{item.name}
+			)
+		</foreach>
+		on duplicate key update
+		order_id=values(order_id), order_line_id=values(order_line_id),
+		id=values(id),name= values(name)
+	</insert>
+
+
+
+
+</mapper>

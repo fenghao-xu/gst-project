@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.BigOrderMasterDao">
+<resultMap type="BigStyleAnalyseMaster" id="BigStyleAnalyseMasterResult" >
+    <result column="big_style_analyse_code" property="bigStyleAnalyseCode"/>
+    <result column="production_ticket_no" property="productionTicketNo"/>
+    <result column="factory_code" property="factoryCode"/>
+    <result column="production_category" property="productionCategory"/>
+    <result column="production_category_name" property="productionCategoryName"/>
+    <result column="ct_style_code" property="ctStyleCode"/>
+    <result column="style_name" property="styleName"/>
+    <result column="style_desc" property="styleDesc"/>
+    <result column="craft_category_code" property="craftCategoryCode"/>
+    <result column="craft_category_name" property="craftCategoryName"/>
+    <result column="clothes_category_code" property="clothesCategoryCode"/>
+    <result column="clothes_category_name" property="clothesCategoryName"/>
+    <result column="for_sales_time" property="forSalesTime"/>
+    <result column="main_frame_name" property="mainFrameName"/>
+    <result column="main_frame_code" property="mainFrameCode"/>
+    <result column="sub_brand" property="subBrand"/>
+    <result column="standard_time" property="standardTime"/>
+    <result column="standard_price" property="standardPrice"/>
+    <result column="fabric_fraction" property="fabricFraction"/>
+    <result column="packing_method_coat" property="packingMethodCoat"/>
+    <result column="is_style_cover" property="isStyleCover"/>
+    <result column="remark" property="remark"/>
+    <!-- 是否按照行号排序-->
+    <result column="sorted_by_number" property="sortedByNumber"/>
+    <!-- 是否校验工序流-->
+    <result column="is_check_craft_code" property="isCheckCraftCode"/>
+
+    <result column="adapt_code" property="adaptCode" />
+    <!-- 公共部分-->
+    <result column="id" property="id"/>
+    <result column="audit_user" property="auditUser"/>
+    <result column="audit_time" property="auditTime"/>
+    <result column="create_user" property="createUser"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_user" property="updateUser"/>
+    <result column="update_time" property="updateTime"/>
+    <result column="release_user" property="releaseUser"/>
+    <result column="release_time" property="releaseTime"/>
+    <result column="version" property="version"/>
+    <result column="status" property="status"/>
+    <result column="is_invalid" property="isInvalid"/>
+    <result column="random_code" property="randomCode"/>
+    <result column="style_random_code" property="styleRandomCode"/>
+    <!--<collection property="pictureList"  javaType="java.util.ArrayList" ofType="java.lang.String">
+        <result column="pic_url" property="picture"/>
+    </collection>-->
+</resultMap>
+<select id="searchBigOrderByCraftInfo" parameterType="java.util.HashMap" resultMap="BigStyleAnalyseMasterResult">
+    SELECT mas.* FROM `big_order_master`as mas
+    INNER JOIN big_order_partcraft as part on part.style_random_code=mas.random_code
+    INNER JOIN big_order_sewing_craft as sew on sew.part_craft_main_code=part.part_craft_main_code and sew.random_code=mas.random_code
+    <where>
+        ifnull(mas.`status`,1000) !=1090
+        <if test="status !=null ">
+            and mas.`status` =#{status}
+        </if>
+        <if test="craftCode !=null and craftCode != ''">
+            and sew.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="description !=null and description != ''">
+            and sew.description like concat('%',#{description},'%')
+        </if>
+        <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode != ''">
+            and mas.big_style_analyse_code like concat('%',#{bigStyleAnalyseCode},'%')
+        </if>
+        <if test="styleDesc !=null and styleDesc != ''">
+            and mas.style_desc like concat('%',#{styleDesc},'%')
+        </if>
+        <if test="styleName !=null and styleName != ''">
+            and mas.style_name like concat('%',#{styleName},'%')
+        </if>
+        <if test="productionTicketNo !=null and productionTicketNo != ''">
+            and mas.production_ticket_no like concat('%', #{productionTicketNo},'%')
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode != ''">
+            and mas.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="productionCategory != null and productionCategory != ''">
+            and mas.production_category like concat('%',#{productionCategory},'%')
+        </if>
+    </where>
+    GROUP BY mas.big_style_analyse_code
+</select>
+<select id="searchFromBigStyleAnalyse" parameterType="java.util.HashMap" resultMap="BigStyleAnalyseMasterResult">
+    SELECT mas.* FROM `big_order_master` as mas
+    <where>
+        ifnull(mas.`status`,1000) !=1090
+        <if test="status !=null ">
+            and mas.`status` =#{status}
+        </if>
+        <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode != ''">
+            and mas.big_style_analyse_code like concat('%',#{bigStyleAnalyseCode},'%')
+        </if>
+        <if test="styleDesc !=null and styleDesc != ''">
+            and mas.style_desc like concat('%',#{styleDesc},'%')
+        </if>
+        <if test="styleName !=null and styleName != ''">
+            and mas.style_name like concat('%',#{styleName},'%')
+        </if>
+        <if test="productionTicketNo !=null and productionTicketNo != ''">
+            and mas.production_ticket_no like concat('%', #{productionTicketNo},'%')
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode != ''">
+            and mas.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="productionCategory != null and productionCategory != ''">
+            and mas.production_category like concat('%',#{productionCategory},'%')
+        </if>
+    </where>
+</select>
+    <delete id="deleteByRandomCode" parameterType="java.lang.Long">
+        delete from  big_order_master where random_code=#{randomCode}
+    </delete>
+<select id="searchFromBigStyleAnalyseByRandomCode" parameterType="java.lang.Long" resultMap="BigStyleAnalyseMasterResult">
+        SELECT mas.* ,big.random_code  as style_random_code,grop.production_group_name as production_category_name  FROM `big_order_master`  as mas
+        left join big_style_analyse_master as big on big.big_style_analyse_code=mas.big_style_analyse_code
+        left  join production_group as grop on mas.production_category = grop.production_group_code and grop.main_frame_code=mas.main_frame_code
+        where    mas.random_code = #{randomCode}
+    </select>
+    <!-- 调用的时候，ctStyleCode款号一定要传-->
+    <select id="getDataByStyleCover" parameterType="hashmap"  resultMap="BigStyleAnalyseMasterResult">
+        SELECT mas.* FROM `big_order_master` as mas
+        INNER JOIN big_order_master_style_cover as cover on cover.style_random_code=mas.random_code
+        <where>
+            ifnull(mas.`status`,1000) !=1090
+            <if test="styleCode !=null and styleCode != ''">
+                and   cover.ct_style_code like  concat('%',#{styleCode},'%')
+            </if>
+            <if test="clothesCategoryCodeList !=null and clothesCategoryCodeList.size()>0">
+                and (mas.clothes_category_code is null or mas.clothes_category_code in
+                <foreach collection="clothesCategoryCodeList" item="clothesCategoryCode" open="(" close=")"
+                         separator=",">
+                    #{clothesCategoryCode}
+                </foreach>
+                )
+            </if>
+            <if test="subBrandList !=null and subBrandList.size()>0">
+                and  (mas.sub_brand is null or mas.sub_brand in
+                <foreach collection="subBrandList" item="subBrand" open="(" close=")" separator=",">
+                    #{subBrand}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+<select id="getDataByPager" parameterType="hashmap" resultMap="BigStyleAnalyseMasterResult">
+    SELECT mas.*,big.random_code as style_random_code FROM `big_order_master` as mas
+    left join big_style_analyse_master as big on big.big_style_analyse_code=mas.big_style_analyse_code
+    <where>
+        ifnull(mas.`status`,1000) !=1090
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            and  mas.main_frame_code =#{mainFrameCode}
+        </if>
+        <if test="adaptCode == '10' ">
+            and  mas.adapt_code ='10'
+        </if>
+        <if test="adaptCode == '30' ">
+            and  (mas.adapt_code ='30' or mas.adapt_code is null)
+        </if>
+        <if test="craftCategoryCode !=null and craftCategoryCode != ''">
+            and  mas.craft_category_code =#{craftCategoryCode}
+        </if>
+
+
+        <if test="clothesCategoryCodeList !=null and clothesCategoryCodeList.size()>0">
+            and (mas.clothes_category_code is null or mas.clothes_category_code in
+            <foreach collection="clothesCategoryCodeList" item="clothesCategoryCode" open="(" close=")" separator=",">
+                #{clothesCategoryCode}
+            </foreach>
+            )
+        </if>
+        <if test="factoryCodeList !=null and factoryCodeList.size()>0">
+            and (mas.factory_code is null or mas.factory_code in
+            <foreach collection="factoryCodeList" item="factoryCode" open="(" close=")" separator=",">
+                #{factoryCode}
+            </foreach>
+            )
+        </if>
+        <if test="subBrandList !=null and subBrandList.size()>0">
+            and (mas.sub_brand is null or mas.sub_brand in
+            <foreach collection="subBrandList" item="subBrand" open="(" close=")" separator=",">
+                #{subBrand}
+            </foreach>
+            )
+        </if>
+
+
+        <if test="productionCategory !=null and productionCategory.size()>0">
+            <!-- and  mas.production_category =#{productionCategory} -->
+            and mas.production_category in
+            <foreach collection="productionCategory" item="production" open="(" close=")" separator=",">
+                #{production}
+            </foreach>
+        </if>
+        <if test="styleCode !=null and styleCode != ''">
+            and  mas.ct_style_code like concat('%',#{styleCode},'%')
+        </if>
+       <!-- <if test="ctStyleCode !=null and ctStyleCode != ''">
+            and  mas.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>-->
+        <if test="productionTicketNo !=null and productionTicketNo != ''">
+            and  mas.production_ticket_no like concat('%',#{productionTicketNo},'%')
+        </if>
+        <if test="createUser !=null and createUser.size()>0  ">
+            and  mas.create_user in
+            <foreach collection="createUser" item="user_" open="(" close=")" separator=",">
+                #{user_}
+            </foreach>
+        </if>
+        <if test="releaseUser !=null and releaseUser.size()>0 ">
+            and  mas.release_user in
+            <foreach collection="releaseUser" item="ruser_" open="(" close=")" separator=",">
+                #{ruser_}
+            </foreach>
+        </if>
+        <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode != ''">
+            and  mas.big_style_analyse_code like  concat('%',#{bigStyleAnalyseCode},'%')
+        </if>
+        <if test="styleDesc !=null and styleDesc != ''">
+            and  mas.style_desc like concat('%',#{styleDesc},'%')
+        </if>
+        <if test="status !=null ">
+            and   mas.status =#{status}
+        </if>
+        <if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+            and   date(mas.create_time) BETWEEN  #{createTimeBeginDate} and #{createTimeEndDate}
+        </if>
+        <if test="releaseTimeBeginDate !=null and releaseTimeEndDate != null ">
+            and   date(mas.release_time) BETWEEN #{releaseTimeBeginDate} and #{releaseTimeEndDate}
+        </if>
+    </where>
+    order by mas.id desc
+<!--    <if test="rows !=null" >-->
+<!--        limit #{page},#{rows}-->
+<!--    </if>-->
+</select>
+<update id="updateStatus">
+    update  big_order_master set status=#{status}
+    <if test="status == 1020">
+        ,release_user = #{userCode},release_time=#{releaseTime}
+    </if>
+    where random_code = #{randomCode}
+</update>
+
+<insert id="addBigStyleAnalyseMaster" parameterType="hashmap">
+        insert into big_order_master
+        (is_style_cover,adapt_code,is_check_craft_code,sorted_by_number,update_user,update_time,random_code,production_ticket_no,factory_code,production_category,craft_category_code,craft_category_name,big_style_analyse_code,clothes_category_name,clothes_category_code,ct_style_code,style_name,style_desc,remark,for_sales_time,main_frame_name,main_frame_code,sub_brand,fabric_fraction,standard_price,packing_method_coat,standard_time,create_user,create_time,status,release_user,release_time)
+        values
+        (#{isStyleCover},#{adaptCode},#{isCheckCraftCode},#{sortedByNumber},#{updateUser},#{updateTime},#{randomCode},#{productionTicketNo},#{factoryCode},#{productionCategory},#{craftCategoryCode},#{craftCategoryName},#{bigStyleAnalyseCode},#{clothesCategoryName},#{clothesCategoryCode},#{ctStyleCode},#{styleName},#{styleDesc},#{remark},#{forSalesTime},#{mainFrameName},#{mainFrameCode},#{subBrand},#{fabricFraction},#{standardPrice},#{packingMethodCoat},#{standardTime},#{createUser},#{createTime},#{status},#{releaseUser},#{releaseTime})
+    </insert>
+    <insert id="insertBigStyleAnalyseMaster" useGeneratedKeys="true" keyProperty="id" >
+        insert into big_order_master
+        (is_style_cover,adapt_code,is_check_craft_code,sorted_by_number,update_user,update_time,random_code,production_ticket_no,
+        factory_code,production_category,craft_category_code,craft_category_name,big_style_analyse_code,
+        clothes_category_name,clothes_category_code,ct_style_code,style_name,style_desc,remark,for_sales_time,
+        main_frame_name,main_frame_code,sub_brand,fabric_fraction,standard_price,packing_method_coat,standard_time,
+        create_user,create_time,status,release_user,release_time)
+        values
+        (#{isStyleCover},#{adaptCode},#{isCheckCraftCode},#{sortedByNumber},#{updateUser},#{updateTime},#{randomCode},#{productionTicketNo},
+        #{factoryCode},#{productionCategory},#{craftCategoryCode},#{craftCategoryName},#{bigStyleAnalyseCode},
+        #{clothesCategoryName},#{clothesCategoryCode},#{ctStyleCode},#{styleName},#{styleDesc},#{remark},#{forSalesTime},
+        #{mainFrameName},#{mainFrameCode},#{subBrand},#{fabricFraction},#{standardPrice},#{packingMethodCoat},#{standardTime},
+        #{createUser},#{createTime},#{status},#{releaseUser},#{releaseTime})
+    </insert>
+    <update id="updateBigStyleAnalyseMaster" parameterType="hashmap">
+        update  big_order_master
+        set craft_category_code=#{craftCategoryCode},craft_category_name=#{craftCategoryName},big_style_analyse_code=#{bigStyleAnalyseCode} ,sorted_by_number=#{sortedByNumber},is_check_craft_code=#{isCheckCraftCode},adapt_code=#{adaptCode},
+        clothes_category_name=#{clothesCategoryName},clothes_category_code=#{clothesCategoryCode},ct_style_code=#{ctStyleCode},
+        style_name=#{styleName},style_desc=#{styleDesc},for_sales_time=#{forSalesTime},production_ticket_no=#{productionTicketNo},factory_code=#{factoryCode},production_category=#{productionCategory},
+        main_frame_name=#{mainFrameName},main_frame_code=#{mainFrameCode},sub_brand=#{subBrand},
+        fabric_fraction=#{fabricFraction},packing_method_coat=#{packingMethodCoat},standard_time=#{standardTime},standard_price=#{standardPrice}
+        ,update_user=#{updateUser},update_time=#{updateTime},status=#{status},release_user=#{releaseUser},release_time=#{releaseTime},is_style_cover=#{isStyleCover}
+        where random_code = #{randomCode}
+    </update>
+    <select id="getBigStyleAnalyseMasterByRandomCode"
+            resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+        select * from big_order_master where random_code=#{randomCode}
+    </select>
+
+    <select id="getCraftFileByRandomCode" resultType="com.ylzs.entity.craftstd.CraftFile">
+        select b.craft_code key_str,e.resource_type,e.file_url from big_order_partcraft a
+        inner join big_order_std b on a.style_random_code=b.sewing_craft_random_code and b.part_craft_main_code=a.part_craft_main_code
+        inner join craft_std d on b.craft_std_code=d.craft_std_code
+        inner join craft_file e on e.key_id=d.id
+        where a.style_random_code=#{styleRandomCode}
+    </select>
+    <delete id="deleteByID" >
+         delete  from  big_order_master where id=#{id}
+    </delete>
+    <select id="getPriceAndTime" resultMap="BigStyleAnalyseMasterResult">
+         SELECT production_ticket_no,standard_price,standard_time FROM `big_order_master` GROUP BY production_ticket_no;
+    </select>
+    <select id="getPriceAndTimeSew" resultMap="BigStyleAnalyseMasterResult">
+         SELECT sum(sew.standard_price) as standard_price,sum(sew.standard_time) as standard_time,mas.production_ticket_no from big_order_sewing_craft as sew
+    INNER JOIN big_order_partcraft as part on part.part_craft_main_code=sew.part_craft_main_code and sew.random_code=part.style_random_code
+        INNER JOIN big_order_master as mas on mas.random_code=sew.random_code GROUP BY mas.production_ticket_no
+    </select>
+    <select id="getBigOrderByProductionTicketNo" resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+        select a.* from big_order_master a where ifnull(a.`status`,1000) !=1090 and a.production_ticket_no = #{productionTicketNo}
+    </select>
+
+    <select id="getBigOrderAnalyseTemp" resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+        select production_ticket_no from big_order_master where ifnull(status,1000)=1020
+        <![CDATA[
+         and UNIX_TIMESTAMP(release_time)>=UNIX_TIMESTAMP('2020-12-17 12:00:00')
+         and UNIX_TIMESTAMP(release_time)<UNIX_TIMESTAMP('2020-12-18 12:00:00')
+        ]]>
+    </select>
+
+    <select id="getOrderTimeVS" resultType="com.ylzs.vo.report.OrderTimeVSVO" parameterType="hashmap">
+        select a.ct_style_code style_code,
+            g.factory_name,
+            f.estimate_sewing_time style_estimate_time,
+            e.standard_price big_style_standard_price,
+            e.standard_time big_style_standard_time,
+            ifnull(d.standard_price,a.standard_price) big_order_standard_price1,
+            ifnull(d.standard_time,a.standard_time) big_order_standard_time1,
+            a.standard_time big_order_standard_time,
+            a.standard_price big_order_standard_price,
+            h.production_group_name,
+            a.production_ticket_no
+
+        from big_order_master a
+        left join (select aa.* from time_price_order_operation_log aa
+            LEFT JOIN time_price_order_operation_log bb ON aa.code=bb.code and aa.id>bb.id
+            where bb.id is null) d on a.production_ticket_no=d.code
+        left join big_style_analyse_master e
+            on a.big_style_analyse_code=e.big_style_analyse_code and e.status=1020
+        left join big_style_node_record f
+            on a.ct_style_code=f.style_code
+        left join craft_grade g
+            on a.factory_code=g.factory_code
+        left join production_group h
+            on a.production_category=h.production_group_code
+        <where>
+            ifnull(a.status, 1000)=1020
+            <if test="styleCode != null and styleCode != ''">
+                and a.ct_style_code like concat('%',#{styleCode},'%')
+            </if>
+            <if test="factory != null and factory !='' ">
+                and (a.factory_code like #{factory}
+                    or g.factory_name like #{factory})
+            </if>
+            <if test="beginDate != null and beginDate != ''">
+                <![CDATA[   and DATE_FORMAT(a.create_time, '%Y-%m-%d')>=#{beginDate}   ]]>
+            </if>
+            <if test="endDate != null and endDate != ''">
+                <![CDATA[   and DATE_FORMAT(a.create_time, '%Y-%m-%d')<=#{endDate}  ]]>
+            </if>
+        </where>
+
+
+    </select>
+    <select id="getBigStyleAnalyseMasterByRandomCodes"
+            resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+        select * from big_order_master where random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="randomCode">
+            #{randomCode}
+        </foreach>
+    </select>
+
+    <update id="updateAdaptCode">
+        update big_order_master set adapt_code=#{adaptCode} where id = #{id}
+    </update>
+    <update id="updateProductionGroupInfo">
+        update big_order_master set
+            production_category=#{productionCategory},
+            standard_time=#{standardTime},
+            standard_price=#{standardPrice},
+            factory_code=#{factoryCode}
+        where random_code=#{randomCode}
+    </update>
+
+    <select id="isExistByFCodeAndPGCode" parameterType="string" resultType="string">
+        select 1 from big_order_master where factory_code = #{factoryCode} and production_category = #{productionGroupCode} limit 1;
+    </select>
+
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.FabricMainDataDao">
+        <resultMap type="FabricMainData" id="FabricMainDataResult">
+            <result column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="code" property="code" />
+            <result column="grand_category" property="grandCategory" />
+            <result column="mid_category" property="midCategory" />
+            <result column="small_category" property="smallCategory" />
+            <result column="brand" property="brand" />
+            <result column="year" property="year" />
+            <result column="band" property="band" />
+            <result column="production_line" property="productionLine" />
+            <result column="width" property="width" />
+            <result column="actual_width" property="actualWidth" />
+            <result column="unit" property="unit" />
+            <result column="material_style" property="materialStyle" />
+            <result column="warp_elastic_extension" property="warpElasticExtension" />
+            <result column="warp_status" property="warpStatus" />
+            <result column="warp_elastic_grade" property="warpElasticGrade" />
+            <result column="weft_elastic_extension" property="weftElasticExtension" />
+            <result column="weft_status" property="weftStatus" />
+            <result column="weft_elastic_grade" property="weftElasticGrade" />
+            <result column="draping" property="draping" />
+            <result column="draping_grade" property="drapingGrade" />
+            <result column="air_permeability" property="airPermeability" />
+            <result column="air_permeability_grade" property="airPermeabilityGrade" />
+            <result column="HY_grade" property="HYGrade" />
+            <result column="hardness_grade" property="hardnessGrade" />
+            <result column="CX_grade" property="CXGrade" />
+            <result column="apply_product" property="applyProduct" />
+            <result column="density" property="density" />
+            <result column="density_grade" property="densityGrade" />
+            <result column="weight" property="weight" />
+            <result column="weight_grade" property="weightGrade" />
+            <result column="warp_water_shrinkage" property="warpWaterShrinkage" />
+            <result column="weft_water_shrinkage" property="weftWaterShrinkage" />
+            <result column="warp_heat_shrinkage" property="warpHeatShrinkage" />
+            <result column="weft_heat_shrinkage" property="weftHeatShrinkage" />
+            <result column="composition" property="composition" />
+            <result column="creator" property="creator" />
+            <result column="in_warehouse_date" property="inWarehouseDate" />
+            <result column="dispatch_place" property="dispatchPlace" />
+            <result column="price" property="price" />
+            <result column="bulk_production_lead_time" property="bulkProductionLeadTime" />
+            <result column="supply_material_code" property="supplyMaterialCode" />
+            <result column="supplier_code" property="supplierCode" />
+            <result column="remark" property="remark" />
+            <result column="material_grade" property="materialGrade" />
+            <result column="material_direction" property="materialDirection" />
+            <result column="material_motif" property="materialMotif" />
+            <result column="pattern_symmetry" property="patternSymmetry" />
+            <result column="warpstart" property="warpstart" />
+            <result column="warp_repeat" property="warpRepeat" />
+            <result column="warp_repeat_line1" property="warpRepeatLine1" />
+            <result column="warp_repeat_line2" property="warpRepeatLine2" />
+            <result column="warp_repeat_line3" property="warpRepeatLine3" />
+            <result column="warp_repeat_line4" property="warpRepeatLine4" />
+            <result column="warp_repeat_line5" property="warpRepeatLine5" />
+            <result column="weftstart" property="weftstart" />
+            <result column="weft_repeat" property="weftRepeat" />
+            <result column="weft_repeat_line1" property="weftRepeatLine1" />
+            <result column="weft_repeat_line2" property="weftRepeatLine2" />
+            <result column="weft_repeat_line3" property="weftRepeatLine3" />
+            <result column="weft_repeat_line4" property="weftRepeatLine4" />
+            <result column="weft_repeat_line5" property="weftRepeatLine5" />
+            <result column="color_shade" property="colorShade" />
+            <result column="length_spec" property="lengthSpec" />
+            <result column="spec" property="spec" />
+            <result column="colo_sade_value" property="coloSadeValue" />
+            <result column="remark_of_testing" property="remarkOfTesting" />
+            <result column="testing_ok" property="testingOK" />
+            <result column="system_code" property="systemCode" />
+            <result column="system_name" property="systemName" />
+            <result column="lightness_code" property="lightnessCode" />
+            <result column="vividness_code" property="vividnessCode" />
+            <result column="yandu_description" property="yanduDescription" />
+            <result column="hue_code" property="hueCode" />
+            <result column="color_system_name" property="colorSystemName" />
+            <result column="color_system_code" property="colorSystemCode" />
+            <result column="drop_color_name" property="dropColorName" />
+            <result column="description" property="description" />
+            <result column="update_date" property="updateDate" />
+            <result column="receive_time" property="receiveTime" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateFabricDataDao" parameterType="FabricMainData">
+		insert into capp_pi_material_main_data (
+		name,code,grand_category, mid_category, small_category,brand,year,band,production_line,width,actual_width,unit,material_style,warp_elastic_extension,
+		warp_status,warp_elastic_grade,weft_elastic_extension,weft_status,weft_elastic_grade,draping,draping_grade,air_permeability,air_permeability_grade,
+		HY_grade,hardness_grade,CX_grade,apply_product,density,density_grade,weight,weight_grade,warp_water_shrinkage,weft_water_shrinkage,warp_heat_shrinkage,
+		weft_heat_shrinkage,composition,creator,in_warehouse_date,dispatch_place,price,bulk_production_lead_time,supply_material_code,supplier_code,
+		remark,material_grade,material_direction,material_motif,pattern_symmetry,warpstart,warp_repeat,warp_repeat_line1,warp_repeat_line2,warp_repeat_line3,warp_repeat_line4,
+		warp_repeat_line5,weftstart,weft_repeat,weft_repeat_line1,weft_repeat_line2,weft_repeat_line3,weft_repeat_line4,weft_repeat_line5,color_shade,length_spec,
+		spec,colo_sade_value,remark_of_testing,testing_ok,receive_time,system_code,system_name,lightness_code,vividness_code,yandu_description,hue_code,color_system_name,color_system_code,drop_color_name,description)
+		values (
+		#{name}, #{code},#{grandCategory}, #{midCategory},#{smallCategory},#{brand},#{year},#{band},#{productionLine},#{width},#{actualWidth},#{unit},#{materialStyle},
+		#{warpElasticExtension},#{warpStatus},#{warpElasticGrade},#{weftElasticExtension},#{weftStatus},#{weftElasticGrade},#{draping},#{drapingGrade},#{airPermeability},#{airPermeabilityGrade},
+		#{HYGrade},#{hardnessGrade},#{CXGrade},#{applyProduct},#{density},#{densityGrade},#{weight},#{weightGrade},#{warpWaterShrinkage},#{weftWaterShrinkage},#{warpHeatShrinkage},
+		#{weftHeatShrinkage},#{composition},#{creator},#{inWarehouseDate},#{dispatchPlace},#{price},#{bulkProductionLeadTime},#{supplyMaterialCode},#{supplierCode},#{remark},
+		#{materialGrade},#{materialDirection},#{materialMotif},#{patternSymmetry},#{warpstart},#{warpRepeat},#{warpRepeatLine1},#{warpRepeatLine2},#{warpRepeatLine3},#{warpRepeatLine4},
+		#{warpRepeatLine5},#{weftstart},#{weftRepeat},#{weftRepeatLine1},#{weftRepeatLine2},#{weftRepeatLine3},#{weftRepeatLine4},#{weftRepeatLine5},#{colorShade},#{lengthSpec},
+		#{spec},#{coloSadeValue},#{remarkOfTesting},#{testingOK},#{receiveTime},#{systemCode},#{systemName},#{lightnessCode},#{vividnessCode},#{yanduDescription},#{hueCode},#{colorSystemName},#{colorSystemCode},#{dropColorName},#{description})
+		on duplicate key update
+		name=#{name},code=#{code},grand_category=#{grandCategory},brand=#{brand},year=#{year},band=#{band},production_line=#{productionLine},width=#{width},actual_width=#{actualWidth},
+		unit=#{unit},material_style=#{materialStyle},warp_elastic_extension=#{warpElasticExtension},warp_status=#{warpStatus},warp_elastic_grade=#{warpElasticGrade},weft_elastic_extension=#{weftElasticExtension},
+		weft_status=#{weftStatus},weft_elastic_grade=#{weftElasticGrade},draping=#{draping},draping_grade=#{drapingGrade},air_permeability=#{airPermeability},air_permeability_grade=#{airPermeabilityGrade},
+		HY_grade=#{HYGrade},hardness_grade=#{hardnessGrade},CX_grade=#{CXGrade},apply_product=#{applyProduct},density=#{density},density_grade=#{densityGrade},
+		weight=#{weight},weight_grade=#{weightGrade},warp_water_shrinkage=#{warpWaterShrinkage},weft_water_shrinkage=#{weftWaterShrinkage},warp_heat_shrinkage=#{warpHeatShrinkage},
+		weft_heat_shrinkage=#{weftHeatShrinkage},composition=#{composition},creator=#{creator},in_warehouse_date=#{inWarehouseDate},dispatch_place=#{dispatchPlace},price=#{price},bulk_production_lead_time=#{bulkProductionLeadTime},
+		supply_material_code=#{supplyMaterialCode},supplier_code=#{supplierCode},remark=#{remark},material_grade=#{materialGrade},material_direction=#{materialDirection},material_motif=#{materialMotif},
+		pattern_symmetry=#{patternSymmetry},warpstart=#{warpstart},warp_repeat=#{warpRepeat},warp_repeat_line1=#{warpRepeatLine1},warp_repeat_line2=#{warpRepeatLine2},warp_repeat_line3=#{warpRepeatLine3},
+		warp_repeat_line4=#{warpRepeatLine4},warp_repeat_line5=#{warpRepeatLine5},weftstart=#{weftstart},weft_repeat=#{weftRepeat},weft_repeat_line1=#{weftRepeatLine1},weft_repeat_line2=#{weftRepeatLine2},
+		weft_repeat_line3=#{weftRepeatLine3},weft_repeat_line4=#{weftRepeatLine4},weft_repeat_line5=#{weftRepeatLine5},color_shade=#{colorShade},length_spec=#{lengthSpec},spec=#{spec},
+		colo_sade_value=#{coloSadeValue},remark_of_testing=#{remarkOfTesting},testing_ok=#{testingOK},receive_time=#{receiveTime},system_code=#{systemCode},system_name=#{systemName},
+		lightness_code=#{lightnessCode},vividness_code=#{vividnessCode},yandu_description=#{yanduDescription},hue_code=#{hueCode},color_system_name=#{colorSystemName},color_system_code=#{colorSystemCode},drop_color_name=#{dropColorName},
+		description=#{description},update_date=#{updateDate}
+	</insert>
+
+    <select id="getAllFabricData" resultMap="FabricMainDataResult">
+        select * from capp_pi_material_main_data
+    </select>
+    <select id="getFabricMainDataByCode" resultMap="FabricMainDataResult">
+        select * from capp_pi_material_main_data where code=#{mainMaterialCode}
+    </select>
+
+    <select id="getFabricNameList" parameterType="java.util.ArrayList" resultMap="FabricMainDataResult">
+        SELECT * FROM capp_pi_material_main_data
+        WHERE code in
+        <foreach collection="array" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

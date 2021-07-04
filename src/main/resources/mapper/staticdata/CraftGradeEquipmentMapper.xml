@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.staticdata.CraftGradeEquipmentDao">
+    <resultMap type="CraftGradeEquipment" id="CraftGradeEquipmentResult" >
+
+        <result column="type" property="factoryCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="craft_grade_name" property="craftGradeName"/>
+        <result column="craft_adjustment_factor" property="craftAdjustmentFactor"/>
+        <result column="minute_wage" property="minuteWage"/>
+        <result column="hourly_wage" property="hourlyWage"/>
+        <result column="factory_code" property="factoryCode"/>
+        <result column="section" property="section"/>
+        <result column="remark" property="remark"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+    <select id="getAllCraftGradeEquipment" resultMap="CraftGradeEquipmentResult">
+        select * from craft_grade_equipment
+    </select>
+
+
+
+
+
+
+
+</mapper>

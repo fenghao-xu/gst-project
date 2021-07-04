@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.staticdata.NeedlePitchDao">
+    <resultMap type="NeedlePitch" id="NeedlePitchResult" >
+        <result column="needle_pitch_code" property="needlePitchCode"/>
+        <result column="needle_pitch_value" property="needlePitchValue"/>
+        <result column="remark" property="remark"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+    <select id="getAllNeedlePitch" resultMap="NeedlePitchResult">
+        select * from needle_pitch
+        <where>
+            <if test="keywords != null and keywords !='' ">
+                and  needle_pitch_code like concat('%', #{keywords},'%')
+                or  needle_pitch_value like concat('%', #{keywords},'%')
+                or  remark like concat('%', #{keywords},'%')
+                or  create_user like concat('%', #{keywords},'%')
+                or  update_user like concat('%', #{keywords},'%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getAllNeedlePitchNoParam" resultMap="NeedlePitchResult">
+        select * from needle_pitch
+    </select>
+
+    <insert id="addOrUpdate" parameterType="NeedlePitch">
+        INSERT INTO needle_pitch (needle_pitch_code,needle_pitch_value,remark,create_user,create_time)VALUES(#{needlePitchCode},#{needlePitchValue},#{remark}, #{createUser},#{createTime})ON DUPLICATE KEY UPDATE needle_pitch_code = #{needlePitchCode},needle_pitch_value=#{needlePitchValue},remark=#{remark},update_user=#{updateUser},update_time=#{updateTime}
+    </insert>
+
+    <delete id="deleteBySelNeedlePitchCode" parameterType="string">
+        delete from needle_pitch where needle_pitch_code = #{selNeedlePitchCode}
+    </delete>
+
+
+
+
+
+
+
+</mapper>

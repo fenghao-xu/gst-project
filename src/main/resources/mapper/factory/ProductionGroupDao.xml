@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.factory.ProductionGroupDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.factory.ProductionGroup" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="factory_code" property="factoryCode" />
+        <result column="factory_name" property="factoryName" />
+        <result column="production_group_code" property="productionGroupCode" />
+        <result column="production_group_name" property="productionGroupName" />
+        <result column="adapt_code" property="adaptCode" />
+        <result column="main_frame_random_code" property="mainFrameRandomCode" />
+        <result column="main_frame_code" property="mainFrameCode" />
+        <result column="main_frame_name" property="mainFrameName" />
+        <result column="remark" property="remark" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+    <select id="getAllToMap" resultMap="resultMap">
+        select * from production_group
+    </select>
+    <select id="getByName" resultMap="resultMap">
+        select * from production_group
+        <where>
+            <if test="productionGroupName !=null and productionGroupName!=''">
+                and production_group_name like concat('%',#{productionGroupName},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getAllProductionGroupByParam" resultMap="resultMap">
+        select * from production_group
+        <where>
+            <if test="keywords != null and keywords !='' ">
+                and  factory_code like concat('%', #{keywords},'%')
+                or  factory_name like concat('%', #{keywords},'%')
+                or  production_group_code like concat('%', #{keywords},'%')
+                or  production_group_name like concat('%', #{keywords},'%')
+                or  remark like concat('%', #{keywords},'%')
+                or  create_user like concat('%', #{keywords},'%')
+                or  update_user like concat('%', #{keywords},'%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="addOrUpdate" parameterType="NeedlePitch">
+        INSERT INTO production_group
+            (factory_code,factory_name,production_group_code,production_group_name,remark,adapt_code,create_user,create_time)
+        VALUES(
+               #{factoryCode},#{factoryName},#{productionGroupCode},#{productionGroupName},#{adaptCode},#{remark}, #{createUser},#{createTime}
+               )
+        ON DUPLICATE KEY UPDATE
+            factory_code = #{factoryCode},factory_name=#{factoryName},production_group_code=#{productionGroupCode},production_group_name=#{productionGroupName},adapt_code=#{adaptCode},
+            remark=#{remark},update_user=#{updateUser},update_time=#{updateTime}
+    </insert>
+
+    <delete id="deleteBySelFCodeAndPGCode">
+        delete from production_group where factory_code = #{factoryCode} and production_group_code = #{productionGroupCode}
+    </delete>
+
+
+
+</mapper>

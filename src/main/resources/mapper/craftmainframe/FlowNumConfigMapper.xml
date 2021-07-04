@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftmainframe.FlowNumConfigDao">
+    <resultMap id="BaseResultMap" type="FlowNumConfig">
+        <id column="id" property="id"/>
+        <result column="flow_num" property="flowNum"/>
+        <result column="production_part_code" property="productionPartCode"/>
+    </resultMap>
+    <select id="getFlowNumConfigAll" resultType="FlowNumConfig">
+        select * from flow_num_config
+    </select>
+</mapper>

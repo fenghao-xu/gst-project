@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.AssistanceToolDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.craftstd.AssistanceTool">
+    <!--@mbg.generated-->
+    <id column="tool_code" jdbcType="VARCHAR" property="toolCode" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="tool_type" jdbcType="VARCHAR" property="toolType" />
+    <result column="tool_name" jdbcType="VARCHAR" property="toolName" />
+    <result column="tool_name_eng" jdbcType="VARCHAR" property="toolNameEng" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    tool_code, id, random_code, tool_type, tool_name, tool_name_eng, remark, `status`, 
+    is_invalid, audit_user, audit_time, create_user, create_time, update_user, update_time, 
+    version
+  </sql>
+</mapper>

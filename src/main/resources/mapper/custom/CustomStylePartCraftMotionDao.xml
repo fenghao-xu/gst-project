@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.custom.CustomStylePartCraftMotionDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.custom.CustomStylePartCraftMotion" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="order_num" property="orderNum" />
+        <result column="motion_code" property="motionCode" />
+        <result column="motion_name" property="motionName" />
+        <result column="frequency" property="frequency" />
+        <result column="description" property="description" />
+        <result column="speed" property="speed" />
+        <result column="machine_time" property="machineTime" />
+        <result column="manual_time" property="manualTime" />
+        <result column="part_craft_random_code" property="partCraftRandomCode" />
+        <result column="audit_date" property="auditDate" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+
+    <select id="getCraftRandomCodeMotionList" resultType="com.ylzs.entity.custom.CustomStylePartCraftMotion">
+        SELECT * FROM  custom_style_part_craft_motion
+        WHERE part_craft_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </select>
+    <select id="getCraftRandomCodeMotionListOne" resultType="com.ylzs.entity.custom.CustomStylePartCraftMotion">
+        SELECT * FROM  custom_style_part_craft_motion
+        WHERE part_craft_random_code = #{partCraftRandomCode}
+    </select>
+
+    <delete id="deleteCustomStyleMotionList">
+        delete FROM  custom_style_part_craft_motion
+        WHERE part_craft_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.StyleSewingCraftStdDao">
+    <resultMap type="SewingCraftStd" id="SewingCraftStdResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="craft_std_code" property="craftStdCode"/>
+        <result column="craft_std_name" property="craftStdName"/>
+        <result column="craft_code" property="craftCode"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+    </resultMap>
+    <insert id="addSewingCraftStd" parameterType="hashmap">
+        insert into big_style_analyse_std
+         (part_craft_main_code,sewing_craft_random_code,craft_std_code,craft_std_name,craft_code)
+         values
+         (#{partCraftMainCode},#{sewingCraftRandomCode},#{craftStdCode},#{craftStdName},#{craftCode})
+    </insert>
+    <insert id="insertSewingCraftStdForeach" parameterType="java.util.List">
+        insert into big_style_analyse_std
+         (part_craft_main_code,sewing_craft_random_code,craft_std_code,craft_std_name,craft_code)
+         values
+         <foreach collection="stdList" item="std" separator=",">
+         (#{std.partCraftMainCode},#{std.sewingCraftRandomCode},#{std.craftStdCode},#{std.craftStdName},#{std.craftCode})
+         </foreach>
+    </insert>
+
+    <select id="getDataBySewingCraftRandomCodeAndCraftCode"  resultMap="SewingCraftStdResult">
+        select  * from big_style_analyse_std where sewing_craft_random_code = #{randomCode} and craft_code = #{craftCode}
+    </select>
+    <select id="getIdByBysewingRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id FROM `big_style_analyse_std` WHERE sewing_craft_random_code=#{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndCraftCode"  >
+       delete from big_style_analyse_std where sewing_craft_random_code = #{randomCode} and craft_code=#{craftCode}
+    </delete>
+    <delete id="deleteDataByIds"  >
+        delete from big_style_analyse_std where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIDSBySewingCraftRandomCodeAndCraftCode" resultType="java.lang.Long">
+        select id from big_style_analyse_std where sewing_craft_random_code = #{randomCode} and craft_code=#{craftCode}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndPartCraftMainCode"  >
+       delete from big_style_analyse_std where sewing_craft_random_code = #{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </delete>
+    <select id="getSewingCraftStdNewCraft" resultType="com.ylzs.entity.sewingcraft.SewingCraftStd">
+        select c.* from big_style_analyse_partcraft a
+        inner join big_style_analyse_partcraft_detail b on a.style_random_code=b.style_random_code
+        inner join big_style_analyse_std c on b.style_random_code=c.sewing_craft_random_code and b.part_craft_main_code=c.part_craft_main_code and b.craft_code=c.craft_code
+        where a.style_random_code=#{styleRandomCode} and b.is_new=1
+    </select>
+
+
+    <select id="getBigStyleCraftStdFileNewCraft" resultType="CraftFile">
+        select b.craft_code key_str,e.resource_type,e.file_url
+        from big_style_analyse_partcraft a
+        inner join big_style_analyse_partcraft_detail b
+            on a.style_random_code=b.style_random_code and a.part_craft_main_code=b.part_craft_main_code
+        inner join big_style_analyse_std c
+            on c.sewing_craft_random_code=b.style_random_code
+                and c.part_craft_main_code=b.part_craft_main_code
+                and c.craft_code=b.craft_code
+        inner join craft_std d on c.craft_std_code=d.craft_std_code
+        inner join craft_file e on e.key_id=d.id
+        where a.style_random_code=#{styleRandomCode} and b.is_new=1
+    </select>
+
+    <select id="getBigStyleCraftStdMap" resultType="CraftStd">
+        select concat(a.part_craft_main_code,b.craft_code) remark,d.*
+        from big_style_analyse_partcraft a
+            inner join big_style_analyse_partcraft_detail b
+                on a.style_random_code=b.style_random_code and a.part_craft_main_code=b.part_craft_main_code
+            inner join big_style_analyse_std c
+                on c.sewing_craft_random_code=b.style_random_code
+                    and c.part_craft_main_code=b.part_craft_main_code
+                    and c.craft_code=b.craft_code
+            inner join craft_std d on c.craft_std_code=d.craft_std_code
+        where a.style_random_code=#{styleRandomCode}
+        <if test="isNew != null" >
+            and b.is_new=#{isNew}
+        </if>
+    </select>
+
+    <select id="getSewingCraftStdByStyleRandomCode" resultMap="SewingCraftStdResult">
+        select * from big_style_analyse_std where sewing_craft_random_code = #{styleRandomCode}
+    </select>
+
+
+</mapper>

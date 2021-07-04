@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.materialCraft.MaterialCraftRulePartDao">
+
+
+    <update id="updatePublishStatus" parameterType="java.util.List">
+        update material_craft_rule_part
+        <set>
+            update_time =CURRENT_TIMESTAMP,
+            status = 1020
+        </set>
+        where material_craft_random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateNotActiveStatus">
+        update material_craft_rule_part
+        <set>
+            update_time =CURRENT_TIMESTAMP,
+            status = 1030
+        </set>
+        where material_craft_random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectCountByCraftRandomCodes" resultType="integer">
+        select count(*) from material_craft_rule_part
+        where material_craft_random_code in
+        <foreach collection="randomCodes" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectListByCraftRandomCode"
+            resultType="com.ylzs.entity.materialCraft.resp.QueryMaterialCraftRulePartResp">
+         select
+         part_index,special_plan_number,
+         group_concat(design_code,'-',design_name) designCodeAndName,
+         group_concat(part_position_code,'-',part_position_name) partPositionCodeAndName,
+         clothing_category
+         from material_craft_rule_part
+         where material_craft_random_code = #{randomCode}
+         group by material_craft_random_code ,special_plan_number,part_index
+    </select>
+
+</mapper>

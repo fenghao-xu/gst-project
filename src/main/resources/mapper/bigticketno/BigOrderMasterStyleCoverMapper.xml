@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.BigOrderMasterStyleCoverDao">
+    <resultMap type="BigStyleAnalyseSkc" id="BigStyleAnalyseSkcResult">
+        <result column="style_random_code" property="styleRandomCode"/>
+        <result column="ct_style_code" property="ctStyleCode"/>
+        <result column="id" property="id"/>
+        <result column="style_skc_code" property="styleSKCcode"/>
+        <result column="skc_color_code" property="skcColorCode"/>
+        <result column="skc_color_name" property="skcColorName"/>
+    </resultMap>
+    <insert id="insertForeach" parameterType="java.util.List">
+        insert into big_order_master_style_cover
+        (style_skc_code,style_random_code,ct_style_code,skc_color_code,skc_color_name)
+        values
+        <foreach collection="styleCoverList" item="skc" separator=",">
+            (#{skc.styleSKCcode},#{skc.styleRandomCode},#{skc.ctStyleCode},#{skc.skcColorCode},#{skc.skcColorName})
+        </foreach>
+    </insert>
+    <select id="selectDataByStyleRandomCode" parameterType="java.lang.Long" resultMap="BigStyleAnalyseSkcResult">
+     select id,style_random_code,ct_style_code,style_skc_code,skc_color_code,skc_color_name from big_order_master_style_cover where style_random_code = #{0}
+    </select>
+    <delete id="deleteByStyleRandomCode" parameterType="java.lang.Long">
+        delete from big_order_master_style_cover where style_random_code = #{0}
+    </delete>
+    <delete id="deleteByID">
+        delete from big_order_master_style_cover where id = #{id}
+    </delete>
+</mapper>

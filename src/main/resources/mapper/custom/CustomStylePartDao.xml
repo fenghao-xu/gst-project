@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.custom.CustomStylePartDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.custom.CustomStylePart" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="design_part_code" property="designPartCode" />
+        <result column="design_part_name" property="designPartName" />
+        <result column="position_code" property="positionCode" />
+        <result column="position_name" property="positionName" />
+        <result column="fabric_style" property="fabricStyle" />
+        <result column="part_descript" property="partDescript" />
+        <result column="custom_main_random_code" property="customMainRandomCode" />
+        <result column="remark" property="remark" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <select id="getMainRandomCodePartList" parameterType="java.lang.Long" resultType="com.ylzs.entity.custom.CustomStylePart">
+        SELECT * FROM custom_style_part WHERE custom_main_random_code = #{mainRandomCode}
+    </select>
+    <select id="getDataByMainRandomList"  resultType="com.ylzs.entity.custom.CustomStylePart">
+        SELECT * FROM custom_style_part
+        <where>
+            <if test="randomList !=null and randomList.size()>0">
+                custom_main_random_code in
+                <foreach collection="randomList" item="ran_" open="(" separator="," close=")">
+                    #{ran_}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getCustomStyleRandomCodeByMainRnadomCode" resultType="Long">
+        SELECT random_code FROM custom_style_part WHERE custom_main_random_code = #{mainRandomCode}
+    </select>
+
+    <delete id="deleteCustomStylePart">
+        DELETE FROM custom_style_part WHERE custom_main_random_code = #{mainRandomCode}
+    </delete>
+
+    <delete id="deleteBatchCustomStylePart">
+        DELETE FROM custom_style_part WHERE custom_main_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+
+    <select id="getCustomDesignPart" resultType="DesignPart">
+        select a.random_code,b.design_image,b.part_position,b.pattern_mode,
+        b.design_code,b.design_name,
+        b.pattern_type,a.position_name remark,
+        b.pattern_technology,b.pattern_msg
+        from custom_style_part a
+        inner join design_part b on a.design_part_code=b.design_code and ifnull(a.position_code,'')=ifnull(b.part_position,'')
+         where a.custom_main_random_code=#{mainRandomCode}
+    </select>
+
+</mapper>

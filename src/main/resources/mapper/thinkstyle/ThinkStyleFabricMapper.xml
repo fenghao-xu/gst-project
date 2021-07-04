@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStyleFabricDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStyleFabric">
+    <!--@mbg.generated-->
+    <id column="random_code" property="randomCode" />
+    <result column="id" property="id" />
+    <result column="style_random_code" property="styleRandomCode" />
+    <result column="line_no" property="lineNo" />
+    <result column="is_main" property="isMain" />
+    <result column="material_code" property="materialCode" />
+    <result column="material_name" property="materialName" />
+    <result column="fabric_score" property="fabricScore" />
+    <result column="weight_grade" property="weightGrade" />
+    <result column="lat_elastic_grade" property="latElasticGrade" />
+    <result column="mer_elastic_grade" property="merElasticGrade" />
+    <result column="yarn_slippage" property="yarnSlippage" />
+    <result column="material_class" property="materialClass" />
+    <result column="bar_type" property="barType" />
+    <result column="fabric_color" property="fabricColor" />
+    <result column="status" property="status" />
+    <result column="is_invalid" property="isInvalid" />
+    <result column="create_user" property="createUser" />
+    <result column="create_time" property="createTime" />
+    <result column="update_user" property="updateUser" />
+    <result column="update_time" property="updateTime" />
+    <result column="audit_user" property="auditUser" />
+    <result column="audit_time" property="auditTime" />
+    <result column="version" property="version" />
+  </resultMap>
+
+</mapper>

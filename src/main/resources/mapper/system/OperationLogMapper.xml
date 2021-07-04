@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.OperationLogDao">
+    <resultMap type="OperationLog" id="OperationLogResult">
+        <result column="id" property="id"/>
+        <result column="user_code" property="userCode"/>
+        <result column="module_code" property="moduleCode"/>
+        <result column="oper_code" property="operCode"/>
+        <result column="oper_desc" property="operDesc"/>
+        <result column="create_time" property="createTime"/>
+        <result column="ip" property="ip"/>
+        <result column="param" property="param"/>
+    </resultMap>
+
+    <select id="getOperationLogById" resultMap="OperationLogResult">
+        select * from operation_log where id in
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteOperationLog" parameterType="long">
+        delete from operation_log where id=#{id}
+    </delete>
+
+    <update id="updateOperationLog">
+
+        UPDATE
+        operation_log
+        <set>
+            <if test="userCode != null">
+                user_code = #{userCode},
+            </if>
+            <if test="moduleCode != null">
+                module_code = #{moduleCode},
+            </if>
+            <if test="operCode != null">
+                oper_code = #{operCode},
+            </if>
+            <if test="operDesc != null">
+                oper_desc = #{operDesc},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="ip != null">
+                ip=#{ip},
+            </if>
+        </set>
+        WHERE id = #{id}
+
+    </update>
+    <insert id="addOperationLog">
+        INSERT IGNORE INTO operation_log (
+        user_code,
+        module_code,
+        oper_code,
+        oper_desc,
+        create_time,
+        ip,
+        param
+        )
+        VALUES
+        (
+        #{userCode},
+        #{moduleCode},
+        #{operCode},
+        #{operDesc},
+        #{createTime},
+        #{ip},
+        #{param}
+        )
+
+
+    </insert>
+    <select id="getOperationLogByPage" resultMap="OperationLogResult">
+        select * from operation_log where 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (module_code like concat('%',#{keywords},'%')
+            or oper_desc like concat('%',#{keywords},'%')
+            or user_code like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="moduleCodes != null">
+            and module_code in
+            <foreach collection="moduleCodes" separator="," open="(" close=")" item="moduleCode">
+                #{moduleCode}
+            </foreach>
+        </if>
+        <if test="operCodes != null">
+            and oper_code in
+            <foreach collection="operCodes" separator="," open="(" close=")" item="operCode">
+                #{operCode}
+            </foreach>
+        </if>
+        order by id desc
+    </select>
+
+
+</mapper>

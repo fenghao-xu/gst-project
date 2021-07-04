@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.custom.CustomStyleSewPositionDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.custom.CustomStyleSewPosition" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="custom_main_random_code" property="customMainRandomCode" />
+        <result column="sew_position_code" property="sewPositionCode" />
+        <result column="sew_position_name" property="sewPositionName" />
+        <result column="sew_position_value" property="sewPositionValue" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <select id="getPartRandomCodeSewPositionList" resultType="com.ylzs.entity.custom.CustomStyleSewPosition">
+        SELECT * FROM custom_style_sew_position WHERE custom_main_random_code = #{mainRandomCode}
+    </select>
+
+    <delete id="deleteCustomStylePosition">
+        DELETE FROM custom_style_sew_position WHERE custom_main_random_code = #{mainRandomCode}
+    </delete>
+    <delete id="deleteBatchCustomStylePosition">
+        DELETE FROM custom_style_sew_position WHERE custom_main_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+</mapper>

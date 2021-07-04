@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.orderprocessing.OrderProcessingStatusDao">
+
+    <resultMap type="com.ylzs.entity.orderprocessing.OrderProcessingStatus" id="OrderProcessingStatusResult">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="processing_status_name" property="processingStatusName"/>
+        <result column="style_code" property="styleCode"></result>
+        <result column="processing_status" property="processingStatus"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertOrderProcessingStatusList" parameterType="java.util.List">
+        insert into order_processing_status
+        (order_no,processing_status_name,processing_status,create_time,create_user,update_time,update_user)
+        values
+        <foreach collection="orderList" item="item" separator=",">
+            (#{item.orderNo},#{item.processingStatusName},#{item.processingStatus},#{item.createTime},#{item.createUser},#{item.updateTime},#{item.updateUser})
+        </foreach>
+    </insert>
+
+    <insert id="add" parameterType="com.ylzs.entity.orderprocessing.OrderProcessingStatus">
+         insert into order_processing_status (order_no,processing_status_name,processing_status,create_time,create_user,update_time,update_user)
+         values  (#{orderNo},#{processingStatusName},#{processingStatus},#{createTime},#{createUser},#{updateTime},#{updateUser})
+    </insert>
+
+    <update id="updateById">
+        update order_processing_status set
+            order_no=#{orderNo},
+            processing_status_name=#{processingStatusName},
+            processing_status=#{processingStatus},
+            update_time=#{updateTime},
+            update_user=#{updateUser}
+        where id=#{id}
+    </update>
+
+    <select id="getDataByParam" parameterType="java.util.HashMap" resultMap="OrderProcessingStatusResult">
+        select ops.*,co.style_code,co.cust_style_code from order_processing_status ops
+        left join capp_pi_custom_order co
+        on concat(co.order_id,'-',co.order_line_id) = ops.order_no
+        <where>
+            <if test="orderNo !=null and orderNo !='' ">
+                and ops.order_no like concat('%',#{orderNo},'%')
+            </if>
+            <if test="processingStatusName !=null and processingStatusName !='' ">
+                and ops.processing_status_name like concat('%',#{processingStatusName},'%')
+            </if>
+            <if test="styleCode != null and styleCode != ''">
+                and co.style_code like concat('%',#{styleCode},'%')
+            </if>
+            <if test="custStyleCode != null and custStyleCode != ''">
+                and co.cust_style_code like concat('%',#{custStyleCode},'%')
+            </if>
+            <if test="processingStatus !=null">
+                and ops.processing_status = #{processingStatus}
+            </if>
+            <if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+                and date(ops.create_time) BETWEEN #{createTimeBeginDate} and #{createTimeEndDate}
+            </if>
+        </where>
+        ORDER BY ops.order_no,ops.create_time,ops.processing_status asc
+    </select>
+    <select id="getOrderProcessingStatusByOrderNo"
+            resultType="com.ylzs.entity.orderprocessing.OrderProcessingStatus">
+        select * from order_processing_status where order_no=#{orderNo} order by processing_status asc
+    </select>
+    <select id="getOrderProcessingStatusByOrderNoAndStatus"
+            resultType="com.ylzs.entity.orderprocessing.OrderProcessingStatus">
+        select * from order_processing_status where order_no=#{orderNo} and processing_status=#{status}
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.BigStyleMasterDataColorDao">
+        <resultMap type="BigStyleMasterDataColor" id="BigStyleMasterDataColorResult">
+            <result column="style_code" property="styleCode" />
+            <result column="style_skc_code" property="styleSkcCode" />
+            <result column="color_code" property="colorCode" />
+            <result column="color_name" property="colorName" />
+            <result column="skc_image_url" property="skcImageUrl" />
+            <result column="brightness" property="brightness" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateBigStyleDataColorList" parameterType="BigStyleMasterDataColor">
+		insert into capp_pi_big_style_color (
+		style_code,style_skc_code,color_code, color_name, skc_image_url,brightness
+		)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.styleCode}, #{item.styleSkcCode},#{item.colorCode}, #{item.colorName},#{item.skcImageUrl},#{item.brightness}
+            )
+            on duplicate key update
+            style_code=#{item.styleCode},style_skc_code= #{item.styleSkcCode},color_code=#{item.colorCode},color_name= #{item.colorName},skc_image_url=#{item.skcImageUrl},brightness=#{item.brightness}
+        </foreach>
+		</insert>
+
+
+
+
+</mapper>

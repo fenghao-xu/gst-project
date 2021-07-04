@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.StyleSewingCraftActionDao">
+    <resultMap type="SewingCraftAction" id="SewingCraftActionResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="motion_code" property="motionCode"/>
+        <result column="motion_name" property="motionName"/>
+        <result column="frequency" property="frequency"/>
+        <result column="description" property="description"/>
+        <result column="speed" property="speed"/>
+        <result column="machine_time" property="machineTime"/>
+        <result column="manual_time" property="manualTime"/>
+        <result column="manual_time_base" property="manualTimeBase"/>
+        <result column="machine_time_base" property="machineTimeBase"/>
+        <result column="id" property="id"/>
+        <result column="mark" property="mark"/>
+        <result column="is_calculate" property="isCalculate"/>
+        <!-- 公共部分-->
+      <!--  <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>-->
+        <result column="craft_code" property="craftCode"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+    </resultMap>
+    <insert id="addSewingCraftAction" parameterType="java.util.List">
+        insert into big_style_analyse_motion
+         (is_calculate,mark,manual_time_base,machine_time_base,part_craft_main_code,sewing_craft_random_code,motion_code,motion_name,frequency,description,speed,machine_time,manual_time,craft_code)
+         values
+         <foreach collection="motions" separator="," item="mo_">
+             (#{mo_.isCalculate},#{mo_.mark},#{mo_.manualTimeBase},#{mo_.machineTimeBase},#{mo_.partCraftMainCode},#{mo_.sewingCraftRandomCode},#{mo_.motionCode},#{mo_.motionName},#{mo_.frequency},#{mo_.description},#{mo_.speed},#{mo_.machineTime},#{mo_.manualTime},#{mo_.craftCode})
+         </foreach>
+    </insert>
+
+
+    <select id="getDataBySewingCraftRandomCodeAndCraftCode"  resultMap="SewingCraftActionResult">
+        select  * from big_style_analyse_motion where sewing_craft_random_code =  #{randomCode}
+        <if test="craftCode != null and craftCode != ''">
+            and craft_code = #{craftCode}
+        </if>
+
+    </select>
+    <select id="getDataBySewingCraftCode" parameterType="java.lang.String" resultMap="SewingCraftActionResult">
+         select  motion.* from big_style_analyse_motion as motion
+        LEFT JOIN sewing_craft_warehouse sew on sew.random_code=motion.sewing_craft_random_code
+        where sew.craft_code=#{0}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndCraftCode" >
+        delete from big_style_analyse_motion where sewing_craft_random_code = #{randomCode} and craft_code=#{craftCode}
+    </delete>
+    <delete id="deleteDataByids" >
+        delete from big_style_analyse_motion where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIdsBySewingCraftRandomCodeAndCraftCode" resultType="java.lang.Long">
+        select  id from big_style_analyse_motion where sewing_craft_random_code = #{randomCode} and craft_code=#{craftCode}
+    </select>
+    <select id="getIdsBySewingCraftRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id from big_style_analyse_motion where sewing_craft_random_code = #{randomCode} and  part_craft_main_code=#{partCraftMainCode}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndPartCraftMainCode" >
+        delete from big_style_analyse_motion where sewing_craft_random_code = #{randomCode} and  part_craft_main_code=#{partCraftMainCode}
+    </delete>
+    <select id="getZCodeList" resultMap="SewingCraftActionResult">
+           SELECT * from big_style_analyse_motion where manual_time_base is null and motion_code not like 'M%'and motion_code not like 'Z%'
+    </select>
+    <update id="updateTime" >
+        update big_style_analyse_motion set manual_time = #{manualTime} where id = #{id}
+    </update>
+    <update id="updateBaseTime" >
+        update big_style_analyse_motion set manual_time_base = #{manualTime} where id = #{id}
+    </update>
+</mapper>

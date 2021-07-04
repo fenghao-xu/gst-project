@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.MachineDao">
+    <resultMap type="Machine" id="MachineResult">
+        <result column="id" property="id"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="machine_name_cn" property="machineNameCn"/>
+        <result column="machine_name_en" property="machineNameEn"/>
+        <result column="work_type_id" property="workTypeId"/>
+        <result column="machine_floatover" property="machineFloatover"/>
+        <result column="manual_floatover" property="manualFloatover"/>
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="rpm" property="rpm"/>
+        <result column="is_auto_cut_line" property="isAutoCutLine"/>
+        <result column="is_pic" property="isPic"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="pic_url" property="picUrl"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="py_head_char" property="pyHeadChar"/>
+
+        <result column="device_code" property="deviceCode"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="remark" property="remark"/>
+        <result column="work_type_code" property="workTypeCode" />
+
+    </resultMap>
+    <select id="getAllMachine" resultMap="MachineResult">
+        select  * from machine
+    </select>
+    <select id="getByCodeAndMakeTypeCode" resultMap="MachineResult" >
+        SELECT ma.* FROM `machine` as ma
+        LEFT JOIN make_type as make on make.work_type_id=ma.work_type_id
+        where ma.machine_code =#{code} and make.make_type_code=#{makeTypeCode} GROUP BY(ma.work_type_id)
+    </select>
+    <select id="getByCodeAndWorkTypeId" resultMap="MachineResult" >
+        SELECT ma.* FROM `machine` as ma
+        where ma.machine_code =#{code} and make.work_type_id=#{workTypeid} GROUP BY(ma.work_type_id)
+    </select>
+    <select id="getMachineByCode" resultMap="MachineResult">
+        select a.*,b.dic_value work_type_code,b.value_desc work_type_name,c.dic_value device_code,c.value_desc
+        device_name,
+        (select GROUP_CONCAT(d.file_url) from craft_file d where a.id=d.key_id and d.resource_type=1 and ifnull(d.is_invalid,0)=0) pic_url
+        from machine a
+        left join dictionary b on b.dictionary_type_code='WorkType' and a.work_type_code=b.dic_value
+        left join dictionary c on a.device_id=c.id
+        where IFNULL(a.is_invalid,0)=0 and a.machine_code in
+        <foreach collection="machineCodes" separator="," open="(" close=")" item="machineCode">
+            #{machineCode}
+        </foreach>
+    </select>
+
+    <delete id="deleteMachine" parameterType="string">
+        delete from machine where machine_code=#{machineCode}
+    </delete>
+
+    <update id="updateMachine">
+
+        UPDATE
+        machine
+        <set>
+            <if test="machineCode != null">
+                machine_code = #{machineCode},
+            </if>
+            <if test="machineNameCn != null">
+                machine_name_cn = #{machineNameCn},
+            </if>
+            <if test="machineNameEn != null">
+                machine_name_en = #{machineNameEn},
+            </if>
+            <if test="workTypeId != null">
+                work_type_id = #{workTypeId},
+            </if>
+            <if test="machineFloatover != null">
+                machine_floatover = #{machineFloatover},
+            </if>
+            <if test="manualFloatover != null">
+                manual_floatover = #{manualFloatover},
+            </if>
+            <if test="stitchLength != null">
+                stitch_length = #{stitchLength},
+            </if>
+            <if test="rpm != null">
+                rpm = #{rpm},
+            </if>
+            <if test="isAutoCutLine != null">
+                is_auto_cut_line = #{isAutoCutLine},
+            </if>
+            <if test="isPic != null">
+                is_pic = #{isPic},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="deviceId != null ">
+                device_id = #{deviceId},
+            </if>
+            <if test="pyHeadChar != null">
+                py_head_char = #{pyHeadChar},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="workTypeCode != null">
+                work_type_code=#{workTypeCode},
+            </if>
+        </set>
+        WHERE id = #{id}
+
+    </update>
+    <insert id="addMachine"  useGeneratedKeys="true" keyProperty="id">
+        INSERT IGNORE INTO machine (
+        machine_code,
+        machine_name_cn,
+        machine_name_en,
+        work_type_id,
+        device_id,
+        machine_floatover,
+        manual_floatover,
+        stitch_length,
+        rpm,
+        is_auto_cut_line,
+        is_pic,
+        is_invalid,
+        update_user,
+        update_time,
+        py_head_char,
+        remark,
+        work_type_code
+        )
+        VALUES
+        (
+        #{machineCode},
+        #{machineNameCn},
+        #{machineNameEn},
+        #{workTypeId},
+        #{deviceId},
+        #{machineFloatover},
+        #{manualFloatover},
+        #{stitchLength},
+        #{rpm},
+        #{isAutoCutLine},
+        #{isPic},
+        #{isInvalid},
+        #{updateUser},
+        #{updateTime},
+        #{pyHeadChar},
+        #{remark},
+        #{workTypeCode}
+        )
+
+
+    </insert>
+    <select id="getMachineByPage" resultMap="MachineResult">
+        select a.*,b.dic_value work_type_code,b.value_desc work_type_name,c.dic_value device_code,c.value_desc
+        device_name,
+        (select GROUP_CONCAT(d.file_url) from craft_file d where a.id=d.key_id and d.resource_type=1 and ifnull(d.is_invalid,0)=0) pic_url
+        from machine a
+        left join dictionary b on b.dictionary_type_code='WorkType' and a.work_type_code=b.dic_value
+        left join dictionary c on a.device_id=c.id
+        where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.machine_name_cn like concat('%',#{keywords},'%')
+            or a.machine_name_en like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.machine_code like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="workTypeId != null">
+            and a.work_type_id=#{workTypeId}
+        </if>
+        <if test="deviceId != null">
+            and a.device_id=#{deviceId}
+        </if>
+        order by a.update_time desc,a.id asc
+    </select>
+
+    <select id="getStdCountByMachineCode" resultType="Long">
+        SELECT count(1) FROM craft_std a INNER JOIN machine b ON
+        a.machine_id=b.id
+        WHERE b.machine_code = #{machineCode}
+        limit 1
+    </select>
+
+    <select id="getMachindCodeData"  resultType="com.ylzs.entity.craftstd.Machine">
+        SELECT
+        *
+        FROM
+        machine
+        WHERE
+        `machine_code` = #{machineCode} AND `work_type_code` = #{workTypeCode}
+    </select>
+
+    <select id="getMachineById" resultType="com.ylzs.entity.craftstd.Machine">
+        select a.*,b.dic_value work_type_code,b.value_desc work_type_name,c.dic_value device_code,c.value_desc
+        device_name,
+        (select GROUP_CONCAT(d.file_url) from craft_file d where a.id=d.key_id and d.resource_type=1 and ifnull(d.is_invalid,0)=0) pic_url
+        from machine a
+        left join dictionary b on b.dictionary_type_code='WorkType' and a.work_type_code=b.dic_value
+        left join dictionary c on a.device_id=c.id
+        where IFNULL(a.is_invalid,0)=0 and a.id in
+        <foreach collection="machineIds" separator="," open="(" close=")" item="machineId">
+            #{machineId}
+        </foreach>
+
+    </select>
+
+    <select id="isExistByNeedlePitchValue" parameterType="string" resultType="string">
+        select 1 from machine where stitch_length = #{needlePitchValue} limit 1;
+    </select>
+
+
+</mapper>

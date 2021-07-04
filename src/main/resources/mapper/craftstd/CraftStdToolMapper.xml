@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftStdToolDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.craftstd.CraftStdTool">
+    <!--@mbg.generated-->
+    <id column="random_code" jdbcType="INTEGER" property="randomCode" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="craft_std_id" jdbcType="VARCHAR" property="craftStdId" />
+    <result column="tool_code" jdbcType="VARCHAR" property="toolCode" />
+    <result column="tool_name" jdbcType="VARCHAR" property="toolName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    random_code, id, craft_std_id, tool_code, tool_name, `status`, is_invalid, audit_user, 
+    audit_time, create_user, create_time, update_user, update_time, version
+  </sql>
+
+  <insert id="addCraftStdToolByCraftStdId">
+    insert into craft_std_tool_raw_data select * from craft_std_tool where craft_std_id = #{craftStdId}
+  </insert>
+
+  <delete id="deleteCraftStdToolRawDataById">
+    delete from craft_std_tool_raw_data where craft_std_id = #{craftStdId}
+  </delete>
+
+  <select id="getCraftStdToolByCraftStdId" resultMap="BaseResultMap">
+    SELECT  tool_code,tool_name FROM craft_std_tool WHERE craft_std_id= #{0}
+  </select>
+
+  <select id="getCraftStdTool" resultMap="BaseResultMap">
+    SELECT  craft_std_id, tool_code, tool_name FROM craft_std_tool WHERE craft_std_id in
+    <foreach collection="craftStdIds" separator="," open="(" close=")" item="craftStdId">
+      #{craftStdId}
+    </foreach>
+
+  </select>
+
+  <select id="getRawDataByCraftStdId" resultType="com.ylzs.entity.craftstd.CraftStdTool">
+    SELECT  tool_code,tool_name FROM craft_std_tool_raw_data WHERE craft_std_id= #{craftStdId}
+  </select>
+
+</mapper>

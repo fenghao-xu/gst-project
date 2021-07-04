@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftmainframe.ProductionPartDao">
+    <resultMap id="BaseResultMap" type="ProductionPart">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="production_part_code" property="productionPartCode"/>
+        <result column="production_part_name" property="productionPartName"/>
+        <result column="main_frame_random_code" property="mainFrameRandomCode"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="craft_category_random_code" property="craftCategoryRandomCode"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="custom_production_area_code" property="customProductionAreaCode"/>
+        <result column="custom_production_area_name" property="customProductionAreaName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        random_code, id, production_part_code, production_part_name, main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, `status`, is_invalid, audit_user, audit_time, create_user,
+        create_time, update_user, update_time, version, custom_production_area_code, custom_production_area_name
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from production_part
+        where random_code = #{randomCode}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--@mbg.generated-->
+        delete from production_part
+        where random_code = #{randomCode}
+    </delete>
+
+    <insert id="insert" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        insert into production_part (random_code, production_part_code, production_part_name,
+        main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, `status`, is_invalid, audit_user, audit_time,
+        create_user, create_time, update_user, update_time,
+        version,custom_production_area_code,custom_production_area_name)
+        values (#{randomCode}, #{productionPartCode}, #{productionPartName}, #{mainFrameRandomCode},
+        #{mainFrameCode}, #{mainFrameName}, #{craftCategoryRandomCode}, #{craftCategoryCode},
+        #{craftCategoryName}, #{remark}, #{status}, #{isInvalid}, #{auditUser}, #{auditTime},
+        #{createUser}, #{createTime}, #{updateUser}, #{updateTime}, #{version}, #{customProductionAreaCode},
+        #{customProductionAreaName})
+    </insert>
+    <insert id="insertSelective" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        insert into production_part
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                random_code,
+            </if>
+            <if test="productionPartCode != null">
+                production_part_code,
+            </if>
+            <if test="productionPartName != null">
+                production_part_name,
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code,
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code,
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name,
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code,
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code,
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="isInvalid != null">
+                is_invalid,
+            </if>
+            <if test="auditUser != null">
+                audit_user,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="customProductionAreaCode != null">
+                custom_production_area_code,
+            </if>
+            <if test="customProductionAreaName != null">
+                custom_production_area_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                #{randomCode},
+            </if>
+            <if test="productionPartCode != null">
+                #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="isInvalid != null">
+                #{isInvalid},
+            </if>
+            <if test="auditUser != null">
+                #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="version != null">
+                #{version},
+            </if>
+            <if test="customProductionAreaCode != null">
+                #{customProductionAreaCode},
+            </if>
+            <if test="customProductionAreaName != null">
+                #{customProductionAreaName},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        update production_part
+        <set>
+            <if test="productionPartCode != null">
+                production_part_code = #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                production_part_name = #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code = #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code = #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name = #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code = #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code = #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name = #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="auditUser != null">
+                audit_user = #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="customProductionAreaCode != null">
+                custom_production_area_code = #{customProductionAreaCode},
+            </if>
+            <if test="customProductionAreaName != null">
+                custom_production_area_name = #{customProductionAreaName},
+            </if>
+        </set>
+        where random_code = #{randomCode}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        update production_part
+        set
+        production_part_code = #{productionPartCode},
+        production_part_name = #{productionPartName},
+        main_frame_random_code = #{mainFrameRandomCode},
+        main_frame_code = #{mainFrameCode},
+        main_frame_name = #{mainFrameName},
+        craft_category_random_code = #{craftCategoryRandomCode},
+        craft_category_code = #{craftCategoryCode},
+        craft_category_name = #{craftCategoryName},
+        remark = #{remark},
+        `status` = #{status},
+        is_invalid = #{isInvalid},
+        audit_user = #{auditUser},
+        audit_time = #{auditTime},
+        create_user = #{createUser},
+        create_time = #{createTime},
+        update_user = #{updateUser},
+        update_time = #{updateTime},
+        version = #{version},
+        custom_production_area_code = #{customProductionAreaCode},
+        custom_production_area_name = #{customProductionAreaName}
+        where random_code = #{randomCode}
+    </update>
+    <update id="updateBatch" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update production_part
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="production_part_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.productionPartCode}
+                </foreach>
+            </trim>
+            <trim prefix="production_part_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.productionPartName}
+                </foreach>
+            </trim>
+            <trim prefix="main_frame_random_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.mainFrameRandomCode}
+                </foreach>
+            </trim>
+            <trim prefix="main_frame_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.mainFrameCode}
+                </foreach>
+            </trim>
+            <trim prefix="main_frame_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.mainFrameName}
+                </foreach>
+            </trim>
+            <trim prefix="craft_category_random_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.craftCategoryRandomCode}
+                </foreach>
+            </trim>
+            <trim prefix="craft_category_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.craftCategoryCode}
+                </foreach>
+            </trim>
+            <trim prefix="craft_category_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.craftCategoryName}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.remark}
+                </foreach>
+            </trim>
+            <trim prefix="`status` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.status}
+                </foreach>
+            </trim>
+            <trim prefix="is_invalid = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.isInvalid}
+                </foreach>
+            </trim>
+            <trim prefix="audit_user = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.auditUser}
+                </foreach>
+            </trim>
+            <trim prefix="audit_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.auditTime}
+                </foreach>
+            </trim>
+            <trim prefix="create_user = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.createUser}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_user = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.updateUser}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="version = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.version}
+                </foreach>
+            </trim>
+
+            <trim prefix="custom_production_area_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.customProductionAreaCode}
+                </foreach>
+            </trim>
+
+            <trim prefix="custom_production_area_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when random_code = #{item.randomCode} then #{item.customProductionAreaName}
+                </foreach>
+            </trim>
+
+        </trim>
+        where random_code in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.randomCode}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into production_part
+        (random_code, production_part_code, production_part_name, main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, `status`, is_invalid, audit_user, audit_time, create_user,
+        create_time, update_user, update_time, version, custom_production_area_code, custom_production_area_name)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.randomCode}, #{item.productionPartCode}, #{item.productionPartName},
+            #{item.mainFrameRandomCode}, #{item.mainFrameCode}, #{item.mainFrameName}, #{item.craftCategoryRandomCode},
+            #{item.craftCategoryCode}, #{item.craftCategoryName}, #{item.remark}, #{item.status},
+            #{item.isInvalid}, #{item.auditUser}, #{item.auditTime}, #{item.createUser}, #{item.createTime},
+            #{item.updateUser}, #{item.updateTime}, #{item.version},#{item.customProductionAreaCode},#{item.customProductionAreaName})
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        insert into production_part
+        (random_code, production_part_code, production_part_name, main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, `status`, is_invalid, audit_user, audit_time, create_user,
+        create_time, update_user, update_time, version,custom_production_area_code,custom_production_area_name)
+        values
+        (#{randomCode}, #{productionPartCode}, #{productionPartName}, #{mainFrameRandomCode},
+        #{mainFrameCode}, #{mainFrameName}, #{craftCategoryRandomCode}, #{craftCategoryCode},
+        #{craftCategoryName}, #{remark}, #{status}, #{isInvalid}, #{auditUser}, #{auditTime},
+        #{createUser}, #{createTime}, #{updateUser}, #{updateTime}, #{version}, #{customProductionAreaCode}, #{customProductionAreaName})
+        on duplicate key update
+        random_code = #{randomCode},
+        production_part_code = #{productionPartCode},
+        production_part_name = #{productionPartName},
+        main_frame_random_code = #{mainFrameRandomCode},
+        main_frame_code = #{mainFrameCode},
+        main_frame_name = #{mainFrameName},
+        craft_category_random_code = #{craftCategoryRandomCode},
+        craft_category_code = #{craftCategoryCode},
+        craft_category_name = #{craftCategoryName},
+        remark = #{remark},
+        `status` = #{status},
+        is_invalid = #{isInvalid},
+        audit_user = #{auditUser},
+        audit_time = #{auditTime},
+        create_user = #{createUser},
+        create_time = #{createTime},
+        update_user = #{updateUser},
+        update_time = #{updateTime},
+        version = #{version},
+        custom_production_area_code = #{customProductionAreaCode},
+        custom_production_area_name = #{customProductionAreaName}
+    </insert>
+    <insert id="insertOrUpdateSelective" parameterType="ProductionPart">
+        <!--@mbg.generated-->
+        insert into production_part
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                random_code,
+            </if>
+            <if test="productionPartCode != null">
+                production_part_code,
+            </if>
+            <if test="productionPartName != null">
+                production_part_name,
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code,
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code,
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name,
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code,
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code,
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="isInvalid != null">
+                is_invalid,
+            </if>
+            <if test="auditUser != null">
+                audit_user,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="customProductionAreaCode != null">
+                custom_production_area_code,
+            </if>
+            <if test="customProductionAreaName != null">
+                custom_production_area_name,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                #{randomCode},
+            </if>
+            <if test="productionPartCode != null">
+                #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="isInvalid != null">
+                #{isInvalid},
+            </if>
+            <if test="auditUser != null">
+                #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="version != null">
+                #{version},
+            </if>
+            <if test="customProductionAreaCode != null">
+                #{customProductionAreaCode},
+            </if>
+            <if test="customProductionAreaName != null">
+                #{customProductionAreaName},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="randomCode != null">
+                random_code = #{randomCode},
+            </if>
+            <if test="productionPartCode != null">
+                production_part_code = #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                production_part_name = #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code = #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code = #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name = #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code = #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code = #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name = #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="auditUser != null">
+                audit_user = #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="customProductionAreaCode != null">
+                custom_production_area_code = #{customProductionAreaCode},
+            </if>
+            <if test="customProductionAreaName != null">
+                custom_production_area_name = #{customProductionAreaName},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getByMainFrameRandomCode" parameterType="Long" resultMap="BaseResultMap">
+        select * from production_part where ifnull(is_invalid,0)=0 and main_frame_random_code=#{mainFrameRandomCode}
+        order by id
+    </select>
+    <select id="getByCondition" resultType="ProductionPart">
+        select * from production_part
+        <where>
+            ifnull(is_invalid,0)=0
+            <if test="craftCategoryRandomCode != null">
+                and craft_category_random_code=#{craftCategoryRandomCode}
+            </if>
+            <if test="mainFrameRandomCode != null">
+                and main_frame_random_code=#{mainFrameRandomCode}
+            </if>
+            <if test="keywords != null and keywords != ''">
+                and (production_part_code like concat('%',#{keywords},'%')
+                or production_part_name like concat('%',#{keywords},'%')
+                or remark like concat('%', #{keywords}, '%')
+                )
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getMapByMainFrameCode" parameterType="String" resultMap="BaseResultMap">
+        select * from production_part where ifnull(is_invalid,0)=0 and main_frame_code=#{mainFrameCode}
+    </select>
+
+</mapper>

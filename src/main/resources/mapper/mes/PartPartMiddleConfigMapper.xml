@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.mes.PartPartMiddleConfigDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.mes.PartPartMiddleConfig">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="craft_category_code" jdbcType="VARCHAR" property="craftCategoryCode" />
+    <result column="clothes_category_code" jdbcType="VARCHAR" property="clothesCategoryCode" />
+    <result column="part_middle_code" jdbcType="VARCHAR" property="partMiddleCode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, part_code, craft_category_code, clothes_category_code, part_middle_code, remark, 
+    update_user, update_time
+  </sql>
+  <select id="getPartPartMiddleConfigMap" resultMap="BaseResultMap">
+    select distinct part_code,part_middle_code
+    from part_part_middle_config
+    where 1=1
+    <if test="craftCategoryCode != null">
+        and craft_category_code=#{craftCategoryCode}
+    </if>
+    <if test="clothesCategoryCode != null">
+        and clothes_category_code=#{clothesCategoryCode}
+    </if>
+  </select>
+</mapper>

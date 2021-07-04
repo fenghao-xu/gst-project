@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataMarkerTablesDao">
+    <resultMap type="CutParameterMasterDataMarkerTables" id="CutParameterMasterDataMarkerTablesResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+			<result column="index1" property="index" />
+			<result column="material_type" property="materialType" />
+			<result column="plies" property="plies" />
+			<result column="length" property="length" />
+			<result column="width" property="width" />
+			<result column="packages" property="packages" />
+			<result column="cut_parts_count" property="cutPartsCount" />
+			<result column="cut_image_url" property="cutImageUrl" />
+			<result column="cut_file_url" property="cutFileUrl" />
+			<result column="cut_filename" property="cutFilename" />
+	</resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterDataMarkerTables" parameterType="CutParameterMasterDataMarkerTables">
+		insert into capp_pi_cut_parameter_markertables (
+		order_id,order_line_id,index1,material_type,plies,length,
+		width,packages,cut_parts_count,cut_image_url,cut_file_url,
+		cut_filename
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.orderId}, #{item.orderLineId},#{item.index},#{item.materialType}, #{item.plies}, #{item.length},
+			#{item.width}, #{item.packages}, #{item.cutPartsCount},#{item.cutImageUrl},#{item.cutFileUrl},
+			#{item.cutFilename}
+			)
+		</foreach>
+		on duplicate key update
+		order_id=values(order_id), order_line_id=values(order_line_id),index1=values(index1),material_type= values(material_type),
+		plies=values(plies), length=values(length),width=values(width),packages= values(packages),
+		cut_parts_count=values(cut_parts_count), cut_image_url=values(cut_image_url),cut_file_url=values(cut_file_url),
+		cut_filename=values(cut_filename)
+	</insert>
+
+
+</mapper>
+

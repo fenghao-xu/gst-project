@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.DesignPartDataDao">
+        <resultMap type="DesignPartMasterData" id="DesignPartMasterDataResult">
+            <result column="id" property="id" />
+            <result column="random_code" property="randomCode" />
+            <result column="status" property="status" />
+            <result column="is_invalid" property="isInvalid" />
+            <result column="audit_user" property="auditUser" />
+            <result column="audit_time" property="auditTime" />
+            <result column="create_user" property="createUser" />
+            <result column="create_time" property="createTime" />
+            <result column="update_user" property="updateUser" />
+            <result column="update_time" property="updateTime" />
+            <result column="version" property="version" />
+            <result column="design_code" property="designCode" />
+            <result column="design_name" property="designName" />
+            <result column="design_image" property="designImage" />
+            <result column="clothing_category" property="clothingCategory" />
+            <result column="part_middle_code" property="partMiddleCode" />
+            <result column="part_position" property="partPosition" />
+            <result column="pattern_type" property="patternType" />
+            <result column="pattern_mode" property="patternMode" />
+            <result column="remark" property="remark" />
+            <result column="grand_category" property="grandCategory" />
+            <result column="small_category" property="smallCategory" />
+            <result column="image_url" property="imageUrl" />
+            <result column="style_type" property="styleType" />
+            <result column="style_code" property="styleCode" />
+            <result column="seam_line1" property="seamLine1" />
+            <result column="seam_line2" property="seamLine2" />
+            <result column="stitch_mid_type" property="stitchMidType" />
+            <result column="stitch_small_type" property="stitchSmallType" />
+            <result column="image_url_mtm" property="imageUrlMtm" />
+            <result column="image_durl_mtm" property="imageDurlMtm" />
+            <result column="embroidery_style" property="embroideryStyle" />
+            <result column="warp_offset" property="warpOffset" />
+            <result column="weft_offset" property="weftOffset" />
+            <result column="oblique_offset" property="obliqueOffset" />
+            <result column="active" property="active" />
+            <result column="applicable_position" property="applicablePosition" />
+            <result column="stitch_number" property="stitchNumber" />
+            <result column="w_stitch" property="wStitch" />
+            <result column="gong_yi_explain" property="gongYiExplain" />
+            <result column="pattern_technology_d" property="patternTechnologyD" />
+            <result column="pattern_technology" property="patternTechnology" />
+            <result column="receive_time" property="receiveTime" />
+    </resultMap>
+
+
+
+
+
+
+</mapper>

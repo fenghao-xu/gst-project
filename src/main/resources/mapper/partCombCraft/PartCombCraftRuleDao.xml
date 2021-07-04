@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCombCraft.PartCombCraftRuleDao">
+
+
+    <select id="selectSourceListByRandomCode"
+            resultType="com.ylzs.entity.partCombCraft.resp.PartCombCraftRuleResp">
+        SELECT
+        GROUP_CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(pccr.source_craft_code,'#',b.help_topic_id + 1),'#',-1),'-',SUBSTRING_INDEX(SUBSTRING_INDEX(pccr.source_craft_name,'#',b.help_topic_id + 1),'#',-1)) sourceCraftCodeAndName,
+        pccr.part_comb_craft_random_code,pccr.rule_index,pccr.process_type,pccr.processing_sort_num
+        FROM part_comb_craft_rule pccr
+        JOIN mysql.help_topic b
+        ON b.help_topic_id <![CDATA[< ( LENGTH(pccr.source_craft_code)-LENGTH(REPLACE(pccr.source_craft_code,'#',''))+1)]]>
+        WHERE pccr.part_comb_craft_random_code =#{parseLong} and pccr.status != 1090
+        GROUP BY pccr.rule_index
+    </select>
+
+    <select id="selectActionListByRandomCode"
+            resultType="com.ylzs.entity.partCombCraft.resp.PartCombCraftRuleResp">
+        SELECT
+        GROUP_CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(pccr.action_craft_code,'#',b.help_topic_id + 1),'#',-1),'-',SUBSTRING_INDEX(SUBSTRING_INDEX(pccr.action_craft_name,'#',b.help_topic_id + 1),'#',-1)) actionCraftCodeAndName,
+        pccr.part_comb_craft_random_code,pccr.rule_index,pccr.process_type,pccr.processing_sort_num
+        FROM part_comb_craft_rule pccr
+        JOIN mysql.help_topic b
+        ON b.help_topic_id <![CDATA[< ( LENGTH(pccr.action_craft_code)-LENGTH(REPLACE(pccr.action_craft_code,'#',''))+1)]]>
+        WHERE pccr.part_comb_craft_random_code =#{parseLong} and pccr.status != 1090
+        GROUP BY pccr.rule_index
+    </select>
+
+    <select id="selectRuleListByCraftRandomCode"
+            resultType="com.ylzs.entity.partCombCraft.PartCombCraftRule" parameterType="long">
+        select source_craft_code,source_craft_flow_num,source_craft_name,action_craft_code,action_craft_flow_num,action_craft_name,process_type,rule_index,processing_sort_num
+        from part_comb_craft_rule where part_comb_craft_random_code = #{parseLong}
+        group by rule_index order by processing_sort_num
+    </select>
+
+    <select id="selectRuleListByRandomCodes" resultType="com.ylzs.entity.partCombCraft.PartCombCraftRule">
+        select * from part_comb_craft_rule
+        where 1=1
+        <if test="randomCodes!=null and randomCodes.size()>0">
+            AND part_comb_craft_random_code in
+            <foreach collection="randomCodes" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

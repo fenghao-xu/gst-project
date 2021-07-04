@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.RoleAuthDao">
+
+    <resultMap type="RoleAuth" id="RoleAuthResult">
+        <result column="role_id" property="roleId"/>
+        <result column="module_id" property="moduleId"/>
+        <result column="is_query" property="isQuery"/>
+        <result column="is_insert" property="isInsert"/>
+        <result column="is_edit" property="isEdit"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="is_auth" property="isAuth"/>
+        <result column="is_unauth" property="isUnauth"/>
+        <result column="is_import" property="isImport"/>
+        <result column="is_export" property="isExport"/>
+        <result column="is_finish" property="isFinish"/>
+        <result column="is_cancel" property="isCancel"/>
+        <result column="is_commit" property="isCommit"/>
+        <result column="is_upload" property="isUpload"/>
+        <result column="module_code" property="moduleCode"/>
+        <result column="module_name" property="moduleName"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="role_name" property="roleName"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="getRoleAuthById" parameterType="integer" resultMap="RoleAuthResult">
+        select *,b.dic_value module_code,b.value_desc module_name,c.dic_value role_code,c.value_desc role_name
+        from role_auth a
+        left join dictionary b on a.module_id=b.id
+        left join dictionary c on a.role_id=c.id
+        where a.role_id=#{roleId} and a.module_id=#{moduleId}
+    </select>
+
+    <delete id="deleteRoleAuth" parameterType="integer">
+        delete from role_auth where role_id=#{roleId} and module_id=#{moduleId}
+    </delete>
+
+    <select id="getRoleAuthByPage" resultMap="RoleAuthResult">
+		select a.*,b.dic_value module_code,b.value_desc module_name,c.dic_value role_code,c.value_desc role_name
+		from role_auth a
+		    left join dictionary b on a.module_id=b.id
+		    left join dictionary c on a.role_id=c.id
+		    where 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (b.value_desc like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="roleId != null">
+            and a.role_id=#{roleId}
+        </if>
+        order by b.dic_value asc
+	</select>
+
+    <select id="getAllByRoleId" parameterType="integer" resultMap="RoleAuthResult">
+        select * from role_auth where role_id=#{roleId}
+    </select>
+
+    <select id="getRoleByUserCode" parameterType="string" resultMap="RoleAuthResult">
+        select distinct module_id,is_query,is_insert,
+        is_edit,is_delete,is_auth,is_unauth,is_import,
+        is_export,is_finish,is_cancel,is_commit,is_upload
+         from role_auth
+            where role_id in (select role_id from user_role where user_code=#{userCode})
+    </select>
+
+    <update id="updateRoleAuth">
+
+        UPDATE
+        role_auth
+        <set>
+            <if test="isQuery != null">
+                is_query = #{isQuery},
+            </if>
+            <if test="isInsert != null">
+                is_insert = #{isInsert},
+            </if>
+            <if test="isEdit != null">
+                is_edit = #{isEdit},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="isAuth != null">
+                is_auth = #{isAuth},
+            </if>
+            <if test="isUnauth != null">
+                is_unauth = #{isUnauth},
+            </if>
+            <if test="isImport != null">
+                is_import = #{isImport},
+            </if>
+            <if test="isExport != null">
+                is_export = #{isExport},
+            </if>
+            <if test="isFinish != null">
+                is_finish = #{isFinish},
+            </if>
+            <if test="isCancel != null">
+                is_cancel = #{isCancel},
+            </if>
+            <if test="isCommit != null">
+                is_commit = #{isCommit},
+            </if>
+            <if test="isUpload != null">
+                is_upload = #{isUpload},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE role_id = #{roleId}
+        AND module_id = #{moduleId}
+
+    </update>
+    <insert id="addRoleAuth">
+        INSERT IGNORE INTO role_auth (
+        role_id,
+        module_id,
+        is_query,
+        is_insert,
+        is_edit,
+        is_delete,
+        is_auth,
+        is_unauth,
+        is_import,
+        is_export,
+        is_finish,
+        is_cancel,
+        is_commit,
+        is_upload,
+        update_user,
+        update_time
+        )
+        VALUES
+        (
+        #{roleId},
+        #{moduleId},
+        #{isQuery},
+        #{isInsert},
+        #{isEdit},
+        #{isDelete},
+        #{isAuth},
+        #{isUnauth},
+        #{isImport},
+        #{isExport},
+        #{isFinish},
+        #{isCancel},
+        #{isCommit},
+        #{isUpload},
+        #{updateUser},
+        #{updateTime}
+        )
+
+
+    </insert>
+
+
+</mapper>

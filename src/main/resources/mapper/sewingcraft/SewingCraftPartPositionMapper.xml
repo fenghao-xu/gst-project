@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftPartPositionDao">
+    <resultMap type="SewingCraftPartPosition" id="SewingCraftPartPositionResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="part_position_code" property="partPositionCode"/>
+        <result column="part_position_name" property="partPositionName"/>
+        <!-- 公共部分-->
+        <!--<result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>-->
+    </resultMap>
+    <insert id="addSewingCraftPartPosition" parameterType="hashmap">
+        insert into sewing_craft_warehouse_part_position
+         (sewing_craft_random_code,part_position_code,part_position_name)
+         values
+         (#{sewingCraftRandomCode},#{partPositionCode},#{partPositionName})
+    </insert>
+    <update id="updateSewingCraftPartPosition" parameterType="hashmap">
+        update sewing_craft_warehouse_part_position set
+        part_position_code=#{partPositionCode},part_position_name=#{partPositionName}
+        where sewing_craft_random_code = #{sewingCraftRandomCode}
+    </update>
+
+    <select id="getDataBySewingCraftRandomCode" resultMap="SewingCraftPartPositionResult" parameterType="java.lang.Long">
+        select  * from sewing_craft_warehouse_part_position where sewing_craft_random_code=#{0}
+    </select>
+
+    <select id="listSewingPostionBySewingRandomCodes" resultMap="SewingCraftPartPositionResult">
+        select * from sewing_craft_warehouse_part_position
+        <where>
+            ifnull(`status`,1000) !=1090 and  sewing_craft_random_code in
+            <foreach collection="sewingRandomCodes" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+
+    </select>
+
+    <delete id="deleteDataBySewingCraftRandomCode" parameterType="java.lang.Long">
+        delete from sewing_craft_warehouse_part_position where sewing_craft_random_code=#{0}
+    </delete>
+
+</mapper>

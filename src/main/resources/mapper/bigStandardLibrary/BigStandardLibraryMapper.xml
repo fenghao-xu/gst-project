@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigStandardLibrary.BigStandardLibraryDao">
+    <resultMap type="SewingCraftWarehouse" id="SewingCraftWarehouseResult" >
+        <result column="style_desc" property="styleDesc"/>
+        <result column="craft_std_code_std" property="craftStdCode"/>
+        <result column="craft_std_code_std" property="craftStdCode"/>
+        <result column="clothes_category_name" property="clothesCategoryName"/>
+        <result column="style_name" property="styleName"/>
+        <result column="ok_time" property="okTime"/>
+        <result column="std_create_user" property="stdCreateUser"/>
+        <result column="std_create_time" property="stdCreateTime"/>
+        <result column="craft_std_status" property="craftStdStatus"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <result column="big_style_analyse_code" property="bigStyleAnalyseCode"/>
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_part_code" property="craftPartCode"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result column="description" property="description"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="make_type_name" property="makeTypeName"/>
+        <result column="allowance_code" property="allowanceCode"/>
+        <result column="allowance_random_code" property="allowanceRandomCode"/>
+        <result column="strapping_code" property="strappingCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="is_fabric_style_fix" property="isFabricStyleFix"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="remark" property="remark"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="help_tool_code" property="helpToolCode"/>
+        <result column="make_description" property="makeDescription"/>
+        <result column="quality_spec" property="qualitySpec"/>
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="is_send_cut_pic" property="isSendCutPic" />
+        <result column="same_level_craft_name" property="sameLevelCraftName" />
+
+        <result column="is_hand_pic" property="isHandPic"/>
+        <result column="is_video" property="isVideo"/>
+        <result column="sysn_status" property="sysnStatus"/>
+        <result column="sysn_time" property="sysnTime" />
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="release_user" property="releaseUser"/>
+        <result column="mas_ct_style_code" property="ctStyleCode"/>
+        <result column="mas_update_user" property="masUpdateUser" />
+        <result column="mas_update_time" property="masUpdateTime" />
+    </resultMap>
+    <resultMap id="CraftStdVoResult" type="com.ylzs.vo.craftstd.CraftStdVo">
+        <result column="is_hand_pic" property="isHandPic"/>
+        <result column="is_video" property="isVideo"/>
+    </resultMap>
+    <resultMap id="SewingCraftResourceResult" type="com.ylzs.vo.SewingCraftResource">
+        <result column="resouceType" property="resouceType"/>
+        <result column="url" property="url"/>
+    </resultMap>
+
+    <select id="getDataByPager" resultMap="SewingCraftWarehouseResult" parameterType="hashmap">
+        SELECT sew.*,mas.production_ticket_no,mas.big_style_analyse_code,mas.release_time,mas.release_user,mas.style_desc,mas.ct_style_code as mas_ct_style_code,
+         mas.adapt_code,(case std.craft_std_code is null when true then 10 else 20 end) as craft_std_status,mas.style_name,mas.clothes_category_name,
+        mas.update_time mas_update_time,mas.update_user mas_update_user,
+        ss.is_hand_pic,ss.is_video,ss.ok_time,ss.create_user as std_create_user,ss.create_time as std_create_time,std.craft_std_code as craft_std_code_std,bw.craft_flow_num
+         FROM `big_order_sewing_craft` as sew
+        INNER JOIN big_order_master as mas on sew.random_code=mas.random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code=sew.part_craft_main_code and part.style_random_code=mas.random_code
+        LEFT JOIN big_order_std as std on std.sewing_craft_random_code=sew.random_code and std.craft_code=sew.craft_code
+        LEFT JOIN craft_std as ss on ss.craft_std_code=std.craft_std_code
+        LEFT JOIN big_order_workplace bw on bw.sewing_craft_random_code = mas.random_code
+        and bw.main_frame_code = mas.main_frame_code and bw.craft_code = sew.craft_code
+        <where>
+            mas.`status` in (1000,1020)
+            <if test="craftCode != null and craftCode !=''">
+               and  sew.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="isHandPic == true">
+                and ss.is_hand_pic=1
+            </if>
+            <if test="isHandPic == false">
+                and (ss.is_hand_pic=0 or std.craft_std_code is null)
+            </if>
+            <if test="isVideo == true">
+                and ss.is_video=1
+            </if>
+            <if test="isVideo == false">
+                and (ss.is_video=0 or std.craft_std_code is null)
+            </if>
+            <if test="craftStdStatus ==20 ">
+                and std.craft_std_code is not null
+            </if>
+            <if test="craftStdStatus ==10 ">
+                and std.craft_std_code is null
+            </if>
+            <if test="craftCategoryCode != null and craftCategoryCode !=''">
+                and sew.craft_category_code like concat('%',#{craftCategoryCode},'%')
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and sew.craft_part_code like concat('%',#{craftPartCode},'%')
+            </if>
+            <if test="adaptCode == '10' ">
+                and  mas.adapt_code ='10'
+            </if>
+            <if test="adaptCode == '30' ">
+                and  (mas.adapt_code ='30' or mas.adapt_code is null)
+            </if>
+            <if test="productionTicketNo !=null and productionTicketNo!='' ">
+                and  mas.production_ticket_no LIKE  concat('%',#{productionTicketNo},'%')
+            </if>
+            <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode!='' ">
+                and  mas.big_style_analyse_code LIKE concat('%',#{bigStyleAnalyseCode},'%')
+            </if>
+            <if test="stdCreateUser !=null and stdCreateUser!='' ">
+                and  ss.create_user like  concat('%',#{stdCreateUser},'%')
+            </if>
+            <if test="releaseUser !=null and releaseUser.size()>0 ">
+                and  mas.release_user in
+                <foreach collection="releaseUser" item="ruser_" open="(" close=")" separator=",">
+                    #{ruser_}
+                </foreach>
+            </if>
+            <if test="stdOkTimeBeginDate !=null and stdOkTimeEndDate != null ">
+                and   date(ss.ok_time) BETWEEN  #{stdOkTimeBeginDate} and #{stdOkTimeEndDate}
+            </if>
+            <if test="releaseTimeBeginDate !=null and releaseTimeEndDate != null ">
+                and   date(mas.release_time) BETWEEN #{releaseTimeBeginDate} and #{releaseTimeEndDate}
+            </if>
+        </where>
+        ORDER BY bw.craft_flow_num asc,sew.create_time desc
+    </select>
+    <!-- 套款款号-->
+    <select id="getDataFromStyleCover" resultMap="SewingCraftWarehouseResult" parameterType="hashmap">
+        SELECT sew.*,mas.production_ticket_no,mas.big_style_analyse_code,mas.release_time,mas.release_user,mas.style_desc,cover.ct_style_code as mas_ct_style_code,
+        mas.adapt_code,(case std.craft_std_code is null when true then 10 else 20 end) as craft_std_status,mas.style_name,mas.clothes_category_name,
+        ss.is_hand_pic,ss.is_video,ss.ok_time,ss.create_user as std_create_user,std.craft_std_code as craft_std_code_std
+        FROM `big_order_sewing_craft` as sew
+        INNER JOIN big_order_master as mas on sew.random_code=mas.random_code
+        INNER JOIN big_order_master_style_cover as cover on cover.style_random_code=mas.random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code=sew.part_craft_main_code and part.style_random_code=mas.random_code
+        LEFT JOIN big_order_std as std on std.sewing_craft_random_code=sew.random_code and std.craft_code=sew.craft_code
+        LEFT JOIN craft_std as ss on ss.craft_std_code=std.craft_std_code
+        <where>
+            mas.`status` in (1000,1020)
+            <if test="craftCode != null and craftCode !=''">
+                and  sew.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="isHandPic == true">
+                and ss.is_hand_pic=1
+            </if>
+            <if test="isHandPic == false">
+                and (ss.is_hand_pic=0 or std.craft_std_code is null)
+            </if>
+            <if test="isVideo == true">
+                and ss.is_video=1
+            </if>
+            <if test="isVideo == false">
+                and (ss.is_video=0 or std.craft_std_code is null)
+            </if>
+            <if test="craftStdStatus ==20 ">
+                and std.craft_std_code is not null
+            </if>
+            <if test="craftStdStatus ==10 ">
+                and std.craft_std_code is null
+            </if>
+            <if test="craftCategoryCode != null and craftCategoryCode !=''">
+                and sew.craft_category_code like concat('%',#{craftCategoryCode},'%')
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and sew.craft_part_code like concat('%',#{craftPartCode},'%')
+            </if>
+            <if test="adaptCode == '10' ">
+                and  mas.adapt_code ='10'
+            </if>
+            <if test="adaptCode == '30' ">
+                and  (mas.adapt_code ='30' or mas.adapt_code is null)
+            </if>
+            <if test="productionTicketNo !=null and productionTicketNo!='' ">
+                and  mas.production_ticket_no LIKE  concat('%',#{productionTicketNo},'%')
+            </if>
+            <!-- 这里实际通过bigStyleAnalyseCode前端传过来的不是款式工艺编码，是款号-->
+            <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode!='' ">
+                and  cover.ct_style_code LIKE concat('%',#{bigStyleAnalyseCode},'%')
+            </if>
+            <if test="stdCreateUser !=null and stdCreateUser!='' ">
+                and  ss.create_user like  concat('%',#{stdCreateUser},'%')
+            </if>
+            <if test="releaseUser !=null and releaseUser.size()>0 ">
+                and  mas.release_user in
+                <foreach collection="releaseUser" item="ruser_" open="(" close=")" separator=",">
+                    #{ruser_}
+                </foreach>
+            </if>
+            <if test="stdOkTimeBeginDate !=null and stdOkTimeEndDate != null ">
+                and   date(ss.ok_time) BETWEEN  #{stdOkTimeBeginDate} and #{stdOkTimeEndDate}
+            </if>
+            <if test="releaseTimeBeginDate !=null and releaseTimeEndDate != null ">
+                and   date(mas.release_time) BETWEEN #{releaseTimeBeginDate} and #{releaseTimeEndDate}
+            </if>
+        </where>
+        ORDER BY sew.create_time desc
+    </select>
+
+    <select id="getProductionTicketNoNum" resultType="java.lang.Integer">
+        SELECT count(distinct mas.production_ticket_no)
+        FROM `big_order_sewing_craft` as sew
+        INNER JOIN big_order_master as mas on sew.random_code=mas.random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code=sew.part_craft_main_code and part.style_random_code=mas.random_code
+        LEFT JOIN big_order_std as std on std.sewing_craft_random_code=sew.random_code and std.craft_code=sew.craft_code
+        LEFT JOIN craft_std as ss on ss.craft_std_code=std.craft_std_code
+        LEFT JOIN big_order_workplace bw on bw.sewing_craft_random_code = mas.random_code
+        and bw.main_frame_code = mas.main_frame_code and bw.craft_code = sew.craft_code
+        <where>
+            mas.`status` in (1000,1020)
+            <if test="craftCode != null and craftCode !=''">
+                and  sew.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="isHandPic == true">
+                and ss.is_hand_pic=1
+            </if>
+            <if test="isHandPic == false">
+                and (ss.is_hand_pic=0 or std.craft_std_code is null)
+            </if>
+            <if test="isVideo == true">
+                and ss.is_video=1
+            </if>
+            <if test="isVideo == false">
+                and (ss.is_video=0 or std.craft_std_code is null)
+            </if>
+            <if test="craftStdStatus ==20 ">
+                and std.craft_std_code is not null
+            </if>
+            <if test="craftStdStatus ==10 ">
+                and std.craft_std_code is null
+            </if>
+            <if test="craftCategoryCode != null and craftCategoryCode !=''">
+                and sew.craft_category_code like concat('%',#{craftCategoryCode},'%')
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and sew.craft_part_code like concat('%',#{craftPartCode},'%')
+            </if>
+            <if test="adaptCode == '10' ">
+                and  mas.adapt_code ='10'
+            </if>
+            <if test="adaptCode == '30' ">
+                and  (mas.adapt_code ='30' or mas.adapt_code is null)
+            </if>
+            <if test="productionTicketNo !=null and productionTicketNo!='' ">
+                and  mas.production_ticket_no LIKE  concat('%',#{productionTicketNo},'%')
+            </if>
+            <if test="bigStyleAnalyseCode !=null and bigStyleAnalyseCode!='' ">
+                and  mas.big_style_analyse_code LIKE concat('%',#{bigStyleAnalyseCode},'%')
+            </if>
+            <if test="stdCreateUser !=null and stdCreateUser!='' ">
+                and  ss.create_user like  concat('%',#{stdCreateUser},'%')
+            </if>
+            <if test="releaseUser !=null and releaseUser.size()>0 ">
+                and  mas.release_user in
+                <foreach collection="releaseUser" item="ruser_" open="(" close=")" separator=",">
+                    #{ruser_}
+                </foreach>
+            </if>
+            <if test="stdOkTimeBeginDate !=null and stdOkTimeEndDate != null ">
+                and   date(ss.ok_time) BETWEEN  #{stdOkTimeBeginDate} and #{stdOkTimeEndDate}
+            </if>
+            <if test="releaseTimeBeginDate !=null and releaseTimeEndDate != null ">
+                and   date(mas.release_time) BETWEEN #{releaseTimeBeginDate} and #{releaseTimeEndDate}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

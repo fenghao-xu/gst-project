@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.UserDao">
+    <resultMap type="User" id="UserResult">
+        <result column="user_code" property="userCode"/>
+        <result column="user_name" property="userName"/>
+        <result column="pwd" property="pwd"/>
+        <result column="is_admin" property="isAdmin"/>
+        <result column="department" property="department"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="role_names" property="roleNames"/>
+        <result column="role_codes" property="roleCodes"/>
+    </resultMap>
+
+    <select id="getAllUser"  parameterType="java.lang.String" resultMap="UserResult">
+        SELECT
+            user_code,
+            user_name,
+            is_admin,
+            department,
+            is_invalid,
+            create_user,
+            create_time,
+            update_user,
+            update_time
+        FROM
+            USER
+        WHERE
+            IFNULL(is_invalid, 0) = 0
+        <if test="searchValue !=null and searchValue!=''">
+            and user_name like #{searchValue}
+        </if>
+    </select>
+    <select id="getUserMap" resultMap="UserResult">
+        select user_code,user_name from  user where IFNULL(is_invalid,0)=0
+    </select>
+    <select id="getUserByCode" resultMap="UserResult">
+        select a.*,
+        (SELECT group_concat(r.role_name) FROM capp_user_role as ur LEFT JOIN role as r on r.role_code = ur.role_code WHERE a.user_code = ur.user_code
+        ) role_names,
+        ( SELECT group_concat(r.role_code) FROM capp_user_role as ur LEFT JOIN role as r on r.role_code = ur.role_code WHERE a.user_code = ur.user_code
+        ) role_codes
+         from user a
+        where IFNULL(a.is_invalid,0)=0
+        <if test="userCodes != null and userCodes.size() != 0">
+            and a.user_code in
+            <foreach collection="userCodes" separator="," open="(" close=")" item="userCode">
+                #{userCode}
+            </foreach>
+        </if>
+        <if test="keywords !=null and keywords!=''">
+            and a.user_name like concat('%',#{keywords},'%')
+        </if>
+
+
+    </select>
+
+    <delete id="deleteUser" parameterType="string">
+        delete from user where user_code=#{userCode}
+    </delete>
+
+    <select id="getUserByPage" resultMap="UserResult">
+
+        SELECT * FROM (
+        select a.*,
+        (SELECT group_concat(r.role_name) FROM capp_user_role as ur LEFT JOIN role as r on r.role_code = ur.role_code WHERE a.user_code = ur.user_code
+        ) role_names,
+        ( SELECT group_concat(r.role_code) FROM capp_user_role as ur LEFT JOIN role as r on r.role_code = ur.role_code WHERE a.user_code = ur.user_code
+        ) role_codes
+        from user a
+        where IFNULL(a.is_invalid,0)=0
+
+        ) as t WHERE 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (
+            t.user_name like concat('%',#{keywords},'%')
+            or t.user_code like concat('%',#{keywords},'%')
+            or t.department like concat('%',#{keywords},'%')
+            or t.role_names like concat('%',#{keywords},'%')
+            or t.role_codes like concat('%',#{keywords},'%')
+
+            )
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(t.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(t.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="roleId != null">
+            and t.user_code in (select user_code from user_role where role_id=#{roleId})
+        </if>
+        order by t.create_time desc
+    </select>
+
+    <update id="updateUser">
+
+        UPDATE
+        user
+        <set>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="pwd != null">
+                pwd = #{pwd},
+            </if>
+            <if test="isAdmin != null">
+                is_admin = #{isAdmin},
+            </if>
+            <if test="department != null">
+                department = #{department},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE user_code = #{userCode}
+
+    </update>
+    <insert id="addUser">
+        INSERT IGNORE INTO user (
+        user_code,
+        user_name,
+        pwd,
+        is_admin,
+        department,
+        is_invalid,
+        create_user,
+        create_time,
+        update_user,
+        update_time
+        )
+        VALUES
+        (
+        #{userCode},
+        #{userName},
+        #{pwd},
+        #{isAdmin},
+        #{department},
+        #{isInvalid},
+        #{createUser},
+        #{createTime},
+        #{updateUser},
+        #{updateTime}
+        )
+
+
+    </insert>
+    <select id="getUserByRoleCode" resultMap="UserResult">
+        select distinct a.user_code,a.user_name from user a
+        inner join capp_user_role b on a.user_code=b.user_code
+        where b.role_code in
+        <foreach collection="roleCodes" separator="," open="(" close=")" item="roleCode">
+            #{roleCode}
+        </foreach>
+
+    </select>
+
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.CraftGradeEquipmentDao">
+    <resultMap id="CraftGradeEquipmentResult" type="CraftGradeEquipment">
+        <result column="type" property="type"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="craft_grade_name" property="craftGradeName"/>
+        <result column="craft_grade_remark" property="craftGradeRemark"/>
+        <result column="craft_adjustment_factor" property="craftAdjustmentFactor"/>
+        <result column="hourly_wage" property="hourlyWage"/>
+        <result column="minute_wage" property="minuteWage"/>
+        <result column="factory_code" property="factoryCode"/>
+        <result column="section" property="section"/>
+        <result column="remark" property="remark"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>
+    </resultMap>
+
+    <select id="getAllCraftGrade" resultMap="CraftGradeEquipmentResult">
+        select  * from craft_grade_equipment
+    </select>
+
+    <select id="getCraftGradeByType" resultMap="CraftGradeEquipmentResult">
+        select  *  from craft_grade_equipment where `type` = #{0} and factory_code = '9999'
+    </select>
+    <select id="getCraftGradeByTypeAndCode" resultMap="CraftGradeEquipmentResult">
+        select  *  from craft_grade_equipment where `type` = #{type} and craft_grade_code = #{code} and factory_code =#{factoryCode}
+    </select>
+
+    <select id="getSewingCraftCradeByFactoryCode" resultMap="CraftGradeEquipmentResult">
+        select  *  from craft_grade_equipment where `type` = 'sewing' and factory_code =#{factoryCode}
+    </select>
+
+    <select id="getCraftGradeFactoryData" resultType="com.ylzs.entity.staticdata.CraftGradeEquipment">
+        SELECT
+            `id` AS `id`,
+            `type` AS `type`,
+            `craft_grade_code` AS `craftGradeCode`,
+            `craft_grade_name` AS `craftGradeName`,
+            `craft_adjustment_factor` AS `craftAdjustmentFactor`,
+            `hourly_wage` AS `hourlyWage`,
+            `minute_wage` AS `minuteWage`,
+            `factory_code` AS `factoryCode`,
+            `section` AS `section`,
+            `remark` AS `remark`
+        FROM
+            craft_grade_equipment
+        WHERE
+            type = 'sewing'
+            AND `factory_code` = '9999';
+    </select>
+
+    <select id="getCraftGradeAll" resultType="com.ylzs.entity.staticdata.CraftGrade">
+        SELECT * FROM craft_grade
+    </select>
+    <select id="getAllFactory" resultType="com.ylzs.vo.craftstd.FactoryVO">
+        SELECT factory_code,factory_name FROM craft_grade
+    </select>
+
+    <select id="getCraftGradeByTypeAndFactoryCode" resultMap="CraftGradeEquipmentResult">
+        select  *  from craft_grade_equipment where `type` = #{type} and factory_code =#{factoryCode}
+    </select>
+
+    <select id="isExistByFactoryCode" parameterType="string" resultType="string">
+        select 1 from craft_grade_equipment where factory_code = #{sleFactoryCode} limit 1;
+    </select>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCombCraft.PartCombCraftProgramDetailDao">
+
+
+    <select id="selectListByCategoryCode"
+            resultType="string" parameterType="map">
+        select group_concat(trim(pccr.design_code),'#',IFNULL(trim(pccr.part_position_code),'')) designCodeAndPositionCode
+        from part_comb_craft_program_detail pccr
+        join (
+        select random_code from part_comb_craft  where
+        clothing_category_code= #{clothingCategoryCode} and status not in(1030,1090)
+        <if test="randomCode != null">
+            and random_code != #{randomCode}
+        </if>
+        ) a on a.random_code = pccr.part_comb_craft_random_code
+        group by pccr.part_number,a.random_code
+    </select>
+
+
+    <select id="selectListByCraftRandomCode" resultType="com.ylzs.entity.partCombCraft.resp.PartCombCraftProgramDetailResp"
+            parameterType="string">
+        select pccr.part_number partNumber,pccr.part_detail_index,
+        group_concat(trim(pccr.design_code),'-',IFNULL(trim(pccr.design_name),'')) designCodeAndName,
+        if(
+           group_concat(trim(pccr.part_position_code),'-',trim(pccr.part_position_name))='-','',
+           group_concat(trim(pccr.part_position_code),'-',trim(pccr.part_position_name))
+        ) partPositionCodeAndName
+        from part_comb_craft_program_detail pccr where pccr.part_comb_craft_random_code = #{randomCode}
+        group by pccr.part_number,pccr.part_comb_craft_random_code,pccr.part_detail_index
+    </select>
+
+    <select id="selectProgramListByRandomCodes"
+            resultType="com.ylzs.entity.partCombCraft.PartCombCraftProgramDetail">
+        select * from part_comb_craft_program_detail
+        where 1=1
+        <if test="randomCodes!=null and randomCodes.size()>0">
+            and part_comb_craft_random_code in
+            <foreach collection="randomCodes" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.PlmMasterDataComponentDao">
+        <resultMap type="PlmMasterDataComponent" id="PlmMasterDataComponentResult">
+            <result column="id" property="id" />
+            <result column="style_code" property="styleCode" />
+            <result column="component_code" property="componentCode" />
+            <result column="component_name" property="componentName" />
+            <result column="is_default_component" property="isDefaultComponent" />
+            <result column="position_name" property="positionName" />
+            <result column="position_code" property="positionCode" />
+            <result column="position_type" property="positionType" />
+            <result column="parent_component_code" property="parentComponentCode" />
+            <result column="top_position" property="topPosition" />
+            <result column="receive_time" property="receiveTime" />
+            <result column="component_type" property="componentType" />
+    </resultMap>
+
+
+    <!--<insert id="addPlmMasterDataComponent" parameterType="list">
+		insert into capp_pi_master_data_component (
+        style_code,component_code,component_name, is_default_component, position_name,position_code,parent_component_code,top_position,
+        receive_time
+		)
+		values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{styleCode}, #{componentCode},#{componentName}, #{isDefaultComponent},#{positionName},#{positionCode},#{parentComponentCode},#{topPosition},
+            #{receiveTime}
+            )
+        </foreach>
+		on duplicate key update
+        style_code=#{styleCode},component_code=#{componentCode},component_name=#{componentName},is_default_component=#{isDefaultComponent},position_name=#{positionName},
+        position_code=#{positionCode},parent_component_code=#{parentComponentCode},top_position=#{topPosition},receive_time=#{receiveTime}
+	</insert>-->
+
+    <insert id="addPlmMasterDataComponent" parameterType="list">
+        insert into capp_pi_master_data_component (
+        style_code,component_code,component_name, is_default_component, position_name,position_code,position_type,parent_component_code,top_position,
+        receive_time,component_type
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.styleCode}, #{item.componentCode},#{item.componentName}, #{item.isDefaultComponent},#{item.positionName},#{item.positionCode},#{item.positionType},#{item.parentComponentCode},#{item.topPosition},
+            #{item.receiveTime},#{item.componentType}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="delPlmMasterDataComponent" parameterType="string">
+        delete from capp_pi_master_data_component where style_code =#{styleCode}
+    </delete>
+
+
+
+
+    <select id="getAll" resultMap="PlmMasterDataComponentResult">
+        select * from  capp_pi_master_data_component
+    </select>
+
+    <select id="findMasterDataByCode" resultMap="PlmMasterDataComponentResult">
+        select * from capp_pi_master_data_component where style_code = #{code}
+    </select>
+
+
+
+
+</mapper>

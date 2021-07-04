@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataDao">
+    <resultMap type="CutParameterMasterData" id="CutParameterMasterDataResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="pattern_file_url" property="patternFileUrl" />
+    </resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterData" parameterType="CutParameterMasterData">
+		insert into capp_pi_cut_parameter (
+		order_id,order_line_id,pattern_file_url,style_code,order_type,create_date_time
+		)
+		values (
+		#{orderId}, #{orderLineId},#{patternFileUrl},#{styleCode},#{orderType},now()
+		)
+		on duplicate key update
+		order_id=#{orderId}, order_line_id=#{orderLineId},pattern_file_url=#{patternFileUrl},style_code=#{styleCode},order_type=#{orderType}
+	</insert>
+	
+	<select id="getHemPsition" parameterType="java.util.HashMap"
+			resultType="com.ylzs.vo.plm.CutHemPositionVO">
+		SELECT
+			CASE WHEN p.order_line_id IS NOT NULL THEN CONCAT(p.order_id,'-',p.order_line_id) ELSE p.order_id END orderNo,
+			CASE WHEN p.position_name IS NOT NULL THEN CONCAT(h.hems_code,' ',p.position_name) ELSE h.hems_code END hemCode,
+			h.`value` AS hemValue,
+			p.create_date_time as acceptTime
+		FROM
+		capp_pi_cut_parameter p
+		LEFT JOIN
+		capp_pi_cut_parameter_markerinfo_hems h ON h.order_id = p.order_id
+		AND h.order_line_id = p.order_line_id
+		LEFT JOIN
+			(SELECT
+			part_position_code AS position_code,
+			part_position_name AS position_name
+			FROM sewing_craft_warehouse_part_position
+			GROUP BY part_position_code,part_position_name
+		)p ON p.position_code = h.hems_code
+
+		<where>
+			<if test="orderNo != null and orderNo != ''">
+				AND p.order_id LIKE   CONCAT('%',#{orderNo},'%')
+			</if>
+			<if test="orderLineNo != null and orderLineNo != ''">
+				AND  p.order_line_id = #{orderLineNo}
+			</if>
+			<if test="hemsCode != null and hemsCode != ''">
+				AND h.hems_code  LIKE CONCAT('%',#{hemsCode},'%')
+			</if>
+			<if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+				AND date(p.create_date_time) BETWEEN #{createTimeBeginDate} and #{createTimeEndDate}
+			</if>
+		</where>
+
+	</select>
+
+	<select id="getCutOrderPar" parameterType="java.util.HashMap"
+						resultType="com.ylzs.vo.plm.CutOrderProcessingVO">
+		SELECT
+		  case when p.order_line_id is not null then CONCAT(p.order_id,'-',p.order_line_id) else p.order_id end order_no,
+			p.style_code,
+			p.create_date_time AS appect_time,
+			mi.plies,
+			mi.packages,
+			mi.perimeter,
+			mi.count,
+			IFNULL(mi.single_perimeter,'0') single_perimeter,
+			mi.corner_count,
+			mi.cut_parts_count,
+			mi.dot_count,
+			mi.knife_edge_count,
+			mi.spread_type,
+			mi.fusibleInterlining,
+			mi.zp_count1,
+			mi.zp_count2,
+			mi.zp_count3,
+			mi.zp_count4,
+			mi.j_count1,
+			mi.j_count2,
+			mi.ed_count1,
+			mi.ed_count2,
+			mi.ed_count3,
+			mi.pltzjs,
+			mi.pltzcd,
+			mi.zds,
+			mi.dcpzs,
+			mi.dcpdpzc,
+			mi.edcds,
+			mi.hxzpps,
+			mi.zxzpps,
+			mi.zpzps
+		FROM
+			capp_pi_cut_parameter p
+				LEFT JOIN capp_pi_cut_parameter_markerinfo mi ON mi.order_id = p.order_id
+				AND mi.order_line_id = mi.order_line_id
+
+		<where>
+			<if test="orderNo != null and orderNo != ''">
+				AND p.order_id LIKE   CONCAT('%',#{orderNo},'%')
+			</if>
+			<if test="orderLineNo != null and orderLineNo != ''">
+				AND  p.order_line_id = #{orderLineNo}
+			</if>
+			<if test="styleCode != null and styleCode != ''">
+				AND p.style_code  LIKE CONCAT('%',#{styleCode},'%')
+			</if>
+			<if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+				AND date(p.create_date_time) BETWEEN #{createTimeBeginDate} and #{createTimeEndDate}
+			</if>
+		</where>
+	</select>
+
+
+
+</mapper>

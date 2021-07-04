@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.FabricScorePlanDao">
+    <resultMap id="FabricScorePlanResult" type="FabricScorePlan">
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+        <result column="fabric_score_plan_name" property="fabricScorePlanName"/>
+        <result column="remark" property="remark"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_invalid" property="isInvalid"/>
+    </resultMap>
+
+    <resultMap id="FabricScorePlanVOResult" type="com.ylzs.vo.FabricScorePlanVO">
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+        <result column="fabric_score_plan_name" property="fabricScorePlanName"/>
+        <result column="remark" property="remark"/>
+        <collection property="fabricScoreList" column="id" ofType="com.ylzs.entity.timeparam.FabricScore">
+            <!-- 公共部分-->
+            <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+            <result column="fabric_score_name" property="fabricScoreName"/>
+            <result column="fabric_score_code" property="fabricScoreCode"/>
+            <result column="remark" property="remark"/>
+            <result column="score_range" property="scoreRange"/>
+            <result column="fabric_grade_code" property="fabricGradeCode"/>
+        </collection>
+    </resultMap>
+    <select id="selectFabricScoresAndPlan" resultMap="FabricScorePlanVOResult">
+        select  a.fabric_score_plan_code,a.fabric_score_plan_name,b.* from fabric_score_plan as a
+        left  join  fabric_score as b on b.fabric_score_plan_code = a.fabric_score_plan_code
+    </select>
+</mapper>

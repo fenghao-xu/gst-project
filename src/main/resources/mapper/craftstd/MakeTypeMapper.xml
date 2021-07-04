@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.MakeTypeDao">
+    <resultMap type="MakeType" id="MakeTypeResult">
+        <result column="id" property="id"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="make_type_name" property="makeTypeName"/>
+        <result column="work_type_id" property="workTypeId"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="py_head_char" property="pyHeadChar"/>
+        <result column="make_type_numerical_code" property="makeTypeNumericalCode" />
+    </resultMap>
+    <select id="getAllMakeType" resultMap="MakeTypeResult">
+        select  * from make_type
+    </select>
+    <select id="getMakeTypeByCode" resultMap="MakeTypeResult">
+        select a.*,b.dic_value work_type_code,b.value_desc work_type_name  from make_type a left join dictionary b on a.work_type_id=b.id where IFNULL(a.is_invalid,0)=0 and a.make_type_code in
+        <foreach collection="makeTypeCodes" separator="," open="(" close=")" item="makeTypeCode">
+            #{makeTypeCode}
+        </foreach>
+    </select>
+
+    <delete id="deleteMakeType" parameterType="string">
+        delete from make_type where make_type_code=#{makeTypeCode}
+    </delete>
+
+    <update id="updateMakeType">
+
+        UPDATE
+        make_type
+        <set>
+            <if test="makeTypeCode != null">
+                make_type_code = #{makeTypeCode},
+            </if>
+            <if test="makeTypeNumericalCode != null">
+                make_type_numerical_code = #{makeTypeNumericalCode},
+            </if>
+            <if test="makeTypeName != null">
+                make_type_name = #{makeTypeName},
+            </if>
+            <if test="workTypeId != null">
+                work_type_id = #{workTypeId},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="pyHeadChar != null">
+                py_head_char = #{pyHeadChar},
+            </if>
+        </set>
+        WHERE make_type_code = #{makeTypeCode}
+
+    </update>
+    <insert id="addMakeType">
+        INSERT IGNORE INTO make_type (
+        make_type_code,
+        make_type_name,
+        work_type_id,
+        remark,
+        is_invalid,
+        update_user,
+        update_time,
+        py_head_char,
+        make_type_numerical_code
+        )
+        VALUES
+        (
+        #{makeTypeCode},
+        #{makeTypeName},
+        #{workTypeId},
+        #{remark},
+        #{isInvalid},
+        #{updateUser},
+        #{updateTime},
+        #{pyHeadChar},
+        #{makeTypeNumericalCode}
+        )
+
+
+    </insert>
+    <select id="getMakeTypeByPage" resultMap="MakeTypeResult">
+		select a.*,b.dic_value work_type_code,b.value_desc work_type_name from make_type a
+		left join dictionary b on a.work_type_id=b.id where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.make_type_name like concat('%',#{keywords},'%')
+            or a.make_type_code like concat('%',#{keywords},'%')
+            or b.value_desc like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.remark like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="workTypeId != null">
+            and a.work_type_id=#{workTypeId}
+        </if>
+        order by a.update_time desc,a.id asc
+	</select>
+
+    <select id="getStdCountByMakeTypeCode" resultType="long">
+        select count(1) from craft_std a inner join dictionary b on a.make_type_id=b.id
+        where b.dic_value=#{makeTypeCode}
+        limit 1
+    </select>
+
+    <select id="getMakeTypeById" resultMap="MakeTypeResult">
+        select * from make_type where id=#{id}
+    </select>
+
+    <select id="getMakeTypeMap" resultMap="MakeTypeResult">
+        select make_type_code,make_type_name from make_type
+    </select>
+
+
+</mapper>

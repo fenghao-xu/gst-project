@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.fabricProperty.FabricPropertyDataDao">
+
+
+    <select id="selectPropertyDataList"
+            resultType="com.ylzs.entity.fabricProperty.resp.FabricPropertyDataResp">
+        select fabric_property_name,fabric_property_code,property_value_code,property_value
+        from fabric_property_data
+        <where>
+            status = 1020
+            <if test="fabricPropertyCode !=null and fabricPropertyCode!=''">
+                and fabric_property_code = #{fabricPropertyCode}
+            </if>
+            <if test="propertyValue!=null and propertyValue!=''">
+                and property_value like concat('%',#{propertyValue},'%')
+            </if>
+            <if test="kindCode!=null and kindCode!=''">
+                and material_craft_kind_code = #{kindCode}
+            </if>
+        </where>
+    </select>
+
+</mapper>

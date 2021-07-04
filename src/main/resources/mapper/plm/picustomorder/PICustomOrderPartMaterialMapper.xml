@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.PICustomOrderPartMaterialDao">
+        <resultMap type="PICustomOrderPartMaterial" id="PICustomOrderPartMaterialResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="parent_random_code" property="parentRandomCode" />
+            <result column="code" property="code" />
+            <result column="material_name" property="materialName" />
+            <result column="pattern_symmetry" property="patternSymmetry" />
+            <result column="grand_category" property="grandCategory" />
+            <result column="mid_category" property="midCategory" />
+            <result column="small_category" property="smallCategory" />
+            <result column="material_grade" property="materialGrade" />
+            <result column="material_style" property="materialStyle" />
+            <result column="weight" property="weight" />
+            <result column="weight_grade" property="weightGrade" />
+            <result column="weft_elastic_grade" property="weftElasticGrade" />
+            <result column="warp_elastic_grade" property="warpElasticGrade" />
+            <result column="draping_grade" property="drapingGrade" />
+            <result column="draping" property="draping" />
+            <result column="HY_grade" property="HYGrade" />
+            <result column="hardness_grade" property="hardnessGrade" />
+            <result column="thick_grade" property="thickGrade" />
+            <result column="material_direction" property="materialDirection" />
+            <result column="position_code" property="positionCode" />
+            <result column="buttonhole" property="buttonhole" />
+            <result column="clasp" property="clasp" />
+            <result column="rhinestone_hole" property="rhinestoneHole" />
+            <result column="material_number" property="materialNumber" />
+            <result column="mtm_position_code" property="mtmPositionCode" />
+            <result column="is_main" property="isMain" />
+            <result column="color_system_name" property="colorSystemName" />
+            <result column="color_system_code" property="colorSystemCode" />
+            <result column="system_code" property="systemCode" />
+            <result column="system_name" property="systemName" />
+
+    </resultMap>
+
+    <insert id="addCustomOrderPartMaterialList" parameterType="list">
+        insert into capp_pi_custom_order_part_material (
+        order_id,order_line_id,parent_random_code, code, material_name,pattern_symmetry,grand_category,mid_category,small_category,material_grade,material_style,weight,weight_grade,weft_elastic_grade,
+        warp_elastic_grade,draping_grade,draping,HY_grade,hardness_grade,thick_grade,material_direction,position_code,buttonhole,clasp,rhinestone_hole,material_number,mtm_position_code,receive_time,
+        is_main,color_system_name,color_system_code,system_code,system_name
+        )
+        values
+        <foreach collection="piCustomOrderPartMaterials" item="item"  separator=",">
+            (
+            #{item.orderId}, #{item.orderLineId},#{item.parentRandomCode}, #{item.code},#{item.materialName},#{item.patternSymmetry},#{item.grandCategory},#{item.midCategory},#{item.smallCategory},
+            #{item.materialGrade},#{item.materialStyle},#{item.weight},#{item.weightGrade},#{item.weftElasticGrade},#{item.warpElasticGrade},#{item.drapingGrade},#{item.draping},#{item.HYGrade},
+            #{item.hardnessGrade},#{item.thickGrade},#{item.materialDirection},#{item.positionCode},#{item.buttonhole},#{item.clasp},#{item.rhinestoneHole},#{item.materialNumber},#{item.mtmPositionCode},
+            #{item.receiveTime}, #{item.isMain}, #{item.colorSystemName}, #{item.colorSystemCode}, #{item.systemCode}, #{item.systemName}
+            )
+        </foreach>
+        on duplicate key update
+        order_id=values(order_id), order_line_id=values(order_line_id),code=values(code),material_name=values(material_name),pattern_symmetry=values(pattern_symmetry),grand_category=values(grand_category),mid_category=values(mid_category),
+        small_category=values(small_category),material_grade=values(material_grade),material_style=values(material_style),weight=values(weight),weight_grade=values(weight_grade),weft_elastic_grade=values(weft_elastic_grade),
+        warp_elastic_grade=values(warp_elastic_grade),draping_grade=values(draping_grade),draping=values(draping),HY_grade=values(HY_grade),hardness_grade=values(hardness_grade),thick_grade=values(thick_grade),material_direction=values(material_direction),position_code=values(position_code),
+        buttonhole=values(buttonhole),clasp=values(clasp),rhinestone_hole=values(rhinestone_hole),material_number=values(material_number),mtm_position_code=values(mtm_position_code),receive_time=values(receive_time),
+        is_main=values(is_main),color_system_name=values(color_system_name),color_system_code=values(color_system_code),system_code=values(system_code),system_name=values(system_name)
+    </insert>
+    <delete id="deleteCustomOrderPartMaterial">
+        delete FROM capp_pi_custom_order_part_material WHERE order_id = #{orderId} AND order_line_id = #{orderLineId}
+    </delete>
+
+    <select id="getOrderAll" resultMap="PICustomOrderPartMaterialResult">
+        SELECT * FROM capp_pi_custom_order_part_material WHERE order_id = #{orderId} AND order_line_id = #{orderLineId}
+    </select>
+
+    <select id="getMainMaterialData" resultType="com.ylzs.entity.plm.PICustomOrderPartMaterial">
+        SELECT
+	        *
+        FROM
+            capp_pi_custom_order_part_material
+        WHERE
+        `order_id` = #{orderId}
+        AND `order_line_id` = #{orderLineId}
+        AND `code` = #{materialCode}
+        AND `grand_category` = 'M'
+        LIMIT 1
+    </select>
+
+
+</mapper>

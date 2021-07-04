@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseMasterDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="big_style_analyse_code" jdbcType="VARCHAR" property="bigStyleAnalyseCode" />
+    <result column="random_code" jdbcType="VARCHAR" property="randomCode" />
+    <result column="craft_category_code" jdbcType="VARCHAR" property="craftCategoryCode" />
+    <result column="clothes_category_name" jdbcType="VARCHAR" property="clothesCategoryName" />
+    <result column="craft_category_name" jdbcType="VARCHAR" property="craftCategoryName" />
+    <result column="clothes_category_code" jdbcType="VARCHAR" property="clothesCategoryCode" />
+    <result column="main_frame_code" jdbcType="VARCHAR" property="mainFrameCode" />
+    <result column="main_frame_name" jdbcType="VARCHAR" property="mainFrameName" />
+    <result column="for_sales_time" jdbcType="TIMESTAMP" property="forSalesTime" />
+    <result column="style_name" jdbcType="VARCHAR" property="styleName" />
+    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />
+    <result column="style_desc" jdbcType="VARCHAR" property="styleDesc" />
+    <result column="sub_brand" jdbcType="VARCHAR" property="subBrand" />
+    <result column="fabric_fraction" jdbcType="INTEGER" property="fabricFraction" />
+    <result column="packing_method_coat" jdbcType="VARCHAR" property="packingMethodCoat" />
+    <result column="standard_time" jdbcType="DECIMAL" property="standardTime" />
+    <result column="standard_price" jdbcType="DECIMAL" property="standardPrice" />
+<!--    <result column="remark" jdbcType="VARCHAR" property="remark" />-->
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="TINYINT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="release_user" jdbcType="VARCHAR" property="releaseUser" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+<!--    <result column="weft_elastic_grade" jdbcType="VARCHAR" property="weftElasticGrade" />-->
+<!--    <result column="warp_elastic_grade" jdbcType="VARCHAR" property="warpElasticGrade" />-->
+    <result column="sorted_by_number" jdbcType="BIT" property="sortedByNumber" />
+    <result column="is_check_craft_code" jdbcType="BIT" property="isCheckCraftCode" />
+<!--    <result column="order_type" jdbcType="VARCHAR" property="orderType" />-->
+<!--    <result column="factory_no" jdbcType="VARCHAR" property="factoryNo" />-->
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, big_style_analyse_code, random_code, craft_category_code, clothes_category_name, 
+    craft_category_name, clothes_category_code, main_frame_code, main_frame_name, for_sales_time, 
+    style_name, ct_style_code, style_desc, sub_brand, fabric_fraction, packing_method_coat, 
+    standard_time, standard_price,
+    `status`, is_invalid, audit_user, audit_time,
+    create_user, create_time, update_user, update_time, version, release_user, release_time,
+    sorted_by_number, is_check_craft_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_master
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByStyleAnalyseCode" resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+    select
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_master
+    where big_style_analyse_code= #{styleAnalyseCode}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_master
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master (big_style_analyse_code, random_code, 
+      craft_category_code, clothes_category_name, 
+      craft_category_name, clothes_category_code, 
+      main_frame_code, main_frame_name, for_sales_time, 
+      style_name, ct_style_code, style_desc, 
+      sub_brand, fabric_fraction, packing_method_coat, 
+      standard_time, standard_price, remark, 
+      `status`, is_invalid, audit_user, 
+      audit_time, create_user, create_time, 
+      update_user, update_time, version, 
+      release_user, release_time, weft_elastic_grade, 
+      warp_elastic_grade, sorted_by_number, is_check_craft_code, 
+      order_type, factory_no)
+    values (#{bigStyleAnalyseCode,jdbcType=VARCHAR}, #{randomCode,jdbcType=VARCHAR}, 
+      #{craftCategoryCode,jdbcType=VARCHAR}, #{clothesCategoryName,jdbcType=VARCHAR}, 
+      #{craftCategoryName,jdbcType=VARCHAR}, #{clothesCategoryCode,jdbcType=VARCHAR}, 
+      #{mainFrameCode,jdbcType=VARCHAR}, #{mainFrameName,jdbcType=VARCHAR}, #{forSalesTime,jdbcType=TIMESTAMP}, 
+      #{styleName,jdbcType=VARCHAR}, #{ctStyleCode,jdbcType=VARCHAR}, #{styleDesc,jdbcType=VARCHAR}, 
+      #{subBrand,jdbcType=VARCHAR}, #{fabricFraction,jdbcType=INTEGER}, #{packingMethodCoat,jdbcType=VARCHAR}, 
+      #{standardTime,jdbcType=DECIMAL}, #{standardPrice,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{isInvalid,jdbcType=TINYINT}, #{auditUser,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=VARCHAR}, 
+      #{releaseUser,jdbcType=VARCHAR}, #{releaseTime,jdbcType=TIMESTAMP}, #{weftElasticGrade,jdbcType=VARCHAR}, 
+      #{warpElasticGrade,jdbcType=VARCHAR}, #{sortedByNumber,jdbcType=BIT}, #{isCheckCraftCode,jdbcType=BIT}, 
+      #{orderType,jdbcType=VARCHAR}, #{factoryNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bigStyleAnalyseCode != null">
+        big_style_analyse_code,
+      </if>
+      <if test="randomCode != null">
+        random_code,
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code,
+      </if>
+      <if test="clothesCategoryName != null">
+        clothes_category_name,
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name,
+      </if>
+      <if test="clothesCategoryCode != null">
+        clothes_category_code,
+      </if>
+      <if test="mainFrameCode != null">
+        main_frame_code,
+      </if>
+      <if test="mainFrameName != null">
+        main_frame_name,
+      </if>
+      <if test="forSalesTime != null">
+        for_sales_time,
+      </if>
+      <if test="styleName != null">
+        style_name,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="styleDesc != null">
+        style_desc,
+      </if>
+      <if test="subBrand != null">
+        sub_brand,
+      </if>
+      <if test="fabricFraction != null">
+        fabric_fraction,
+      </if>
+      <if test="packingMethodCoat != null">
+        packing_method_coat,
+      </if>
+      <if test="standardTime != null">
+        standard_time,
+      </if>
+      <if test="standardPrice != null">
+        standard_price,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="isInvalid != null">
+        is_invalid,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="releaseUser != null">
+        release_user,
+      </if>
+      <if test="releaseTime != null">
+        release_time,
+      </if>
+      <if test="weftElasticGrade != null">
+        weft_elastic_grade,
+      </if>
+      <if test="warpElasticGrade != null">
+        warp_elastic_grade,
+      </if>
+      <if test="sortedByNumber != null">
+        sorted_by_number,
+      </if>
+      <if test="isCheckCraftCode != null">
+        is_check_craft_code,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="factoryNo != null">
+        factory_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bigStyleAnalyseCode != null">
+        #{bigStyleAnalyseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="randomCode != null">
+        #{randomCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="clothesCategoryName != null">
+        #{clothesCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="clothesCategoryCode != null">
+        #{clothesCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameCode != null">
+        #{mainFrameCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameName != null">
+        #{mainFrameName,jdbcType=VARCHAR},
+      </if>
+      <if test="forSalesTime != null">
+        #{forSalesTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="styleName != null">
+        #{styleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="styleDesc != null">
+        #{styleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="subBrand != null">
+        #{subBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="fabricFraction != null">
+        #{fabricFraction,jdbcType=INTEGER},
+      </if>
+      <if test="packingMethodCoat != null">
+        #{packingMethodCoat,jdbcType=VARCHAR},
+      </if>
+      <if test="standardTime != null">
+        #{standardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="standardPrice != null">
+        #{standardPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        #{isInvalid,jdbcType=TINYINT},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseUser != null">
+        #{releaseUser,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null">
+        #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weftElasticGrade != null">
+        #{weftElasticGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="warpElasticGrade != null">
+        #{warpElasticGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="sortedByNumber != null">
+        #{sortedByNumber,jdbcType=BIT},
+      </if>
+      <if test="isCheckCraftCode != null">
+        #{isCheckCraftCode,jdbcType=BIT},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryNo != null">
+        #{factoryNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+    update history_big_style_analyse_master
+    <set>
+      <if test="bigStyleAnalyseCode != null">
+        big_style_analyse_code = #{bigStyleAnalyseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="randomCode != null">
+        random_code = #{randomCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="clothesCategoryName != null">
+        clothes_category_name = #{clothesCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="clothesCategoryCode != null">
+        clothes_category_code = #{clothesCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameCode != null">
+        main_frame_code = #{mainFrameCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameName != null">
+        main_frame_name = #{mainFrameName,jdbcType=VARCHAR},
+      </if>
+      <if test="forSalesTime != null">
+        for_sales_time = #{forSalesTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="styleName != null">
+        style_name = #{styleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="styleDesc != null">
+        style_desc = #{styleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="subBrand != null">
+        sub_brand = #{subBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="fabricFraction != null">
+        fabric_fraction = #{fabricFraction,jdbcType=INTEGER},
+      </if>
+      <if test="packingMethodCoat != null">
+        packing_method_coat = #{packingMethodCoat,jdbcType=VARCHAR},
+      </if>
+      <if test="standardTime != null">
+        standard_time = #{standardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="standardPrice != null">
+        standard_price = #{standardPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        is_invalid = #{isInvalid,jdbcType=TINYINT},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseUser != null">
+        release_user = #{releaseUser,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null">
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weftElasticGrade != null">
+        weft_elastic_grade = #{weftElasticGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="warpElasticGrade != null">
+        warp_elastic_grade = #{warpElasticGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="sortedByNumber != null">
+        sorted_by_number = #{sortedByNumber,jdbcType=BIT},
+      </if>
+      <if test="isCheckCraftCode != null">
+        is_check_craft_code = #{isCheckCraftCode,jdbcType=BIT},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryNo != null">
+        factory_no = #{factoryNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMaster">
+    update history_big_style_analyse_master
+    set big_style_analyse_code = #{bigStyleAnalyseCode,jdbcType=VARCHAR},
+      random_code = #{randomCode,jdbcType=VARCHAR},
+      craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      clothes_category_name = #{clothesCategoryName,jdbcType=VARCHAR},
+      craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      clothes_category_code = #{clothesCategoryCode,jdbcType=VARCHAR},
+      main_frame_code = #{mainFrameCode,jdbcType=VARCHAR},
+      main_frame_name = #{mainFrameName,jdbcType=VARCHAR},
+      for_sales_time = #{forSalesTime,jdbcType=TIMESTAMP},
+      style_name = #{styleName,jdbcType=VARCHAR},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      style_desc = #{styleDesc,jdbcType=VARCHAR},
+      sub_brand = #{subBrand,jdbcType=VARCHAR},
+      fabric_fraction = #{fabricFraction,jdbcType=INTEGER},
+      packing_method_coat = #{packingMethodCoat,jdbcType=VARCHAR},
+      standard_time = #{standardTime,jdbcType=DECIMAL},
+      standard_price = #{standardPrice,jdbcType=DECIMAL},
+      remark = #{remark,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      is_invalid = #{isInvalid,jdbcType=TINYINT},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=VARCHAR},
+      release_user = #{releaseUser,jdbcType=VARCHAR},
+      release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      weft_elastic_grade = #{weftElasticGrade,jdbcType=VARCHAR},
+      warp_elastic_grade = #{warpElasticGrade,jdbcType=VARCHAR},
+      sorted_by_number = #{sortedByNumber,jdbcType=BIT},
+      is_check_craft_code = #{isCheckCraftCode,jdbcType=BIT},
+      order_type = #{orderType,jdbcType=VARCHAR},
+      factory_no = #{factoryNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

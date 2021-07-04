@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.FabricGradeDao">
+    <resultMap id="FabricGradeResult" type="FabricGrade">
+        <result column="fabric_grade_code" property="fabricGradeCode"/>
+        <result column="fabric_grade_name" property="fabircGradeName"/>
+        <result column="remark" property="remark"/>
+        <result column="time_coefficient" property="coefficient"/>
+    </resultMap>
+    <select id="getAllFabricGrade" resultMap="FabricGradeResult">
+        select  fabric_grade_code,fabric_grade_name,time_coefficient,remark from fabric_grade
+    </select>
+
+    <select id="fabricTimeConfficientByCode" resultType="java.math.BigDecimal">
+        SELECT time_coefficient FROM `fabric_grade` WHERE `fabric_grade_code` = #{fabricGradeCode}
+    </select>
+
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.UserUiMasterDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.system.UserUiMaster">
+    <id column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+    <result column="ui_code" jdbcType="VARCHAR" property="uiCode" />
+    <result column="ui_name" jdbcType="VARCHAR" property="uiName" />
+    <result column="ui_data" jdbcType="VARCHAR" property="uiData" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    random_code, user_code, ui_code, ui_name, create_time, update_time, ui_data
+  </sql>
+  <sql id="Ui_Column_List">
+    random_code, user_code, ui_code, ui_name, ui_data
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_ui_master
+    where random_code = #{randomCode,jdbcType=BIGINT}
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_ui_master
+    where random_code = #{randomCode,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="random_code" keyProperty="randomCode" parameterType="com.ylzs.entity.system.UserUiMaster" useGeneratedKeys="true">
+    insert into user_ui_master (random_code,user_code, ui_code, ui_name,
+      create_time, update_time, ui_data)
+    values (#{randomCode},#{userCode,jdbcType=VARCHAR}, #{uiCode,jdbcType=VARCHAR}, #{uiName,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{uiData})
+  </insert>
+  <insert id="insertSelective" keyColumn="random_code" keyProperty="randomCode" parameterType="com.ylzs.entity.system.UserUiMaster" useGeneratedKeys="true">
+    insert into user_ui_master
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="uiCode != null">
+        ui_code,
+      </if>
+      <if test="uiName != null">
+        ui_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="uiData != null">
+        ui_data,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userCode != null">
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="uiCode != null">
+        #{uiCode,jdbcType=VARCHAR},
+      </if>
+      <if test="uiName != null">
+        #{uiName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uiData != null">
+        #{uiData},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.system.UserUiMaster">
+    update user_ui_master
+    <set>
+      <if test="userCode != null">
+        user_code = #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="uiCode != null">
+        ui_code = #{uiCode,jdbcType=VARCHAR},
+      </if>
+      <if test="uiName != null">
+        ui_name = #{uiName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uiData != null">
+        ui_data = #{uiData},
+      </if>
+    </set>
+    where random_code = #{randomCode,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.system.UserUiMaster">
+    update user_ui_master
+    set user_code = #{userCode,jdbcType=VARCHAR},
+      ui_code = #{uiCode,jdbcType=VARCHAR},
+      ui_name = #{uiName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      ui_data = #{uiData}
+    where random_code = #{randomCode,jdbcType=BIGINT}
+  </update>
+  
+  <resultMap id="UserUiResultMap" type="com.ylzs.vo.system.UserUiVo">
+    <id column="random_code" property="randomCode"/>
+    <result column="user_code" property="userCode"/>
+    <result column="ui_code" property="uiCode"/>
+    <result column="ui_name" property="uiName"/>
+    <result column="ui_data" property="uiData"/>
+    <collection property="uiDetailList" ofType="com.ylzs.vo.system.UserUiDetailVo">
+      <result column="column_index" property="columnIndex"/>
+      <result column="column_width" property="columnWidth"/>
+      <result column="column_code" property="columnCode"/>
+    </collection>
+
+
+  </resultMap>
+
+  <select id="listUserUi" resultMap="UserUiResultMap">
+    select
+        uum.random_code,uum.user_code,uum.ui_code,uum.ui_name,uum.ui_data,
+        uud.column_index,uud.column_width,uud.column_code
+    from user_ui_master uum
+        left join user_ui_detail uud on uum.random_code=uud.user_ui_random_code
+    <where>
+      <if test="userCode != null">
+        and user_code=#{userCode}
+      </if>
+      <if test="uiCode != null">
+        and ui_code=#{uiCode}
+      </if>
+    </where>
+  </select>  
+</mapper>

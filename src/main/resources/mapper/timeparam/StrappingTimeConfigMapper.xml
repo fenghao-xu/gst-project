@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.StrappingTimeConfigDao">
+    <resultMap type="StrappingTimeConfig" id="StrappingTimeConfigResult">
+        <result column="strapping_code" property="strappingCode"/>
+        <result column="strapping_name" property="strappingName"/>
+        <result column="time" property="time"/>
+        <result column="remark" property="remark"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+
+    <select id="getAllStrappingTimeConfigs" resultMap="StrappingTimeConfigResult">
+        select  * from strapping_time_config
+    </select>
+
+    <insert id="addStrappingTime">
+        INSERT IGNORE INTO strapping_time_config (
+        strapping_code,
+        strapping_name,
+        time,
+        remark,
+        update_user,
+        update_time,
+        random_code,
+        status
+        )
+        VALUES
+        (
+        #{strappingCode},
+        #{strappingName},
+        #{time},
+        #{remark},
+        #{updateUser},
+        #{updateTime},
+        #{randomCode},
+        #{status}
+        )
+    </insert>
+
+    <update id="deleteStrappingTime" parameterType="list">
+        <foreach collection="strappingTimeList" item="item" separator=";">
+            update strapping_time_config
+                    <set>
+                        <if test="item.updateUser != null">
+                            update_user = #{item.updateUser},
+                        </if>
+                        <if test="item.updateTime != null">
+                            update_time = #{item.updateTime},
+                        </if>
+                        <if test="item.time != null">
+                            time = #{item.time},
+                        </if>
+                        <if test="item.status != null">
+                            status = #{item.status}
+                        </if>
+                    </set>
+            where random_code=#{item.randomCode}
+        </foreach>
+    </update>
+
+    <update id="updateStrappingTime">
+        UPDATE
+        strapping_time_config
+        <set>
+            <if test="makeTypeName != null">
+                strapping_name = #{strappingName},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE make_type_code = #{makeTypeCode}
+    </update>
+
+   <!-- <select id="getStrappingTimeByCode" resultMap="StrappingTimeConfigResult">
+        select a.*,b.dic_value work_type_code,b.value_desc work_type_name  from make_type a left join dictionary b on a.work_type_id=b.id where IFNULL(a.is_invalid,0)=0 and a.make_type_code in
+        <foreach collection="makeTypeCodes" separator="," open="(" close=")" item="makeTypeCode">
+            #{makeTypeCode}
+        </foreach>
+    </select>-->
+
+
+    <select id="getStrappingTimeByStrappingCode" resultMap="StrappingTimeConfigResult" parameterType="string">
+        select stc.random_code,stc.strapping_code,stc.strapping_name,stc.time,stc.remark,stc.status from strapping_time_config stc where strapping_code=#{strappingCode}
+    </select>
+
+    <select id="getStrappingTimeByCode" resultMap="StrappingTimeConfigResult" parameterType="java.util.List">
+    select * from strapping_time_config where strapping_code in
+    <foreach collection="strappingCodeList" item="strappingCode" open="(" close=")"  separator=",">
+        #{strappingCode}
+    </foreach>
+</select>
+
+    <select id="getStrappingTimeByPage" resultMap="StrappingTimeConfigResult">
+        select a.id,a.random_code,a.strapping_code,a.strapping_name,a.time,a.status,a.remark,a.update_user,a.update_time from strapping_time_config a
+        WHERE a.`status` &lt; '1090'
+        <if test="keywords!=null and keywords!=''">
+            and (a.strapping_code like concat('%',#{keywords},'%')
+            or a.strapping_name like concat('%',#{keywords},'%')
+            or a.update_user LIKE concat('%',(SELECT user_code  FROM user WHERE user_name LIKE concat('%', #{keywords}, '%')) , '%')
+            or a.remark like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        order by a.update_time desc,a.id asc
+    </select>
+
+
+</mapper>

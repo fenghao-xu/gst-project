@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.ProductModelMasterDataDao">
+        <resultMap type="ProductModelMasterData" id="ProductModelMasterDataResult">
+            <result column="id" property="id" />
+            <result column="affect_craft" property="affectCraft" />
+            <result column="brand" property="brand" />
+            <result column="year" property="year" />
+            <result column="department" property="department" />
+            <result column="band" property="band" />
+            <result column="style_name" property="styleName" />
+            <result column="code" property="code" />
+            <result column="product_name" property="productName" />
+            <result column="occasion" property="occasion" />
+            <result column="manner" property="manner" />
+            <result column="shape" property="shape" />
+            <result column="channel" property="channel" />
+            <result column="EEKA1_class" property="EEKA1Class" />
+            <result column="EEKA2_class" property="EEKA2Class" />
+            <result column="south_shop_date" property="southShopDate" />
+            <result column="north_shop_date" property="northShopDate" />
+            <result column="GB" property="GB" />
+            <result column="STC" property="STC" />
+            <result column="manufacture_area" property="manufactureArea" />
+            <result column="grade" property="grade" />
+            <result column="material_code" property="materialCode" />
+            <result column="material_composition" property="materialComposition" />
+            <result column="designer" property="designer" />
+            <result column="grand_category" property="grandCategory" />
+            <result column="mid_category" property="midCategory" />
+            <result column="small_category" property="smallCategory" />
+            <result column="zip_position" property="zipPosition" />
+            <result column="length" property="length" />
+            <result column="pocket_type" property="pocketType" />
+            <result column="retail_price" property="retailPrice" />
+            <result column="design_image" property="designImage" />
+            <result column="style_type" property="styleType" />
+            <result column="imageURL" property="imageURL" />
+            <result column="unit" property="unit" />
+            <result column="collar" property="collar" />
+            <result column="sleeve" property="sleeve" />
+            <result column="cuff" property="cuff" />
+            <result column="malibu" property="malibu" />
+            <result column="dege" property="dege" />
+            <result column="belt" property="belt" />
+            <result column="trouser_loop" property="trouserLoop" />
+            <result column="pocket" property="pocket" />
+            <result column="way_of_taking_off" property="wayOfTakingOff" />
+            <result column="waist_band" property="waistBand" />
+            <result column="stitch" property="stitch" />
+            <result column="decorate" property="decorate" />
+            <result column="patterning" property="patterning" />
+            <result column="foot_mouth" property="footMouth" />
+            <result column="clothing_length_grade" property="clothingLengthGrade" />
+            <result column="hem" property="hem" />
+            <result column="sleeve_length_grade" property="sleeveLengthGrade" />
+            <result column="sleeve_cut_pieces_number" property="sleeveCutPiecesNumber" />
+            <result column="currency_grade" property="currencyGrade" />
+            <result column="receive_time" property="receiveTime" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateProductModelDataDao" parameterType="ProductModelMasterData">
+		insert into capp_pi_product_model_master_data (
+        affect_craft,brand,year,department, band, style_name,code,product_name,occasion,manner,shape,channel,EEKA1_class,EEKA2_class,south_shop_date,north_shop_date,GB,STC,manufacture_area,grade,material_code,material_composition,designer,grand_category,mid_category,
+		small_category,zip_position,length,pocket_type,retail_price,design_image,style_type,imageURL,unit,collar,sleeve,cuff,malibu,dege,belt,trouser_loop,pocket,way_of_taking_off,waist_band,stitch,decorate,patterning,foot_mouth,clothing_length_grade,hem,sleeve_length_grade,sleeve_cut_pieces_number,currency_grade)
+		values (
+		#{affectCraft},#{brand}, #{year},#{department}, #{band},#{styleName},#{code},#{productName},#{occasion},#{manner},#{shape},#{channel},#{EEKA1Class},#{EEKA2Class},#{southShopDate},#{northShopDate},#{GB},#{STC},#{manufactureArea},#{grade},#{materialCode},#{materialComposition},#{designer},#{grandCategory},
+		#{midCategory},#{smallCategory},#{zipPosition},#{length},#{pocketType},#{retailPrice},#{designImage},#{styleType},#{imageURL},#{unit},#{collar},#{sleeve},#{cuff},#{malibu},#{dege},#{belt},#{trouserLoop},#{pocket},#{wayOfTakingOff},#{waistBand},#{stitch},#{decorate},
+		#{patterning},#{footMouth},#{clothingLengthGrade},#{hem},#{sleeveLengthGrade},#{sleeveCutPiecesNumber},#{currencyGrade})
+		on duplicate key update
+        affect_craft=#{affectCraft},brand=#{brand},year=#{year},department=#{department},band=#{band},style_name=#{styleName},code=#{code},product_name=#{productName},occasion=#{occasion},manner=#{manner},shape=#{shape},channel=#{channel},EEKA1_class=#{EEKA1Class},EEKA2_class=#{EEKA2Class},south_shop_date=#{southShopDate},
+		north_shop_date=#{northShopDate},GB=#{GB},STC=#{STC},manufacture_area=#{manufactureArea},grade=#{grade},material_code=#{materialCode},material_composition=#{materialComposition},designer=#{designer},
+		grand_category=#{grandCategory},mid_category=#{midCategory},small_category=#{smallCategory},zip_position=#{zipPosition},length=#{length},
+		pocket_type=#{pocketType},retail_price=#{retailPrice},design_image=#{designImage},style_type=#{styleType},imageURL=#{imageURL},unit=#{unit},collar=#{collar},sleeve=#{sleeve},cuff=#{cuff},
+		malibu=#{malibu},dege=#{dege},belt=#{belt},trouser_loop=#{trouserLoop},pocket=#{pocket},way_of_taking_off=#{wayOfTakingOff},waist_band=#{waistBand},stitch=#{stitch},
+		decorate=#{decorate},patterning=#{patterning},foot_mouth=#{footMouth},clothing_length_grade=#{clothingLengthGrade},hem=#{hem},sleeve_length_grade=#{sleeveLengthGrade},sleeve_cut_pieces_number=#{sleeveCutPiecesNumber},currency_grade=#{currencyGrade}
+	</insert>
+
+
+
+
+</mapper>

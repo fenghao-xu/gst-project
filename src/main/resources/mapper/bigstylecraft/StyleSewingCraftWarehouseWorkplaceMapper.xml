@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.StyleSewingCraftWarehouseWorkplaceDao">
+    <resultMap type="SewingCraftWarehouseWorkplace" id="SewingCraftWarehouseWorkplaceResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="workplace_craft_name" property="workplaceCraftName"/>
+        <result column="workplace_craft_code" property="workplaceCraftCode"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="part_code" property="partCode"/>
+        <result column="part_name" property="partName"/>
+        <result column="production_part_name" property="productionPartName"/>
+        <result column="production_part_code" property="productionPartCode"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="machine_name" property="machineName"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="craft_code" property="craftCode"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+        <!-- 公共部分-->
+        <!--<result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>-->
+
+    </resultMap>
+
+    <insert id="addData" parameterType="hashmap">
+        insert  into big_style_analyse_workplace
+        (part_craft_main_code,sewing_craft_random_code,production_part_name,production_part_code,workplace_craft_name,workplace_craft_code,craft_flow_num,part_code,part_name,main_frame_name,main_frame_code,craft_category_name,craft_category_code,machine_code,machine_name,is_default,craft_code,station,station_device)
+        values
+        (#{partCraftMainCode},#{sewingRandomCode},#{productionPartName},#{productionPartCode},#{workplaceCraftName},#{workplaceCraftCode},#{craftFlowNum},#{partCode},#{partName},#{mainFrameName},#{mainFrameCode},#{craftCategoryName},#{craftCategoryCode},#{machineCode},#{machineName},#{isDefault},#{craftCode},#{station},#{stationDevice})
+    </insert>
+
+    <insert id="insertSewingCraftWarehouseWorkplaceForeach" parameterType="java.util.List">
+        insert  into big_style_analyse_workplace
+        (part_craft_main_code,sewing_craft_random_code,production_part_name,production_part_code,
+        workplace_craft_name,workplace_craft_code,craft_flow_num,part_code,part_name,main_frame_name,
+        main_frame_code,craft_category_name,craft_category_code,machine_code,machine_name,is_default,
+        craft_code,station,station_device)
+        values
+        <foreach collection="workplaceList" item="wp" separator=",">
+            (#{wp.partCraftMainCode},#{wp.sewingCraftRandomCode},#{wp.productionPartName},#{wp.productionPartCode},
+            #{wp.workplaceCraftName},#{wp.workplaceCraftCode},#{wp.craftFlowNum},#{wp.partCode},#{wp.partName},#{wp.mainFrameName},
+            #{wp.mainFrameCode},#{wp.craftCategoryName},#{wp.craftCategoryCode},#{wp.machineCode},#{wp.machineName},#{wp.isDefault},
+            #{wp.craftCode},#{wp.station},#{wp.stationDevice})
+        </foreach>
+
+    </insert>
+
+    <select id="getDataBySewingCraftRandomCodeAndCraftCode" resultMap="SewingCraftWarehouseWorkplaceResult">
+        select  workplace_craft_name,production_part_name,production_part_code,sewing_craft_random_code,workplace_craft_code,craft_flow_num,main_frame_name,main_frame_code,craft_category_code,craft_category_name,part_code,part_name,part_craft_main_code,production_part_name,production_part_code,station,station_device from big_style_analyse_workplace where sewing_craft_random_code= #{randomCode} and craft_code = #{craftCode}
+    </select>
+    <select id="getDataByParam" parameterType="java.util.HashMap" resultMap="SewingCraftWarehouseWorkplaceResult">
+        select  workplace_craft_name,sewing_craft_random_code,workplace_craft_code,craft_flow_num,production_part_name,production_part_code,
+            main_frame_name,main_frame_code,craft_category_code,craft_category_name,part_code,part_name,
+            station,station_device
+        from big_style_analyse_workplace
+         <where>
+             <if test="sewingCraftRandomCode != null">
+                 and sewing_craft_random_code=#{sewingCraftRandomCode}
+             </if>
+             <if test="mainFrameCode != null and mainFrameCode !=''">
+                 and main_frame_code=#{mainFrameCode}
+             </if>
+         </where>
+    </select>
+
+    <select id="getWorkplaceBysewingRandomCode" parameterType="long" resultType="string">
+        SELECT CONCAT(main_frame_name,'-',craft_flow_num,'-',workplace_craft_name) FROM `big_style_analyse_workplace` WHERE sewing_craft_random_code=#{0}
+    </select>
+    <delete id="deleteWorkplaceBysewingRandomCodeAndCraftCode" >
+        delete  FROM `big_style_analyse_workplace` WHERE sewing_craft_random_code=#{randomCode} and craft_code=#{craftCode}
+    </delete>
+    <select id="getIdByBysewingRandomCodeAndCraftCode" resultType="java.lang.Long">
+        select  id FROM `big_style_analyse_workplace` WHERE sewing_craft_random_code=#{randomCode} and craft_code=#{craftCode}
+    </select>
+    <delete id="deleteWorkplaceByIds" >
+        delete  FROM `big_style_analyse_workplace` WHERE
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIdByBysewingRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id FROM `big_style_analyse_workplace` WHERE sewing_craft_random_code=#{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </select>
+    <delete id="deleteWorkplaceBysewingRandomCodeAndPartCraftMainCode" >
+        delete  FROM `big_style_analyse_workplace` WHERE sewing_craft_random_code=#{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </delete>
+    <select id="getSewingCraftWarehouseWorkplace"
+            resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+        select  d.production_part_code,d.production_part_name,c.*
+        from big_style_analyse_master a
+        inner join big_style_analyse_partcraft b on a.random_code=b.style_random_code
+        inner join big_style_analyse_workplace c on
+            b.style_random_code=c.sewing_craft_random_code
+            and b.part_craft_main_code=c.part_craft_main_code
+            and a.main_frame_code=c.main_frame_code
+        left join workplace_craft d on c.workplace_craft_code=d.workplace_craft_code
+        where a.random_code=#{styleRandomCode}
+
+    </select>
+    <select id="getSewingCraftWarehouseWorkplaceNewCraft"
+            resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+        select  d.production_part_code,d.production_part_name,c.*
+        from big_style_analyse_master a
+        inner join big_style_analyse_partcraft b on b.style_random_code=a.random_code
+        inner join big_style_analyse_partcraft_detail c on b.style_random_code=c.style_random_code and b.part_craft_main_code=c.part_craft_main_code
+        inner join big_style_analyse_workplace d on
+            c.style_random_code=d.sewing_craft_random_code
+            and c.part_craft_main_code=d.part_craft_main_code
+            and c.craft_code=d.craft_code
+        left join workplace_craft e on d.workplace_craft_code=e.workplace_craft_code
+        where a.random_code=#{styleRandomCode} and c.is_new=1
+
+    </select>
+
+</mapper>

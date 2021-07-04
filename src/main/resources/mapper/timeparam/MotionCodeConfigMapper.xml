@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.MotionCodeConfigDao">
+    <resultMap id="MotionCodeConfigResult" type="MotionCodeConfig">
+        <result column="type_code" property="typeCode"/>
+        <result column="type_name" property="typeName"/>
+        <result column="motion_code" property="motionCode"/>
+        <result column="motion_name" property="motionName"/>
+        <result column="manual_time" property="manualTime"/>
+        <result column="machine_time" property="machineTime"/>
+        <result column="remark" property="remark"/>
+        <result column="frequency" property="frequency"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_invalid" property="isInvalid"/>
+
+    </resultMap>
+
+    <resultMap id="MotionTypeVoResult" type="com.ylzs.vo.timeparam.MotionTypeVo">
+        <result column="type_code" property="typeCode"/>
+        <result column="type_name" property="typeName"/>
+    </resultMap>
+    <select id="getAllMotionConfigs" resultMap="MotionCodeConfigResult">
+        select  * from motion_code_config
+        <where>
+            <if test="motionType !=null and motionType !='' ">
+                type_code = #{motionType}
+            </if>
+        </where>
+    </select>
+    <select id="getMotionByCode" resultMap="MotionCodeConfigResult" >
+        select  * from motion_code_config
+        <where>
+            <if test="motionCode !=null and motionCode !='' ">
+                and   motion_code like concat(#{motionCode},'%')
+            </if>
+            <if test="motionType !=null and motionType !='' ">
+             and   type_code = #{motionType}
+            </if>
+        </where>
+    </select>
+    <select id="getMotionType" resultMap="MotionTypeVoResult">
+         SELECT type_code,type_name FROM `motion_code_config` GROUP BY type_code
+    </select>
+</mapper>

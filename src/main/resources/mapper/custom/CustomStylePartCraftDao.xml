@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.custom.CustomStylePartCraftDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.custom.CustomStylePartCraft" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="craft_flow_num" property="craftFlowNum" />
+        <result column="order_num" property="orderNum" />
+        <result column="craft_code" property="craftCode" />
+        <result column="craft_name" property="craftName" />
+        <result column="craft_descript" property="craftDescript" />
+        <result column="craft_category_code" property="craftCategoryCode" />
+        <result column="craft_category_name" property="craftCategoryName" />
+        <result column="craft_part_name" property="craftPartName" />
+        <result column="craft_part_code" property="craftPartCode" />
+        <result column="make_type_code" property="makeTypeCode" />
+        <result column="craft_grade_code" property="craftGradeCode" />
+        <result column="machine_code" property="machineCode" />
+        <result column="machine_name" property="machineName" />
+        <result column="allowance_code" property="allowanceCode" />
+        <result column="strapping_code" property="strappingCode" />
+        <result column="is_fabric_style_fix" property="isFabricStyleFix" />
+        <result column="fabric_grade" property="fabricGrade" />
+        <result column="standard_time" property="standardTime" />
+        <result column="standard_price" property="standardPrice" />
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode" />
+        <result column="style_part_random_code" property="stylePartRandomCode" />
+        <result column="section_code" property="sectionCode" />
+        <result column="work_type_code" property="workTypeCode" />
+        <result column="fabric_time_coefficient" property="fabricTimeCoefficient" />
+        <result column="time_supplement" property="timeSupplement" />
+        <result column="fabric_score" property="fabricScore" />
+        <result column="order_grade" property="orderGrade" />
+        <result column="make_description" property="makeDescription" />
+        <result column="quality_spec" property="qualitySpec" />
+        <result column="fixed_time" property="fixedTime" />
+        <result column="floating_time" property="floatingTime" />
+        <result column="sewing_length" property="sewingLength" />
+        <result column="param_length" property="paramLength" />
+        <result column="source_craft_name" property="sourceCraftName" />
+        <result column="design_part_code" property="designPartCode" />
+        <result column="design_part_name" property="designPartName" />
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="rpm" property="rpm" />
+        <result column="remark" property="remark" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="base_standard_time" property="baseStandardTime" />
+        <result column="base_standard_price" property="baseStandardPrice" />
+    </resultMap>
+
+    <resultMap id="CraftFileResultMap" type="CraftFile">
+        <result column="resource_type" property="resourceType" />
+        <result column="file_url" property="fileUrl" />
+        <result column="key_str" property="keyStr" />
+    </resultMap>
+
+    <resultMap type="com.ylzs.vo.bigstylereport.WorkTypeReport" id="WorkTypeReportResult" >
+        <result column="craft_code" property="craftCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <result column="factory_code" property="factoryCode"/>
+        <result column="factory_name" property="factoryName"/>
+        <result column="production_category" property="productionCategory"/>
+        <result column="production_category_name" property="productionCategoryName"/>
+        <result column="ct_style_code" property="ctStyleCode"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+    </resultMap>
+
+
+    <select id="getPartRandomCodeCraftList" resultType="com.ylzs.entity.custom.CustomStylePartCraft">
+        SELECT * FROM  custom_style_part_craft
+        WHERE style_part_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </select>
+    <select id="getPartRandomCodeCraftListOne" resultType="com.ylzs.entity.custom.CustomStylePartCraft">
+        SELECT * FROM  custom_style_part_craft
+        WHERE style_part_random_code = #{partRandomCode}
+    </select>
+
+    <delete id="deleteCustomStyleCraftList">
+        DELETE FROM  custom_style_part_craft
+        WHERE style_part_random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+
+    <select id="getCustomCraftStdFile" resultMap="CraftFileResultMap">
+        select a.craft_code key_str,e.resource_type,e.file_url from custom_style_part_craft a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join sewing_craft_warehouse_std c on b.random_code=c.sewing_craft_random_code
+        inner join craft_std d on c.craft_std_code=d.craft_std_code
+        inner join craft_file e on e.key_id=d.id
+        where a.style_part_random_code in
+        <foreach collection="randomCodeList" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="getWorkplaceCraftMap" resultType="WorkplaceCraft">
+        select a.craft_code remark,d.production_part_code,d.production_part_name,
+        d.workplace_craft_code,d.workplace_craft_name,d.craft_flow_num
+        from custom_style_part_craft a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on c.workplace_craft_code=d.workplace_craft_code
+        where d.main_frame_code=#{mainFrameCode} and a.style_part_random_code in
+        <foreach collection="randomCodeList" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+    <select id="getCustomStyleSectionTime" resultMap="resultMap">
+        select d.section_code craft_code,
+            d.section_name craft_name,
+        sum(a.standard_time) standard_time,sum(a.standard_price) standard_price from custom_style_part_craft a
+            inner join custom_style_part b on a.style_part_random_code=b.random_code
+            inner join custom_style_craft_course c on b.custom_main_random_code=c.random_code
+            left join work_type d on a.work_type_code=d.work_type_code
+        where c.random_code=#{styleRandomCode} group by d.section_code
+    </select>
+
+    <select id="getCustomCraftStdMap" resultType="CraftStd">
+        select a.craft_code remark,d.make_desc,d.require_quality from custom_style_part_craft a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join sewing_craft_warehouse_std c on b.random_code=c.sewing_craft_random_code
+        inner join craft_std d on c.craft_std_code=d.craft_std_code
+        where a.style_part_random_code in
+        <foreach collection="randomCodeList" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+    <!--- 财务统计工种报表 -->
+    <select id="selectWorkTypeReport" resultMap="WorkTypeReportResult" parameterType="java.util.HashMap">
+         SELECT  mas.production_category,if(mas.factory_code='8081','于都','龙华')as factory_name, sew.craft_code,sew.standard_price,sew.standard_time,
+        sew.make_type_code,sew.work_type_code,dic.value_desc as work_type_name,mas.production_ticket_no,concat(mas.order_no,'-',mas.order_line_id) as ct_style_code
+        FROM  custom_style_part_craft as sew
+        INNER JOIN custom_style_part as part on part.random_code=sew.style_part_random_code
+        INNER JOIN (SELECT * from  (SELECT * from custom_style_craft_course
+        <where>
+            `status`=1020 and production_ticket_no is not null and production_ticket_no !='' 
+            <if test="createTimeBeginDate !=null">
+                and   <![CDATA[ date(create_time) >=  #{createTimeBeginDate} ]]>
+            </if>
+            <if test="createTimeEndDate !=null">
+                and   <![CDATA[ date(create_time) <=  #{createTimeEndDate} ]]>
+            </if>
+            <if test="productionTicketNo !=null and productionTicketNo !=''">
+                and production_ticket_no = #{productionTicketNo}
+            </if>
+            <if test="orderNo !=null and orderNo !=''">
+                and   order_no like concat('%', #{orderNo},'%')
+            </if>
+            <if test="groupList !=null and groupList.size()>0">
+                and  production_category in
+                <foreach collection="groupList" open="(" item="gro_" separator="," close=")">
+                    #{gro_}
+                </foreach>
+            </if>
+            <if test="factoryCode !=null and factoryCode !=''">
+                and   factory_code = #{factoryCode}
+            </if>
+           <if test="ctStyleCode !=null and ctStyleCode !=''">
+                and  style_code like concat('%', #{ctStyleCode},'%')
+            </if>
+        </where>
+        ORDER BY version desc
+        ) as aa   GROUP BY aa.order_no,aa.order_line_id) as mas on mas.random_code= part.custom_main_random_code
+         LEFT JOIN dictionary as dic on dic.dic_value=sew.work_type_code and dic.dictionary_type_code='WorkType'
+
+    </select>
+
+    <select id="isExistByNeedlePitchValue" parameterType="string" resultType="string">
+        select 1 from custom_style_part_craft where stitch_length = #{needlePitchValue} limit 1;
+    </select>
+</mapper>

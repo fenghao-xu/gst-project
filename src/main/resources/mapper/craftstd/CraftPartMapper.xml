@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftPartDao">
+    <resultMap type="CraftPart" id="CraftPartResult">
+        <result column="id" property="id"/>
+        <result column="craft_category_id" property="craftCategoryId"/>
+        <result column="craft_part_code" property="craftPartCode"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="parent_craft_part_id" property="parentCraftPartId"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="section_name" property="sectionName"/>
+        <result column="craft_category_part_name" property="craftCategoryPartName" />
+
+    </resultMap>
+
+    <select id="getCraftPartCodeByPartIds" parameterType="java.util.ArrayList" resultType="java.lang.String">
+        select craft_part_code from craft_part where id in
+        <foreach collection="array" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+
+
+    <insert id="addCraftPart">
+        insert IGNORE into craft_part(craft_category_id,craft_part_code,craft_part_name,section_id,
+        parent_craft_part_id,remark,is_invalid,update_user,update_time,craft_category_code,craft_category_name)
+        values (#{craftCategoryId},#{craftPartCode},#{craftPartName},#{sectionId},
+        #{parentCraftPartId},#{remark},#{isInvalid},#{updateUser},#{updateTime},#{craftCategoryCode},#{craftCategoryName})
+    </insert>
+
+    <delete id="deleteCraftPart" parameterType="string">
+        delete from craft_part where craft_part_code=#{craftPartCode}
+    </delete>
+
+    <update id="updateCraftPart">
+        update craft_part
+        <set>
+            <if test="craftCategoryId != null">
+                craft_category_id=#{craftCategoryId},
+            </if>
+            <if test="craftPartName != null">
+                craft_part_name=#{craftPartName},
+            </if>
+            <if test="sectionId != null">
+                section_id=#{sectionId},
+            </if>
+            <if test="parentCraftPartId != null">
+                parent_craft_part_id=#{parentCraftPartId},
+            </if>
+            <if test="remark != null">
+                remark=#{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid=#{isInvalid},
+            </if>
+            <if test="updateUser != null">
+                update_user=#{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code=#{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name=#{craftCategoryName}
+            </if>
+        </set>
+        where craft_part_code=#{craftPartCode}
+    </update>
+
+    <select id="getCraftPartByCode" resultMap="CraftPartResult">
+        select b.craft_category_code,b.craft_category_name,c.dic_value session_code,c.value_desc session_name,a.* from
+        craft_part a
+        left join craft_category b on a.craft_category_id = b.id
+        left join dictionary c on a.section_id=c.id
+        where a.craft_part_code in
+        <foreach collection="craftPartCodes" separator="," open="(" close=")" item="craftPartCode">
+            #{craftPartCode}
+        </foreach>
+    </select>
+
+    <select id="getCraftPartByPage" resultMap="CraftPartResult">
+        select b.craft_category_name,c.dic_value session_code,c.value_desc session_name,a.*
+        from craft_part a
+        left join craft_category b on a.craft_category_id=b.id
+        left join dictionary c on a.section_id=c.id
+        <if test="craftCategoryCode != null and craftCategoryCode !='' ">
+            left join craft_category  rel on rel.id = a.craft_category_id
+        </if>
+        where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.craft_part_name like concat('%',#{keywords},'%')
+            or a.craft_part_code like concat('%',#{keywords},'%')
+            or a.remark like concat('%',#{keywords},'%')
+            or b.craft_category_name like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.craft_part_code like concat('%',#{keywords},'%'))
+        </if>
+        <if test="craftCategoryId != null">
+            and a.craft_category_id=#{craftCategoryId}
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode !='' ">
+            and rel.craft_category_code = #{craftCategoryCode}
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        order by a.update_time desc,a.id asc
+    </select>
+
+    <select id="getStdCountByCraftPartCode" resultType="long">
+        select count(1) from craft_std a inner join craft_std_part c on a.id=c.craft_std_id inner join craft_part b
+        on c.craft_part_id=b.id
+        where b.craft_part_code=#{craftPartCode}
+        limit 1
+    </select>
+
+    <select id="getCraftPartByCategoryId" resultMap="CraftPartResult">
+        select b.craft_category_name,c.dic_value session_code,c.value_desc session_name,a.*
+        from craft_part a
+        left join craft_category b on a.craft_category_id=b.id
+        left join dictionary c on a.section_id=c.id
+        where a.craft_category_id=#{craftCategoryId}
+    </select>
+
+    <select id="getCraftPartById" resultMap="CraftPartResult">
+        select * from craft_part where id=#{id}
+    </select>
+    <!-- 工艺部件编码作为key,工艺品类作为value-->
+    <select id="getAllCraftPartToMap" resultType="com.ylzs.entity.craftstd.CraftPart">
+         select craft_part_code as craftPartCode,category.craft_category_code as craftCategoryCode from craft_part as part
+	    LEFT JOIN craft_category as category on part.craft_category_id=category.id
+            where IFNULL(part.is_invalid,0)=0
+    </select>
+    <!-- 查找所有有效的工艺部件-->
+    <select id="getAllValidCraftPart" resultType="com.ylzs.entity.craftstd.CraftPart">
+         select * from craft_part as part
+            where IFNULL(part.is_invalid,0)=0
+    </select>
+
+    <select id="getCateGoryCodePartAll" resultType="com.ylzs.entity.craftstd.CraftPart">
+        SELECT
+            p.*
+        FROM
+            craft_category c
+            LEFT JOIN craft_part p ON p.craft_category_id = c.id
+        WHERE
+	            c.craft_category_code ON
+        <foreach collection="codeArray" separator="," close=")" open="(" item="code">
+            #{code}
+        </foreach>
+    </select>
+</mapper>

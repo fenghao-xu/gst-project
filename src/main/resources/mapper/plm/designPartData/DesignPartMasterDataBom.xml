@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.DesignPartDataBomDao">
+    <resultMap type="DesignPartMasterDataBom" id="DesignPartMasterDataBomResult">
+            <result column="id" property="id" />
+            <result column="design_code" property="designCode" />
+            <result column="component_type" property="componentType" />
+            <result column="is_component" property="isComponent" />
+            <result column="component_code" property="componentCode" />
+            <result column="optional_components_code" property="optionalComponentsCode" />
+            <result column="patern_code" property="paternCode" />
+            <result column="embroidery_position" property="embroideryPosition" />
+            <result column="receive_time" property="receiveTime" />
+    </resultMap>
+
+
+    <insert id="addOrUpdatePartDataBom" parameterType="list">
+		insert into capp_pi_design_part_bom
+		(
+        design_code,component_type,is_component, component_code,optional_components_code,patern_code,embroidery_position,receive_time
+		)
+		values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.designCode}, #{item.componentType},#{item.isComponent}, #{item.componentCode},#{item.optionalComponentsCode},
+            #{item.paternCode},#{item.embroideryPosition},#{item.receiveTime}
+            )
+        </foreach>
+		on duplicate key update
+        design_code=values(design_code) ,component_type=values(component_type),is_component=values(is_component),
+        component_code=values(component_code),optional_components_code=values(optional_components_code),patern_code=values(patern_code),
+        embroidery_position=values(embroidery_position),receive_time=values(receive_time)
+	</insert>
+
+
+
+
+</mapper>

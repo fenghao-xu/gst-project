@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalysePartcraftDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraft">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+    <result column="pattern_symmetry" jdbcType="VARCHAR" property="patternSymmetry" />
+    <result column="part_craft_main_name" jdbcType="VARCHAR" property="partCraftMainName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="style_random_code" jdbcType="BIGINT" property="styleRandomCode" />
+    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />
+    <result column="pattern_symmetry_name" jdbcType="VARCHAR" property="patternSymmetryName" />
+    <result column="import_order" jdbcType="INTEGER" property="importOrder" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, random_code, part_code, part_name, part_craft_main_code, pattern_symmetry, part_craft_main_name, 
+    `status`, is_invalid, audit_user, audit_time, create_user, create_time, update_user, 
+    update_time, version, style_random_code, ct_style_code, pattern_symmetry_name, import_order
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_partcraft
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_partcraft
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraft" useGeneratedKeys="true">
+    insert into history_big_style_analyse_partcraft (random_code, part_code, part_name, 
+      part_craft_main_code, pattern_symmetry, part_craft_main_name, 
+      `status`, is_invalid, audit_user, 
+      audit_time, create_user, create_time, 
+      update_user, update_time, version, 
+      style_random_code, ct_style_code, pattern_symmetry_name, 
+      import_order)
+    values (#{randomCode,jdbcType=BIGINT}, #{partCode,jdbcType=VARCHAR}, #{partName,jdbcType=VARCHAR}, 
+      #{partCraftMainCode,jdbcType=VARCHAR}, #{patternSymmetry,jdbcType=VARCHAR}, #{partCraftMainName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{isInvalid,jdbcType=BIT}, #{auditUser,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=VARCHAR}, 
+      #{styleRandomCode,jdbcType=BIGINT}, #{ctStyleCode,jdbcType=VARCHAR}, #{patternSymmetryName,jdbcType=VARCHAR}, 
+      #{importOrder,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraft" useGeneratedKeys="true">
+    insert into history_big_style_analyse_partcraft
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        random_code,
+      </if>
+      <if test="partCode != null">
+        part_code,
+      </if>
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+      <if test="patternSymmetry != null">
+        pattern_symmetry,
+      </if>
+      <if test="partCraftMainName != null">
+        part_craft_main_name,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="isInvalid != null">
+        is_invalid,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="styleRandomCode != null">
+        style_random_code,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="patternSymmetryName != null">
+        pattern_symmetry_name,
+      </if>
+      <if test="importOrder != null">
+        import_order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="partCode != null">
+        #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="patternSymmetry != null">
+        #{patternSymmetry,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainName != null">
+        #{partCraftMainName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="styleRandomCode != null">
+        #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="patternSymmetryName != null">
+        #{patternSymmetryName,jdbcType=VARCHAR},
+      </if>
+      <if test="importOrder != null">
+        #{importOrder,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraft">
+    update history_big_style_analyse_partcraft
+    <set>
+      <if test="randomCode != null">
+        random_code = #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="partCode != null">
+        part_code = #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partName != null">
+        part_name = #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="patternSymmetry != null">
+        pattern_symmetry = #{patternSymmetry,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainName != null">
+        part_craft_main_name = #{partCraftMainName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        is_invalid = #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="styleRandomCode != null">
+        style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="patternSymmetryName != null">
+        pattern_symmetry_name = #{patternSymmetryName,jdbcType=VARCHAR},
+      </if>
+      <if test="importOrder != null">
+        import_order = #{importOrder,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraft">
+    update history_big_style_analyse_partcraft
+    set random_code = #{randomCode,jdbcType=BIGINT},
+      part_code = #{partCode,jdbcType=VARCHAR},
+      part_name = #{partName,jdbcType=VARCHAR},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      pattern_symmetry = #{patternSymmetry,jdbcType=VARCHAR},
+      part_craft_main_name = #{partCraftMainName,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      is_invalid = #{isInvalid,jdbcType=BIT},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=VARCHAR},
+      style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      pattern_symmetry_name = #{patternSymmetryName,jdbcType=VARCHAR},
+      import_order = #{importOrder,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

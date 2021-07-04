@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.StitchLengthDao">
+    <resultMap type="StitchLength" id="StitchLengthResult">
+        <result column="id" property="id"/>
+        <result column="stitch_length_code" property="stitchLengthCode"/>
+        <result column="stitch_length_name" property="stitchLengthName"/>
+        <result column="line_id" property="lineId"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="line_code" property="lineCode"/>
+        <result column="line_name" property="lineName"/>
+        <result column="line_name_code" property="lineNameCode"/>
+        <result column="line_name_name" property="lineNameName"/>
+        <result column="line_position_code" property="linePositionCode"/>
+        <result column="line_position_name" property="linePositionName"/>
+    </resultMap>
+
+    <select id="getStitchLengthByCode" parameterType="string" resultMap="StitchLengthResult">
+        select a.*,
+        b.line_code,b.line_name,
+        c.dic_value line_position_code,c.value_desc line_position_name,
+        d.dic_value line_name_code,d.value_desc line_name_name
+        from stitch_length a
+        left join line b on a.line_id=b.id
+        left join dictionary c on b.line_position_id=c.id
+        left join dictionary d on b.line_name_id=d.id
+        where a.stitch_length_code in
+        <foreach collection="stitchLengthCodes" separator="," open="(" close=")" item="stitchLengthCode">
+            #{stitchLengthCode}
+        </foreach>
+    </select>
+
+    <delete id="deleteStitchLength" parameterType="string">
+        delete from stitch_length where stitch_length_code=#{stitchLengthCode}
+    </delete>
+
+    <update id="updateStitchLength">
+        UPDATE
+        stitch_length
+        <set>
+            <if test="stitchLengthName != null">
+                stitch_length_name = #{stitchLengthName},
+            </if>
+            <if test="lineId != null">
+                line_id = #{lineId},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE stitch_length_code = #{stitchLengthCode}
+    </update>
+
+    <insert id="addStitchLength">
+        INSERT IGNORE INTO stitch_length (
+        stitch_length_code,
+        stitch_length_name,
+        line_id,
+        remark,
+        is_invalid,
+        update_user,
+        update_time
+        )
+        VALUES
+        (
+        #{stitchLengthCode},
+        #{stitchLengthName},
+        #{lineId},
+        #{remark},
+        #{isInvalid},
+        #{updateUser},
+        #{updateTime}
+        )
+    </insert>
+
+    <select id="getStitchLengthByPage" resultMap="StitchLengthResult">
+        select a.*,
+        b.line_code,b.line_name,
+        c.dic_value line_position_code,c.value_desc line_position_name,
+        d.dic_value line_name_code,d.value_desc line_name_name
+        from stitch_length a
+        left join line b on a.line_id=b.id
+        left join dictionary c on b.line_position_id=c.id
+        left join dictionary d on b.line_name_id=d.id
+
+        where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.stitch_length_name like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.remark like concat('%',#{keywords},'%')
+            or a.stitch_length_code like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="lineId != null">
+            and a.line_id=#{lineId}
+        </if>
+        order by a.id desc
+    </select>
+
+    <select id="getStdCountByStitchLengthCode" resultType="long">
+        select count(1) from craft_std a inner join
+        stitch_length b on a.stitch_length_id=b.id where b.stitch_length_code=#{stitchLengthCode}
+        limit 1
+    </select>
+
+
+</mapper>

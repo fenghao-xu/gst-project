@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.pi.CappPiSendpilogDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.pi.CappPiSendpilog">
+    <!--@mbg.generated-->
+    <id column="id" property="id" />
+    <result column="send_type" property="sendType" />
+    <result column="dest_url" property="destUrl" />
+    <result column="data" property="data" />
+    <result column="return_msg" property="returnMsg" />
+    <result column="fail_msg" property="failMsg" />
+    <result column="create_time" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, send_type, dest_url, `data`, return_msg, fail_msg, create_time
+  </sql>
+</mapper>

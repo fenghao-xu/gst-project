@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStyleCraftDao">
+    <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStyleCraft">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="line_no" property="lineNo"/>
+        <result column="is_new" property="isNew"/>
+        <result column="style_random_code" property="styleRandomCode"/>
+        <result column="part_random_code" property="partRandomCode"/>
+        <result column="craft_random_code" property="craftRandomCode"/>
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_desc" property="craftDesc"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <resultMap id="CustomFlowNumVoResult" type="com.ylzs.vo.thinkstyle.CustomFlowNumVo">
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_flow_num" property="craftFlowNum" />
+    </resultMap>
+
+    <select id="getSpecialCraftVos" resultType="com.ylzs.vo.thinkstyle.ThinkStyleCraftVo" parameterType="Long">
+        select a.random_code,a.line_no,a.is_new,a.style_random_code,a.part_random_code,a.craft_random_code,
+        a.craft_code,a.craft_name,a.craft_desc,a.craft_flow_num,b.standard_time,b.standard_price from think_style_craft
+        a left join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        where a.part_random_code=#{partRandomCode} order by a.craft_flow_num
+    </select>
+
+
+    <select id="getCustomFlowNum" resultMap="CustomFlowNumVoResult">
+        select distinct a.craft_code,b.craft_flow_num
+        from sewing_craft_warehouse a
+        inner join sewing_craft_warehouse_workplace b on a.random_code=b.sewing_craft_random_code
+        inner join craft_main_frame c on c.main_frame_code=b.main_frame_code
+        inner join craft_category d on instr(a.craft_category_code,d.craft_category_code)>0
+        inner join category_relation e on e.craft_category_code=d.craft_category_code
+        where ifnull(a.status,1000)!=1090 and ifnull(c.status,1000)!=1090
+        and c.frame_type like concat('%',#{frameType},'%')
+        <if test="clothesCategoryCode !='' and clothesCategoryCode !=null ">
+            and e.clothes_category_code=#{clothesCategoryCode}
+        </if>
+        and a.craft_code in
+        <foreach collection="craftCodes" separator="," open="(" close=")" item="craftCode">
+            #{craftCode}
+        </foreach>
+    </select>
+    <select id="checkCraftName" resultType="java.lang.String">
+        select a.craft_code from think_style_craft as a
+            inner join think_style_part as b on a.style_random_code=b.style_random_code
+                    and a.part_random_code=b.random_code
+            where ifnull(b.is_special,0)=1 and a.style_random_code=#{styleRandomCode} and char_length(a.craft_name)>40
+    </select>
+
+</mapper>

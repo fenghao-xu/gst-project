@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCraft.PartCraftPositionDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.partCraft.PartCraftPosition" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="partPositionCode" column="part_position_code"/>
+        <result property="partPositionName" column="part_position_name"/>
+        <result property="clothingCategoryCode" column="clothing_category_code"/>
+        <result property="clothingCategoryName" column="clothing_category_name"/>
+        <result property="partCraftMainRandomCode" column="part_craft_main_random_code"/>
+        <result property="remark" column="remark"/>
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <select id="getPartCraftPositionRandomList" resultType="com.ylzs.entity.partCraft.PartCraftPosition">
+        SELECT * FROM
+        part_craft_position
+        WHERE
+        random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="randomCode">
+            #{randomCode}
+        </foreach>
+    </select>
+    <select id="getDataByPositionAndClothingCategoryCode" resultMap="resultMap">
+         SELECT * FROM
+        part_craft_position WHERE  part_position_code=#{partPositionCode} and clothing_category_code=#{clothingCategoryCode} and status != 1030
+    </select>
+    <select id="getRandomCodePartCraftPositionBatchList" resultType="com.ylzs.vo.partCraft.PartCraftPositionVo">
+        SELECT * FROM
+        part_craft_position
+        WHERE
+        status != 1030
+        <if test="mainRandomCodes !=null">
+            AND
+            part_craft_main_random_code in
+            <if test="mainRandomCodes">
+                <foreach collection="mainRandomCodes" separator="," open="(" close=")" item="mainRandomCode">
+                    #{mainRandomCode}
+                </foreach>
+            </if>
+        </if>
+    </select>
+    <select id="getNumberByPartCraftMainRandomCode" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT count(1) from part_craft_position as pos
+        INNER JOIN part_craft_master_data as mas on mas.random_code=pos.part_craft_main_random_code
+        inner join part_position c on pos.part_position_code=c.part_position_code
+        where mas.random_code=#{partCraftMainRandomCode} and mas.`status`=1020 and c.part_type!='bjposition' and ifnull(c.is_invalid,0)!=1
+    </select>
+</mapper>

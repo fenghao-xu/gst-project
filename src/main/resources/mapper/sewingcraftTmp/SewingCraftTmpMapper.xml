@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.sewingcraftTmp.SewingcraftTmpDao">
+    <resultMap type="SewingCraftWarehouse" id="SewingCraftWarehouseResult" >
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_part_code" property="craftPartCode"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result column="description" property="description"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="make_type_name" property="makeTypeName"/>
+        <result column="allowance_code" property="allowanceCode"/>
+        <result column="allowance_random_code" property="allowanceRandomCode"/>
+        <result column="strapping_code" property="strappingCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="is_fabric_style_fix" property="isFabricStyleFix"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="remark" property="remark"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="help_tool_code" property="helpToolCode"/>
+        <result column="make_description" property="makeDescription"/>
+        <result column="quality_spec" property="qualitySpec"/>
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="is_send_cut_pic" property="isSendCutPic" />
+        <result column="same_level_craft_name" property="sameLevelCraftName" />
+
+        <result column="is_hand_pic" property="isHandPic"/>
+        <result column="is_video" property="isVideo"/>
+        <result column="sysn_status" property="sysnStatus"/>
+        <result column="sysn_time" property="sysnTime" />
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="release_user" property="releaseUser"/>
+    </resultMap>
+    <resultMap id="CraftStdVoResult" type="com.ylzs.vo.craftstd.CraftStdVo">
+        <result column="is_hand_pic" property="isHandPic"/>
+        <result column="is_video" property="isVideo"/>
+    </resultMap>
+    <resultMap id="SewingCraftResourceResult" type="com.ylzs.vo.SewingCraftResource">
+        <result column="resouceType" property="resouceType"/>
+        <result column="url" property="url"/>
+    </resultMap>
+    <select id="getDataByPager" resultMap="SewingCraftWarehouseResult" parameterType="hashmap">
+        SELECT t.* from ( SELECT detail.id as id,sew.random_code,sew.craft_code,sew.craft_name,sew.description,sew.machine_code,sew.machine_name,sew.same_level_craft_numerical_code,mas.main_frame_code,
+        sew.craft_grade_code,sew.craft_category_code,sew.craft_category_name,sew.standard_price,sew.standard_time,sew.craft_part_code,sew.craft_part_name,detail.is_new,mas.production_ticket_no,
+        sew.make_type_code,sew.create_user,sew.create_time,sew.allowance_code,detail.craft_no as craft_flow_num, ssd.is_video,ssd.is_hand_pic,mas.release_time,mas.release_user,sew.sysn_status,sew.sysn_time
+        FROM `big_order_sewing_craft` as sew
+        LEFT  JOIN big_order_partcraft_detail  as detail on sew.random_code=detail.style_random_code and detail.craft_code=sew.craft_code and detail.is_new=1
+        LEFT JOIN big_order_master as mas on mas.random_code=sew.random_code
+        LEFT JOIN big_order_std as std on std.craft_code=sew.craft_code and std.sewing_craft_random_code=sew.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        <where>
+            detail.is_new=1 AND mas.status !=1090
+            <if test="craftCode != null and craftCode !=''">
+               and  sew.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="isHandPic == true">
+                and ssd.is_hand_pic=1
+            </if>
+            <if test="isHandPic == false">
+                and (ssd.is_hand_pic=0 or std.craft_std_code is null)
+            </if>
+            <if test="isVideo == true">
+                and ssd.is_video=1
+            </if>
+            <if test="isVideo == false">
+                and (ssd.is_video=0 or std.craft_std_code is null)
+            </if>
+            <if test="sysnStatus!=null">
+                and IFNULL(sew.sysn_status,10)=#{sysnStatus}
+            </if>
+            <if test="description != null and description !=''">
+                and  sew.description like concat('%',#{description},'%')
+            </if>
+            <if test="craftCategoryCode != null and craftCategoryCode !=''">
+                and sew.craft_category_code like concat('%',#{craftCategoryCode},'%')
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and sew.craft_part_code like concat('%',#{craftPartCode},'%')
+            </if>
+        </where>
+        GROUP BY sew.craft_code)t  ORDER BY t.create_time desc
+    </select>
+
+    <select id="checkStdData" resultMap="CraftStdVoResult">
+        SELECT std.is_hand_pic,std.is_video FROM  craft_std as std
+        LEFT JOIN big_order_sewing_craft as big on big.craft_code=std.craft_std_code
+        where big.random_code=#{randomCode} and craft_code=#{craftCode}
+    </select>
+    <select id="getWorkplaceBySewingRandomAndCraft" resultType="string">
+        SELECT CONCAT(main_frame_name,'-',craft_flow_num,'-',workplace_craft_name) FROM `big_order_workplace` WHERE sewing_craft_random_code=#{randomCode} and craft_code=#{craftCode}
+    </select>
+    <update id="updateSysnStatus" >
+        UPDATE big_order_sewing_craft SET sysn_status=#{sysnStatus},sysn_time=#{sysnTime} where random_code=#{randomCode} and craft_code=#{craftCode}
+    </update>
+    <select id="getSewingStdPicAndVedio" resultMap="SewingCraftResourceResult">
+        SELECT c.file_url as url,c.resource_type as resouceType FROM big_order_std as a
+            LEFT JOIN craft_std as b on b.craft_std_code=a.craft_std_code
+            LEFT JOIN craft_file as c on c.key_id=b.id
+            where a.sewing_craft_random_code=#{randomCode} and a.craft_code=#{craftCode} and c.resource_type != 20
+    </select>
+</mapper>

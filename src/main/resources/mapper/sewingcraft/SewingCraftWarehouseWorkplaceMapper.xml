@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftWarehouseWorkplaceDao">
+    <resultMap type="SewingCraftWarehouseWorkplace" id="SewingCraftWarehouseWorkplaceResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="workplace_craft_name" property="workplaceCraftName"/>
+        <result column="workplace_craft_code" property="workplaceCraftCode"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="part_code" property="partCode"/>
+        <result column="part_name" property="partName"/>
+        <result column="production_part_name" property="productionPartName"/>
+        <result column="production_part_code" property="productionPartCode"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="machine_name" property="machineName"/>
+        <result column="is_default" property="isDefault"/>
+        <!-- 公共部分-->
+        <!--<result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>-->
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+    </resultMap>
+
+    <insert id="addData" parameterType="hashmap">
+        insert  into sewing_craft_warehouse_workplace
+        (sewing_craft_random_code,production_part_name,production_part_code,workplace_craft_name,workplace_craft_code,craft_flow_num,part_code,part_name,main_frame_name,main_frame_code,craft_category_name,craft_category_code,machine_code,machine_name,is_default,station,station_device)
+        values
+        (#{sewingRandomCode},#{productionPartName},#{productionPartCode},#{workplaceCraftName},#{workplaceCraftCode},#{craftFlowNum},#{partCode},#{partName},#{mainFrameName},#{mainFrameCode},#{craftCategoryName},#{craftCategoryCode},#{machineCode},#{machineName},#{isDefault},#{station},#{stationDevice})
+    </insert>
+    <select id="getDataBySewingCraftRandomCode" parameterType="java.lang.Long" resultMap="SewingCraftWarehouseWorkplaceResult">
+        select  workplace_craft_name,production_part_code,production_part_name,sewing_craft_random_code,workplace_craft_code,craft_flow_num,main_frame_name,main_frame_code,craft_category_code,craft_category_name,part_code,part_name,station,station_device from sewing_craft_warehouse_workplace where sewing_craft_random_code=#{0}
+    </select>
+    <select id="getDataByParam" parameterType="java.util.HashMap" resultMap="SewingCraftWarehouseWorkplaceResult">
+        select  workplace_craft_name,production_part_code,production_part_name,sewing_craft_random_code,workplace_craft_code,craft_flow_num,main_frame_name,main_frame_code,craft_category_code,craft_category_name,part_code,part_name,station,station_device from sewing_craft_warehouse_workplace
+        <where>
+            <if test="sewingCraftRandomCode != null">
+                and sewing_craft_random_code=#{sewingCraftRandomCode}
+            </if>
+            <if test="mainFrameCode != null and mainFrameCode !=''">
+                and main_frame_code=#{mainFrameCode}
+            </if>
+        </where>
+    </select>
+    <update id="updateData" parameterType="hashmap">
+        update sewing_craft_warehouse_workplace set
+        workplace_craft_name=#{workplaceCraftName},workplace_craft_code=#{workplaceCraftCode}, craft_flow_num=#{craftFlowNum},part_code=#{partCode}, part_name=#{partName}, main_frame_name=#{mainFrameName}, main_frame_code=#{mainFrameCode},craft_category_name=#{craftCategoryName}
+         ,craft_category_code=#{craftCategoryCode},machine_code=#{machineCode}, machine_name=#{machineName},is_default = #{isDefault}
+         ,production_part_name={productionPartName},production_part_code=#{productionPartCode},station=#{station},station_device=#{stationDevice}
+        where sewing_craft_random_code = #{sewingCraftRandomCode}
+    </update>
+    <select id="searchSewingCraftData" parameterType="HashMap" resultType="com.ylzs.vo.SewingCraftVo">
+         SELECT
+            scww.`id` AS `id`,
+            scww.`craft_category_code` AS craftCategoryCode,
+            scww.`craft_category_name` AS craftCategoryName,
+            scww.`part_code` AS partCode,
+            scww.`part_name` AS partName,
+            scww.`main_frame_code` AS craftMainFrameCode,
+            scww.`main_frame_name` AS craftMainFrameName,
+            scww.`craft_flow_num` AS craftFlowNum,
+            sew.`craft_code` AS craftCode,
+            sew.`random_code` AS randomCode,
+            sew.`craft_name` AS craftName,
+            sew.`description` AS description,
+            sew.`standard_time` AS standardTime,
+            sew.`standard_price` AS standardPrice,
+            sew.`remark` AS remark,
+            scww.`machine_code` AS machineCode,
+            scww.`machine_name` AS machineName,
+            scww.`station` AS station,
+            scww.`station_device` AS stationDevice
+            FROM
+                sewing_craft_warehouse_workplace scww
+                LEFT JOIN sewing_craft_warehouse sew ON sew.random_code = scww.sewing_craft_random_code  AND sew.`STATUS` != 1030
+
+            WHERE
+                scww.is_default = 1
+                <if test="categoryCode != null">
+                    AND scww.`craft_category_code` = #{categoryCode}
+                </if>
+
+                <if test="queryData != null">
+
+                    AND (
+                    sew.`craft_code` LIKE CONCAT('%',#{queryData},'%')
+                    OR sew.craft_name LIKE CONCAT('%',#{queryData},'%')
+                    OR sew.description LIKE CONCAT('%',#{queryData},'%')
+                    )
+                </if>
+
+    </select>
+    <select id="getWorkplaceBysewingRandomCode" parameterType="long" resultType="string">
+        SELECT CONCAT(main_frame_name,'-',craft_flow_num,'-',workplace_craft_name) FROM `sewing_craft_warehouse_workplace` WHERE sewing_craft_random_code=#{0}
+    </select>
+    <delete id="deleteWorkplaceBysewingRandomCode" parameterType="long">
+        delete  FROM `sewing_craft_warehouse_workplace` WHERE sewing_craft_random_code=#{0}
+    </delete>
+
+    <select id="searchSewingCraftDataByParams" parameterType="string" resultType="com.ylzs.vo.SewingCraftVo">
+        SELECT
+        scww.`id` AS `id`,
+        scww.`craft_category_code` AS craftCategoryCode,
+        scww.`craft_category_name` AS craftCategoryName,
+        scww.`part_code` AS partCode,
+        scww.`part_name` AS partName,
+        scww.`main_frame_code` AS craftMainFrameCode,
+        scww.`main_frame_name` AS craftMainFrameName,
+        scww.`craft_flow_num` AS craftFlowNum,
+        sew.`craft_code` AS craftCode,
+        sew.`random_code` AS randomCode,
+        sew.`craft_name` AS craftName,
+        sew.`description` AS description,
+        sew.`standard_time` AS standardTime,
+        sew.`standard_price` AS standardPrice,
+        sew.`remark` AS remark,
+        scww.`machine_code` AS machineCode,
+        scww.`machine_name` AS machineName,
+        scww.`station` AS station,
+        scww.`station_device` AS stationDevice
+        FROM
+        sewing_craft_warehouse_workplace scww
+        LEFT JOIN sewing_craft_warehouse sew ON sew.random_code = scww.sewing_craft_random_code  AND sew.`STATUS` != 1030
+        WHERE scww.is_default = 1 AND scww.`craft_category_code` != 'null'
+        <if test="params != null and params !=''">
+            AND sew.craft_code LIKE CONCAT('%',#{params},'%')
+            OR  sew.craft_name LIKE CONCAT('%',#{params},'%')
+            OR  sew.description LIKE CONCAT('%',#{params},'%')
+        </if>
+        <if test="clothingCategoryCode !=null and clothingCategoryCode !=''">
+            AND scww.`craft_category_code` in (SELECT a.craft_category_code FROM `craft_category` AS a
+            LEFT JOIN category_relation AS b ON b.craft_category_id=a.id
+            LEFT JOIN dictionary AS c ON c.dic_value=b.clothes_category_code
+            WHERE c.dictionary_type_code='ClothesCategory'
+            and b.clothes_category_code like CONCAT('%',#{clothingCategoryCode},'%'))
+        </if>
+    </select>
+    <select id="getWorkplaceByCraftRandomCodes"
+            resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+        select  * from sewing_craft_warehouse_workplace
+        <where>
+            ifnull(`status`,1000) !=1090 and  sewing_craft_random_code in
+            <foreach collection="craftRandomCodes" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+
+    </select>
+    <select id="getCraftCustomFlowNum" resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+        select a.craft_code,max(b.craft_flow_num) craft_flow_num from sewing_craft_warehouse a
+        left join sewing_craft_warehouse_workplace b on a.random_code=b.sewing_craft_random_code
+        left join craft_main_frame c on b.main_frame_code=c.main_frame_code
+        <where>
+            ifnull(c.status,1000)!=1090 and locate('定制',c.frame_type)>0 and a.craft_code in
+            <foreach collection="craftCodes" open="(" close=")" separator="," item="craftCode">
+                #{craftCode}
+            </foreach>
+            group by a.craft_code
+        </where>
+
+    </select>
+    <update id="updateCraftFlowNum">
+        update sewing_craft_warehouse_workplace
+        set craft_flow_num=#{craftFlowNum}
+        where workplace_craft_code=#{workplaceCraftCode}
+    </update>
+
+
+</mapper>

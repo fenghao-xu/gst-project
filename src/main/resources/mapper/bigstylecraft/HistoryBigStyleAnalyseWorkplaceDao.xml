@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseWorkplaceDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+<!--    <id column="id" jdbcType="BIGINT" property="id" />-->
+    <result column="sewing_craft_random_code" jdbcType="BIGINT" property="sewingCraftRandomCode" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="workplace_craft_code" jdbcType="VARCHAR" property="workplaceCraftCode" />
+    <result column="workplace_craft_name" jdbcType="VARCHAR" property="workplaceCraftName" />
+    <result column="craft_category_code" jdbcType="VARCHAR" property="craftCategoryCode" />
+    <result column="craft_category_name" jdbcType="VARCHAR" property="craftCategoryName" />
+    <result column="main_frame_code" jdbcType="VARCHAR" property="mainFrameCode" />
+    <result column="main_frame_name" jdbcType="VARCHAR" property="mainFrameName" />
+<!--    <result column="machine_name" jdbcType="VARCHAR" property="machineName" />-->
+<!--    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />-->
+<!--    <result column="is_default" jdbcType="INTEGER" property="isDefault" />-->
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="craft_flow_num" jdbcType="INTEGER" property="craftFlowNum" />
+<!--    <result column="create_user" jdbcType="VARCHAR" property="createUser" />-->
+<!--    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />-->
+<!--    <result column="status" jdbcType="INTEGER" property="status" />-->
+<!--    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />-->
+    <result column="production_part_name" jdbcType="VARCHAR" property="productionPartName" />
+    <result column="production_part_code" jdbcType="VARCHAR" property="productionPartCode" />
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+    <result column="station" jdbcType="VARCHAR" property="station" />
+    <result column="station_device" jdbcType="VARCHAR" property="stationDevice" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    --id,
+    sewing_craft_random_code, craft_code, workplace_craft_code, workplace_craft_name,
+    craft_category_code, craft_category_name, main_frame_code, main_frame_name,
+--     machine_name, machine_code, is_default,
+    part_name, part_code, craft_flow_num,
+--     create_user, create_time, `status`, ct_style_code,
+    production_part_name, production_part_code, part_craft_main_code,
+    station, station_device
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_workplace
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_workplace
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace" useGeneratedKeys="true">
+    insert into history_big_style_analyse_workplace (sewing_craft_random_code, craft_code, 
+      workplace_craft_code, workplace_craft_name, 
+      craft_category_code, craft_category_name, main_frame_code, 
+      main_frame_name, machine_name, machine_code, 
+      is_default, part_name, part_code, 
+      craft_flow_num, create_user, create_time, 
+      `status`, ct_style_code, production_part_name, 
+      production_part_code, part_craft_main_code, 
+      station, station_device)
+    values (#{sewingCraftRandomCode,jdbcType=BIGINT}, #{craftCode,jdbcType=VARCHAR}, 
+      #{workplaceCraftCode,jdbcType=VARCHAR}, #{workplaceCraftName,jdbcType=VARCHAR}, 
+      #{craftCategoryCode,jdbcType=VARCHAR}, #{craftCategoryName,jdbcType=VARCHAR}, #{mainFrameCode,jdbcType=VARCHAR}, 
+      #{mainFrameName,jdbcType=VARCHAR}, #{machineName,jdbcType=VARCHAR}, #{machineCode,jdbcType=VARCHAR}, 
+      #{isDefault,jdbcType=INTEGER}, #{partName,jdbcType=VARCHAR}, #{partCode,jdbcType=VARCHAR}, 
+      #{craftFlowNum,jdbcType=INTEGER}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{ctStyleCode,jdbcType=VARCHAR}, #{productionPartName,jdbcType=VARCHAR}, 
+      #{productionPartCode,jdbcType=VARCHAR}, #{partCraftMainCode,jdbcType=VARCHAR}, 
+      #{station,jdbcType=VARCHAR}, #{stationDevice,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace" useGeneratedKeys="true">
+    insert into history_big_style_analyse_workplace
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code,
+      </if>
+      <if test="craftCode != null">
+        craft_code,
+      </if>
+      <if test="workplaceCraftCode != null">
+        workplace_craft_code,
+      </if>
+      <if test="workplaceCraftName != null">
+        workplace_craft_name,
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code,
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name,
+      </if>
+      <if test="mainFrameCode != null">
+        main_frame_code,
+      </if>
+      <if test="mainFrameName != null">
+        main_frame_name,
+      </if>
+      <if test="machineName != null">
+        machine_name,
+      </if>
+      <if test="machineCode != null">
+        machine_code,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="partCode != null">
+        part_code,
+      </if>
+      <if test="craftFlowNum != null">
+        craft_flow_num,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="productionPartName != null">
+        production_part_name,
+      </if>
+      <if test="productionPartCode != null">
+        production_part_code,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+      <if test="station != null">
+        station,
+      </if>
+      <if test="stationDevice != null">
+        station_device,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sewingCraftRandomCode != null">
+        #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workplaceCraftCode != null">
+        #{workplaceCraftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workplaceCraftName != null">
+        #{workplaceCraftName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameCode != null">
+        #{mainFrameCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameName != null">
+        #{mainFrameName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineName != null">
+        #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null">
+        #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftFlowNum != null">
+        #{craftFlowNum,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productionPartName != null">
+        #{productionPartName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionPartCode != null">
+        #{productionPartCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="station != null">
+        #{station,jdbcType=VARCHAR},
+      </if>
+      <if test="stationDevice != null">
+        #{stationDevice,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+    update history_big_style_analyse_workplace
+    <set>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        craft_code = #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workplaceCraftCode != null">
+        workplace_craft_code = #{workplaceCraftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workplaceCraftName != null">
+        workplace_craft_name = #{workplaceCraftName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameCode != null">
+        main_frame_code = #{mainFrameCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainFrameName != null">
+        main_frame_name = #{mainFrameName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineName != null">
+        machine_name = #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null">
+        machine_code = #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="partName != null">
+        part_name = #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        part_code = #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftFlowNum != null">
+        craft_flow_num = #{craftFlowNum,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productionPartName != null">
+        production_part_name = #{productionPartName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionPartCode != null">
+        production_part_code = #{productionPartCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="station != null">
+        station = #{station,jdbcType=VARCHAR},
+      </if>
+      <if test="stationDevice != null">
+        station_device = #{stationDevice,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouseWorkplace">
+    update history_big_style_analyse_workplace
+    set sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      craft_code = #{craftCode,jdbcType=VARCHAR},
+      workplace_craft_code = #{workplaceCraftCode,jdbcType=VARCHAR},
+      workplace_craft_name = #{workplaceCraftName,jdbcType=VARCHAR},
+      craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      main_frame_code = #{mainFrameCode,jdbcType=VARCHAR},
+      main_frame_name = #{mainFrameName,jdbcType=VARCHAR},
+      machine_name = #{machineName,jdbcType=VARCHAR},
+      machine_code = #{machineCode,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=INTEGER},
+      part_name = #{partName,jdbcType=VARCHAR},
+      part_code = #{partCode,jdbcType=VARCHAR},
+      craft_flow_num = #{craftFlowNum,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      `status` = #{status,jdbcType=INTEGER},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      production_part_name = #{productionPartName,jdbcType=VARCHAR},
+      production_part_code = #{productionPartCode,jdbcType=VARCHAR},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      station = #{station,jdbcType=VARCHAR},
+      station_device = #{stationDevice,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

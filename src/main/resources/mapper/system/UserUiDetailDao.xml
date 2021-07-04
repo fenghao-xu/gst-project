@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.UserUiDetailDao">
+    <resultMap id="BaseResultMap" type="com.ylzs.entity.system.UserUiDetail">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_ui_random_code" jdbcType="BIGINT" property="userUiRandomCode"/>
+        <result column="column_index" jdbcType="INTEGER" property="columnIndex"/>
+        <result column="column_width" jdbcType="INTEGER" property="columnWidth"/>
+        <result column="column_code" property="columnCode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_ui_random_code, column_index, column_width, column_code
+  </sql>
+    <sql id="Ui_Column_List">
+    column_index, column_width, column_code
+  </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_ui_detail
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="listByUserUiRandomCode" resultType="com.ylzs.vo.system.UserUiDetailVo">
+        select
+        <include refid="Ui_Column_List"/>
+        from user_ui_detail
+        where user_ui_random_code=#{userUiRandomCode}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_ui_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <delete id="deleteByUserUiRandomCode">
+    delete from user_ui_detail where user_ui_random_code=#{userUiRandomCode}
+  </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.system.UserUiDetail"
+            useGeneratedKeys="true">
+    insert into user_ui_detail (user_ui_random_code, column_index, column_width, column_code
+      )
+    values (#{userUiRandomCode,jdbcType=BIGINT}, #{columnIndex,jdbcType=INTEGER},
+    #{columnWidth,jdbcType=INTEGER}, #{columnCode}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.system.UserUiDetail"
+            useGeneratedKeys="true">
+        insert into user_ui_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userUiRandomCode != null">
+                user_ui_random_code,
+            </if>
+            <if test="columnIndex != null">
+                column_index,
+            </if>
+            <if test="columnWidth != null">
+                column_width,
+            </if>
+            <if test="columnCode != null">
+                column_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userUiRandomCode != null">
+                #{userUiRandomCode,jdbcType=BIGINT},
+            </if>
+            <if test="columnIndex != null">
+                #{columnIndex,jdbcType=INTEGER},
+            </if>
+            <if test="columnWidth != null">
+                #{columnWidth,jdbcType=INTEGER},
+            </if>
+            <if test="columnCode != null">
+                #{columnCode},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into user_ui_detail (user_ui_random_code, column_index, column_width, column_code
+        )
+        values
+        <foreach collection="recList" item="rec" separator=",">
+            (#{rec.userUiRandomCode,jdbcType=BIGINT}, #{rec.columnIndex,jdbcType=INTEGER},
+            #{rec.columnWidth,jdbcType=INTEGER},#{rec.columnCode}
+            )
+        </foreach>
+
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.system.UserUiDetail">
+        update user_ui_detail
+        <set>
+            <if test="userUiRandomCode != null">
+                user_ui_random_code = #{userUiRandomCode,jdbcType=BIGINT},
+            </if>
+            <if test="columnIndex != null">
+                column_index = #{columnIndex,jdbcType=INTEGER},
+            </if>
+            <if test="columnWidth != null">
+                column_width = #{columnWidth,jdbcType=INTEGER},
+            </if>
+            <if test="columnCode != null">
+                column_code = #{columnCode},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.system.UserUiDetail">
+    update user_ui_detail
+    set user_ui_random_code = #{userUiRandomCode,jdbcType=BIGINT},
+      column_index = #{columnIndex,jdbcType=INTEGER},
+      column_width = #{columnWidth,jdbcType=INTEGER},
+      column_code = #{columnCode}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftFileDao">
+    <resultMap id="CraftFileResult" type="CraftFile">
+        <result column="id" property="id"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="key_id" property="keyId"/>
+        <result column="key_str" property="keyStr"/>
+        <result column="file_url" property="fileUrl"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="remark" property="remark"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="addCraftFile" useGeneratedKeys="true" keyProperty="id">
+        INSERT IGNORE INTO craft_file (
+        resource_type,
+        key_id,
+        key_str,
+        file_url,
+        is_invalid,
+        remark,
+        update_user,
+        update_time
+        )
+        VALUES
+        (
+        #{resourceType},
+        #{keyId},
+        #{keyStr},
+        #{fileUrl},
+        #{isInvalid},
+        #{remark},
+        #{updateUser},
+        #{updateTime}
+        )
+    </insert>
+    <insert id="addCraftFileRawDataByCraftStdId">
+        insert into craft_file_raw_data select * from craft_file where key_id = #{craftStdId}
+    </insert>
+
+    <delete id="deleteCraftFile" parameterType="long">
+        delete from craft_file where id = #{id}
+    </delete>
+    <update id="updateCraftFile">
+        update craft_file
+        <set>
+            <if test="resourceType != null">
+                resource_type=#{resourceType},
+            </if>
+            <if test="keyId != null">
+                key_id=#{keyId},
+            </if>
+            <if test="keyStr != null">
+                key_str=#{keyStr},
+            </if>
+            <if test="fileUrl != null">
+                file_url=#{fileUrl},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid=#{isInvalid},
+            </if>
+            <if test="remark != null">
+                remark=#{remark},
+            </if>
+            <if test="updateUser != null">
+                update_user=#{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="getCraftFileById" parameterType="long" resultMap="CraftFileResult">
+        select * from craft_file where id in
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getCraftFileByPage" resultMap="CraftFileResult">
+        select * from craft_file where IFNULL(is_invalid,0)=0
+        <if test="keyId != null">
+            and ifnull(key_id,-1)=#{keyId}
+        </if>
+        <if test="keyStr != null">
+            and key_str=#{keyStr}
+        </if>
+        <if test="resourceType != null">
+            and resource_type=#{resourceType}
+        </if>
+        <if test="fileUrl != null">
+            and file_url=#{fileUrl}
+        </if>
+    </select>
+
+
+    <select id="isCraftFileExist" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM craft_file WHERE file_url=#{fileUrl})
+    </select>
+
+    <select id="isCraftResourceExist" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM craft_file WHERE IFNULL(key_id,-1)=#{keyId} and resource_type=#{resourceType})
+    </select>
+
+
+    <select id="getByKeyIdAndResourceType" resultMap="CraftFileResult">
+        select * from craft_file where IFNULL(key_id,-1)=#{keyId} and resource_type=#{resourceType}
+    </select>
+    <select id="getByKeyId" resultMap="CraftFileResult">
+        select * from craft_file where IFNULL(key_id,-1)=#{keyId}
+    </select>
+
+    <update id="deleteByKeyId">
+        update craft_file set is_invalid=1,update_user=#{updateUser},update_time=#{updateTime}
+        where key_id=#{keyId}
+    </update>
+    <update id="deleteByKeyStr">
+        update craft_file set is_invalid=1,update_user=#{updateUser},update_time=#{updateTime}
+        where key_str=#{keyStr}
+    </update>
+
+    <delete id="deleteByKeyAndFileUrl">
+        delete from craft_file where 1=1
+        <if test="keyId != null">
+            and IFNULL(key_id,-1)=#{keyId}
+        </if>
+        <if test="keyStr != null">
+            and key_str=#{keyStr}
+        </if>
+        <if test="resourceType != null">
+            and resource_type=#{resourceType}
+        </if>
+        <if test="fileUrl != null">
+            and file_url=#{fileUrl}
+        </if>
+    </delete>
+
+    <delete id="deleteCraftFileRawDataById">
+        delete from craft_file_raw_data where key_id = #{craftStdId}
+    </delete>
+
+    <select id="getPicUrlOne" resultType="java.lang.String" parameterType="java.lang.Long">
+        SELECT
+            cf.file_url
+        FROM
+            sewing_craft_warehouse_std sts
+            INNER JOIN craft_file cf ON cf.resource_type = 10
+            INNER JOIN craft_std st ON cf.key_id = st.id
+            AND st.craft_std_code = sts.craft_std_code
+        WHERE
+            sts.sewing_craft_random_code = #{randomCode}
+        ORDER BY
+            cf.update_time DESC
+            LIMIT 1
+    </select>
+    <select id="getDuplicateFile" resultType="com.ylzs.entity.craftstd.CraftFile">
+    select * from craft_file where id in (
+    select max(id) from craft_file where update_user='auto' and ifnull(remark,'')!=''
+    group by remark,update_time HAVING count(*)>1)
+    </select>
+    <select id="getCraftFileByCraftCode" resultType="com.ylzs.entity.craftstd.CraftFile">
+        select b.* from craft_std a
+        inner join craft_file b on a.id=b.key_id
+        <where>
+            and ifnull(a.is_invalid,0)=0
+            <if test="craftStdCode != null and craftStdCode != ''">
+                and a.craft_std_code=#{craftStdCode}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and b.remark=#{fileName}
+            </if>
+            <if test="resourceType != null">
+                and b.resource_type=#{resourceType}
+            </if>
+        </where>
+
+
+    </select>
+    <select id="getDuplicateVideo" resultType="com.ylzs.entity.craftstd.CraftFile">
+        select a.* from craft_file a where a.resource_type=30 and a.id in
+        (SELECT max(id) from craft_file where resource_type=30 and
+        key_id is not null GROUP BY key_id,resource_type having count(*)>1)
+    </select>
+    <select id="getFileUrlCount" resultType="java.lang.Integer">
+        select count(*) from craft_file where file_url=#{fileUrl}
+    </select>
+
+    <select id="getRawDataByKeyId" resultType="com.ylzs.entity.craftstd.CraftFile">
+      select * from craft_file_raw_data where key_id =#{keyId}
+    </select>
+</mapper>

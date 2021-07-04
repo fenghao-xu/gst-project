@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStylePartDao">
+    <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStylePart">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="is_lock" property="isLock"/>
+        <result column="style_random_code" property="styleRandomCode"/>
+        <result column="part_random_code" property="partRandomCode"/>
+        <result column="design_part_code" property="designPartCode"/>
+        <result column="design_part_name" property="designPartName"/>
+        <result column="parent_part_code" property="parentPartCode"/>
+        <result column="top_part_code" property="topPartCode"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="is_special" property="isSpecial"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_valid" property="isValid"/>
+        <result column="position_code" property="positionCode"/>
+        <result column="position_name" property="positionName"/>
+        <result column="position_type" property="positionType"/>
+        <result column="is_virtual" property="isVirtual"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="standard_time" property="standardTime"/>
+    </resultMap>
+
+    <select id="selectThinkStylePartVo" resultType="com.ylzs.vo.thinkstyle.ThinkStylePartVo">
+        select
+        a.id,
+        a.random_code,
+        a.is_special,
+        a.design_part_code,
+        a.parent_part_code,
+        a.top_part_code,
+        concat(ifnull(a.design_part_code,''),if(a.design_part_name is not null,concat('-',a.design_part_name),''))
+        design_part,
+        concat(ifnull(a.position_code,''),if(a.position_name is not null,concat(' ',a.position_name),'')) position,
+        a.is_valid,
+        a.order_num,
+        a.is_default,
+        ifnull(b.status,0) status,
+        b.part_craft_main_code,
+        b.remark,
+        a.design_part_name,
+        a.position_code,
+        a.position_name,
+        a.component_type,
+        d.pattern_type,
+        d.pattern_mode
+
+        from think_style_part a
+        left join (select c.design_code,d.remark,max(d.part_craft_main_code) part_craft_main_code,max(d.status) status from part_craft_design_parts c
+            INNER join part_craft_master_data d on d.random_code=c.part_craft_main_random_code
+            where d.status!=1090 and c.status!=1030 and d.business_type='定制' and
+            not exists(select 1 from part_craft_position bb where bb.part_craft_main_random_code=c.part_craft_main_random_code)
+            group by c.design_code) b
+        on b.design_code=a.design_part_code
+        left join design_part d on d.design_code=a.design_part_code
+
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')=''
+
+        union all
+
+        select
+        a.id,
+        a.random_code,
+        a.is_special,
+        a.design_part_code,
+        a.parent_part_code,
+        a.top_part_code,
+        concat(ifnull(a.design_part_code,''),if(a.design_part_name is not null,concat('-',a.design_part_name),''))
+        design_part,
+        concat(ifnull(a.position_code,''),if(a.position_name is not null,concat(' ',a.position_name),'')) position,
+        a.is_valid,
+        a.order_num,
+        a.is_default,
+        ifnull(b.status,0) status,
+        b.part_craft_main_code,
+        b.remark,
+        a.design_part_name,
+        a.position_code,
+        a.position_name,
+        a.component_type,
+        d.pattern_type,
+        d.pattern_mode
+
+        from think_style_part a
+        left join (select c.design_code,d.remark,e.part_position_code,max(d.part_craft_main_code) part_craft_main_code,max(d.status) status from part_craft_design_parts c
+            INNER join part_craft_master_data d on d.random_code=c.part_craft_main_random_code
+            INNER join part_craft_position e on d.random_code=e.part_craft_main_random_code
+            where d.status!=1090 and c.status!=1030 and d.business_type='定制' and position(#{clothingCategoryCode} in e.clothing_category_code)>0
+            group by c.design_code,e.part_position_code
+            ) b on b.design_code=a.design_part_code and b.part_position_code=a.position_code
+        left join design_part d on d.design_code=a.design_part_code
+
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')!=''
+
+        order by id
+
+    </select>
+    <select id="selectThinkStylePartStandardVos" parameterType="Long"
+            resultType="com.ylzs.vo.thinkstyle.ThinkStylePartStandardVo">
+        select a.random_code,a.is_special,a.part_position,a.standard_time,a.standard_price,a.design_part_code from
+        think_style_part a where a.style_random_code=#{styleRandomCode}
+    </select>
+
+    <select id="selectThinkStylePart" parameterType="Long" resultMap="BaseResultMap">
+        select a.* from think_style_part a where a.style_random_code=#{styleRandomCode}
+    </select>
+    <select id="getThinkStylePartMap" parameterType="String" resultMap="BaseResultMap">
+        select  a.design_part_code,a.design_part_name from think_style_part a inner join  think_style_warehouse b
+        on a.style_random_code=b.random_code
+        where ifnull(b.status, 1000)!= 1090 and b.style_code=#{styleCode}
+    </select>
+    <update id="updateDesignPartName">
+        update  think_style_part set design_part_name=#{designName} where design_part_code=#{designCode}
+    </update>
+
+</mapper>

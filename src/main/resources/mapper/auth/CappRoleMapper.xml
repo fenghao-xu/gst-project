@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.auth.CappRoleDao">
+
+
+    <insert id="insertBatch" parameterType="com.ylzs.entity.auth.CappRole">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        insert into capp_role (id, role_code, role_name,
+        menu_code, menu_name, role_type,
+        role_desc, create_user, create_time,
+        update_user, update_time)
+        values
+        <foreach collection="recordList" item="item" separator=",">
+            (#{item.id,jdbcType=INTEGER}, #{item.roleCode,jdbcType=VARCHAR}, #{item.roleName,jdbcType=VARCHAR},
+            #{item.menuCode,jdbcType=VARCHAR}, #{item.menuName,jdbcType=VARCHAR}, #{item.roleType,jdbcType=VARCHAR},
+            #{item.roleDesc,jdbcType=VARCHAR}, #{item.createUser,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateUser,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP})
+        </foreach>
+
+    </insert>
+
+
+    <select id="getRoleByUserCode" resultType="com.ylzs.entity.auth.resp.CappUserRoleToMenuResp" parameterType="string">
+        select
+        cr.role_code,
+        cr.role_name,
+        cr.menu_code,
+        cr.menu_name,
+        cm.menu_url,
+        cm.menu_level,
+        cm.menu_index
+        from capp_role cr
+        join capp_user_role cur on cr.role_code = cur.role_code
+        join capp_menu cm on cm.menu_code = cr.menu_code
+        where
+        1=1
+        <if test="userCode !=null and userCode!=''">
+            and cur.user_code = #{userCode}
+        </if>
+        order by cr.create_time desc
+
+    </select>
+
+
+    <select id="getMenuByRoleCode" resultType="com.ylzs.entity.auth.resp.CappUserRoleToMenuResp" parameterType="string">
+        SELECT
+        r.role_code as roleCode,
+        r.role_name as roleName,
+        cr.menu_code as menuCode,
+        cm.menu_name as menuName,
+        cm.parent_menu_code as parentMenuCode,
+        cm.parent_menu_name as parentMenuName,
+        cm.menu_url as menuUrl,
+        cm.menu_level menuLevel,
+        cm.menu_index as menuIndex
+        FROM
+        capp_role cr
+        LEFT JOIN role AS r ON cr.role_code = r.role_code
+        LEFT JOIN capp_menu as cm on cr.menu_code = cm.menu_code
+        WHERE
+        1=1
+        <if test="roleCode !=null and roleCode!=''">
+            and r.role_code = #{roleCode}
+        </if>
+        order by r.create_time desc
+
+    </select>
+
+    <select id="getAllRole" parameterType="java.lang.String" resultType="com.ylzs.entity.auth.Role">
+        SELECT
+            id as id,
+            role_code AS roleCode,
+            role_name AS roleName,
+            role_type AS roleType,
+            role_desc AS roleDesc,
+            create_user AS createUser,
+            create_time AS createTime,
+            update_user AS updateUser,
+            update_time AS updateTime
+        FROM
+	        role
+        WHERE
+        1=1
+        <if test="searchValue !=null and searchValue!=''">
+            and (
+            role_name like #{searchValue}
+            or role_code like #{searchValue}
+            or role_desc like #{searchValue}
+            or role_type like #{searchValue}
+
+            )
+        </if>
+        order by create_time desc
+    </select>
+
+
+    <select id="getAllPermissionAndMenu" resultType="com.ylzs.entity.auth.resp.CappUserRoleToMenuResp">
+       SELECT
+        menu_code AS menuCode,
+        menu_name AS menuName,
+        parent_menu_code AS parentMenuCode,
+        parent_menu_name AS parentMenuName,
+        menu_url as menuUrl,
+        menu_level as menuLevel,
+        menu_index as menuIndex
+
+        FROM
+            capp_menu;
+    </select>
+
+    <insert id="insertRole" parameterType="com.ylzs.entity.auth.Role">
+        insert into role (id, role_code, role_name,
+        role_type, role_desc, create_user,
+        create_time, update_user, update_time
+        )
+        values (#{id,jdbcType=INTEGER}, #{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR},
+        #{roleType,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <update id="updateRoleByPrimaryKeySelective" parameterType="com.ylzs.entity.auth.Role">
+        update role
+        <set>
+            <if test="roleCode != null">
+                role_code = #{roleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleType != null">
+                role_type = #{roleType,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                role_desc = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteRoleByPrimaryKey" parameterType="java.lang.Integer">
+        delete from role
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+
+    <delete id="deleteRoleMenuByRoleCode" parameterType="java.lang.String">
+        delete from capp_role
+        where role_code = #{roleCode}
+    </delete>
+
+
+</mapper>

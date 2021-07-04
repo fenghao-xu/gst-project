@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.pi.CappPiCategoryChangeDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.pi.CappPiCategoryChange">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />
+    <result column="other_style_code" jdbcType="VARCHAR" property="otherStyleCode" />
+    <result column="is_team_style" jdbcType="INTEGER" property="isTeamStyle" />
+    <result column="clothes_category_code" jdbcType="VARCHAR" property="clothesCategoryCode" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ct_style_code, other_style_code, is_team_style, clothes_category_code, receive_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from capp_pi_category_change
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from capp_pi_category_change
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.pi.CappPiCategoryChange" useGeneratedKeys="true">
+    insert into capp_pi_category_change (ct_style_code, other_style_code, is_team_style, 
+      clothes_category_code, receive_time)
+    values (#{ctStyleCode,jdbcType=VARCHAR}, #{otherStyleCode,jdbcType=VARCHAR}, #{isTeamStyle,jdbcType=INTEGER}, 
+      #{clothesCategoryCode,jdbcType=VARCHAR}, #{receiveTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.pi.CappPiCategoryChange" useGeneratedKeys="true">
+    insert into capp_pi_category_change
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="otherStyleCode != null">
+        other_style_code,
+      </if>
+      <if test="isTeamStyle != null">
+        is_team_style,
+      </if>
+      <if test="clothesCategoryCode != null">
+        clothes_category_code,
+      </if>
+      <if test="receiveTime != null">
+        receive_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="otherStyleCode != null">
+        #{otherStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isTeamStyle != null">
+        #{isTeamStyle,jdbcType=INTEGER},
+      </if>
+      <if test="clothesCategoryCode != null">
+        #{clothesCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null">
+        #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.pi.CappPiCategoryChange">
+    update capp_pi_category_change
+    <set>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="otherStyleCode != null">
+        other_style_code = #{otherStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isTeamStyle != null">
+        is_team_style = #{isTeamStyle,jdbcType=INTEGER},
+      </if>
+      <if test="clothesCategoryCode != null">
+        clothes_category_code = #{clothesCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null">
+        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.pi.CappPiCategoryChange">
+    update capp_pi_category_change
+    set ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      other_style_code = #{otherStyleCode,jdbcType=VARCHAR},
+      is_team_style = #{isTeamStyle,jdbcType=INTEGER},
+      clothes_category_code = #{clothesCategoryCode,jdbcType=VARCHAR},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

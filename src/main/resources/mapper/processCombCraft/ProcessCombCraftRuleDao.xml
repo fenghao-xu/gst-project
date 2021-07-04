@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.processCombCraft.ProcessCombCraftRuleDao">
+
+
+    <select id="selectRuleListByCraftRandomCode"
+            resultType="com.ylzs.entity.processCombCraft.ProcessCombCraftRule" parameterType="long">
+        select source_craft_code,source_craft_flow_num,source_craft_name,action_craft_code,action_craft_flow_num,action_craft_name,process_type,rule_index,processing_sort_num
+        from process_comb_craft_rule where process_comb_craft_random_code = #{parseLong}
+        group by rule_index order by processing_sort_num
+    </select>
+
+    <select id="selectRuleListByRandomCodes"
+            resultType="com.ylzs.entity.processCombCraft.ProcessCombCraftRule">
+        select * from process_comb_craft_rule
+        where
+        process_comb_craft_random_code in
+        <foreach collection="randomCodes" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+
+    </select>
+
+</mapper>

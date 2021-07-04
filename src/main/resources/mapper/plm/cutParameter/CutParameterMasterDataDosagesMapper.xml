@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataDosagesDao">
+    <resultMap type="CutParameterMasterDataDosages" id="CutParameterMasterDataDosagesResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="code" property="code" />
+		    <result column="dosage" property="dosage" />
+    </resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterDataDosages" parameterType="CutParameterMasterDataDosages">
+		insert into capp_pi_cut_parameter_dosages (
+		order_id,order_line_id,code,dosage
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.orderId}, #{item.orderLineId}, #{item.code},#{item.dosage}
+			)
+		</foreach>
+		on duplicate key update
+		order_id=values(order_id), order_line_id=values(order_line_id),
+		code=values(code),dosage= values(dosage)
+	</insert>
+
+
+
+
+</mapper>

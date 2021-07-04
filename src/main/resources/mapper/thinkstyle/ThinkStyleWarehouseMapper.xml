@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStyleWarehouseDao">
+    <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStyleWarehouse">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="clothes_category_code" property="clothesCategoryCode"/>
+        <result column="think_style_code" property="thinkStyleCode"/>
+        <result column="think_style_desc" property="thinkStyleDesc"/>
+        <result column="style_code" property="styleCode"/>
+        <result column="style_name" property="styleName"/>
+        <result column="description" property="description"/>
+        <result column="style_type_code" property="styleTypeCode"/>
+        <result column="is_big_style" property="isBigStyle"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="picture_url" property="pictureUrl"/>
+        <result column="craft_version" property="craftVersion"/>
+        <result column="version_desc" property="versionDesc"/>
+        <result column="inspire_time" property="inspireTime"/>
+        <result column="expiration_time" property="expirationTime"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="clothes_category_name" property="clothesCategoryName"/>
+        <result column="publish_user" property="publishUser"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_user_name" property="createUserName" />
+        <result column="update_user_name" property="updateUserName" />
+        <result column="publish_user_name" property="publishUserName" />
+        <result column="brand" property="brand" />
+    </resultMap>
+
+    <resultMap id="CraftCategoryClothesResult" type="com.ylzs.vo.thinkstyle.CraftCategoryVo">
+        <id column="craft_category_id" property="craftCategoryId"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <collection property="clothesCategoryVoList" column="id" ofType="com.ylzs.vo.thinkstyle.ClothesCategoryVo">
+            <id column="clothes_category_id" property="clothesCategoryId"/>
+            <result column="clothes_category_code" property="clothesCategoryCode"/>
+            <result column="clothes_category_name" property="clothesCategoryName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getCraftCategoryVos" resultMap="CraftCategoryClothesResult">
+        select a.id craft_category_id,a.craft_category_code,a.craft_category_name,c.id clothes_category_id,
+        c.dic_value clothes_category_code,c.value_desc clothes_category_name from craft_category a left join category_relation b on a.id=b.craft_category_id
+        left join dictionary c on c.id=b.clothes_category_id
+        where ifnull(a.is_invalid,0)=0 order by a.id,c.id
+    </select>
+
+    <select id="selectAllThinkStyle" resultMap="BaseResultMap">
+        select distinct a.*
+        from think_style_warehouse a
+        left join dictionary b on a.clothes_category_code=b.dic_value and b.dictionary_type_code='ClothesCategory'
+        left join category_relation c on b.id=c.clothes_category_id
+        left join craft_category d on c.craft_category_id=d.id
+        where 1=1
+
+        <if test="keywords != null and keywords != ''">
+            and (a.style_code like CONCAT('%',#{keywords},'%')
+            or a.style_name like CONCAT('%',#{keywords},'%')
+            or a.think_style_code like CONCAT('%',#{keywords},'%'))
+        </if>
+        <if test="craftCategoryCodes != null and craftCategoryCodes != ''">
+            and d.craft_category_code in
+            <foreach collection="craftCategoryCodes" separator="," open="(" close=")" item="craftCategoryCode">
+                #{craftCategoryCode}
+            </foreach>
+        </if>
+        <if test="clothesCategoryCodes != null and clothesCategoryCodes != ''">
+            and b.dic_value in
+            <foreach collection="clothesCategoryCodes" separator="," open="(" close=")" item="clothesCategoryCode">
+                #{clothesCategoryCode}
+            </foreach>
+        </if>
+        <if test="isInvalid != null">
+            and ifnull(a.is_invalid,0)=isInvalid
+        </if>
+        <if test="status != null and status != ''">
+            and ifnull(a.status,1000)=#{status}
+        </if>
+        <if test="updateDateStart != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{updateDateStart}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="updateDateStop != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{updateDateStop}, '%Y-%m-%d')   ]]>
+        </if>
+
+        order by a.id desc
+    </select>
+
+    <update id="updateStandardTime">
+        <!--更新普通部件时间（无位置） -->
+        update think_style_part a
+        inner join part_craft_design_parts b on a.design_part_code=b.design_code
+        inner join part_craft_master_data c on b.part_craft_main_random_code=c.random_code
+        set a.standard_price=c.standard_price,a.standard_time=c.standard_time
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')=''
+        and ifnull(a.is_special,0)=0 and c.status=1020;
+        <!--更新普通部件时间（有位置） -->
+        update think_style_part a
+        inner join part_craft_design_parts b on a.design_part_code=b.design_code
+        inner join part_craft_master_data c on b.part_craft_main_random_code=c.random_code
+        inner join part_craft_position d on d.part_craft_main_random_code=c.random_code and
+        a.position_code=d.part_position_code and position(#{clothingCategoryCode} in d.clothing_category_code)>0
+        set a.standard_price=c.standard_price,a.standard_time=c.standard_time
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')!=''
+        and ifnull(a.is_special,0)=0 and c.status=1020;
+
+        <!--更新特殊部件时间 -->
+        update think_style_part a
+        inner join (select part_random_code,sum(ifnull(bb.standard_time,0)) standard_time,
+        sum(ifnull(bb.standard_price,0)) standard_price from think_style_craft aa
+        inner join sewing_craft_warehouse bb where aa.craft_code=bb.craft_code and bb.status=1020
+        and aa.style_random_code=#{styleRandomCode} group by aa.part_random_code) b
+        on a.random_code=b.part_random_code
+        set a.standard_price=b.standard_price,a.standard_time=b.standard_time
+        where ifnull(a.is_special,0)=1 and a.style_random_code=#{styleRandomCode};
+
+
+        <!--更新智库款部件规则时间 -->
+        update think_style_part a
+        inner join (select aa.part_random_code,sum(ifnull(bb.standard_time,0)) standard_time,
+        sum(ifnull(bb.standard_price,0)) standard_price from think_style_process_rule aa inner join
+        sewing_craft_warehouse bb
+        on locate(concat(bb.craft_code,'#'),concat(aa.action_craft_code,'#'))>0
+        where ifnull(aa.action_craft_code,'')!= '' and aa.process_type in (0,1) and
+        aa.style_random_code=#{styleRandomCode} and bb.status=1020
+        group by aa.part_random_code) b on a.part_random_code=b.part_random_code
+        set a.standard_price=a.standard_price+b.standard_price,a.standard_time=a.standard_time+b.standard_time
+        where ifnull(a.is_special,0)=1 and a.style_random_code=#{styleRandomCode};
+
+        <!--更新智库款时间 -->
+        update think_style_warehouse a
+        inner join (select style_random_code,sum(ifnull(standard_time,0)) standard_time,
+        sum(ifnull(standard_price,0)) standard_price from think_style_part where
+        style_random_code=#{styleRandomCode} group by style_random_code ) b
+        on a.random_code=b.style_random_code
+        set a.standard_price=b.standard_price,a.standard_time=b.standard_time
+        where a.random_code=#{styleRandomCode};
+
+    </update>
+
+    <select id="getThinkStylePublishCraftVos" resultType="com.ylzs.vo.thinkstyle.ThinkStylePublishCraftVo">
+
+        <!--普通部件时间（无位置） -->
+        select
+        a.design_part_code bjdm,
+        d.craft_flow_num xh,
+        d.craft_code gxdm,
+        e.craft_name gxmc,
+        e.machine_name jqdm,
+        '' gjmc,
+        '' wxbz,
+        e.quality_spec pzsm,
+        e.make_description zgsm,
+        e.standard_time SMV,
+        e.standard_price dj
+        from think_style_part a
+        inner join part_craft_design_parts b on a.design_part_code=b.design_code
+        inner join part_craft_master_data c on b.part_craft_main_random_code=c.random_code
+        inner join part_craft_detail d on d.part_craft_main_random_code=b.part_craft_main_random_code
+        inner join sewing_craft_warehouse e on d.craft_code=e.craft_code
+
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')=''
+        and ifnull(a.is_special,0)=0 and c.status=1020
+
+        union all
+
+        <!--普通部件时间（有位置） -->
+        select
+        a.design_part_code bjdm,
+        dd.craft_flow_num xh,
+        dd.craft_code gxdm,
+        e.craft_name gxmc,
+        e.machine_name jqdm,
+        '' gjmc,
+        '' wxbz,
+        e.quality_spec pzsm,
+        e.make_description zgsm,
+        e.standard_time SMV,
+        e.standard_price dj
+        from think_style_part a
+        inner join part_craft_design_parts b on a.design_part_code=b.design_code
+        inner join part_craft_master_data c on b.part_craft_main_random_code=c.random_code
+        inner join part_craft_position d on d.part_craft_main_random_code=c.random_code and
+        a.position_code=d.part_position_code and position(#{clothingCategoryCode} in d.clothing_category_code)>0
+        inner join part_craft_detail dd on dd.part_craft_main_random_code=b.part_craft_main_random_code
+        inner join sewing_craft_warehouse e on dd.craft_code=e.craft_code
+        where a.style_random_code=#{styleRandomCode} and ifnull(a.position_code,'')!=''
+        and ifnull(a.is_special,0)=0 and c.status=1020
+
+        union all
+
+        <!--特殊部件时间 -->
+        select
+        a.design_part_code bjdm,
+        b.craft_flow_num xh,
+        b.craft_code gxdm,
+        b.craft_name gxmc,
+        e.machine_name jqdm,
+        '' gjmc,
+        '' wxbz,
+        e.quality_spec pzsm,
+        e.make_description zgsm,
+        e.standard_time SMV,
+        e.standard_price dj
+        from think_style_part a
+        inner join think_style_craft b on b.part_random_code=a.random_code
+        left join sewing_craft_warehouse e on e.craft_code=b.craft_code
+        where ifnull(a.is_special,0)=1 and a.style_random_code=#{styleRandomCode}
+
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylerecord.TimePriceOperationLogDao">
+        <resultMap type="TimePriceOperationLog" id="TimePriceOperationLogResult">
+            <result column="id" property="id" />
+            <result column="code" property="code" />
+            <result column="business_type" property="businessType" />
+            <result column="standard_time" property="standardTime"/>
+            <result column="standard_price" property="standardPrice"/>
+            <result column="update_user" property="updateUser"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="update_user_name" property="updateUserName"/>
+    </resultMap>
+
+    <insert id="insertData" parameterType="com.ylzs.entity.bigstylerecord.TimePriceOperationLog">
+        insert  into time_price_operation_log (code,business_type,standard_time,standard_price,update_user,update_time,update_user_name)
+        values (#{code},#{businessType},#{standardTime},#{standardPrice},#{updateUser},#{updateTime},#{updateUserName})
+    </insert>
+    <insert id="insertOrderData" parameterType="com.ylzs.entity.bigstylerecord.TimePriceOperationLog">
+        insert  into time_price_order_operation_log (code,business_type,standard_time,standard_price,update_user,update_time,update_user_name)
+        values (#{code},#{businessType},#{standardTime},#{standardPrice},#{updateUser},#{updateTime},#{updateUserName})
+    </insert>
+    <select id="getDataByBusinessTypeAndCode" resultMap="TimePriceOperationLogResult">
+        select  * from ${tableName} where business_type=#{businessType} and `code`=#{code} order by id desc
+    </select>
+</mapper>

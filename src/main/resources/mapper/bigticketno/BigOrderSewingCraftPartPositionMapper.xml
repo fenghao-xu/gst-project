@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.BigOrderSewingCraftPartPositionDao">
+    <resultMap type="SewingCraftPartPosition" id="SewingCraftPartPositionResult" >
+
+        <result column="sewing_craft_random_code" property="sewingCraftRandomCode"/>
+        <result column="part_position_code" property="partPositionCode"/>
+        <result column="part_position_name" property="partPositionName"/>
+        <!-- 公共部分-->
+        <!--<result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="randomCode" property="random_code"/>-->
+        <result column="craft_code" property="craftCode"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+    </resultMap>
+    <insert id="addSewingCraftPartPosition" parameterType="hashmap">
+        insert into big_order_part_postion
+         (part_craft_main_code,sewing_craft_random_code,part_position_code,part_position_name,craft_code)
+         values
+         (#{partCraftMainCode},#{sewingCraftRandomCode},#{partPositionCode},#{partPositionName},#{craftCode})
+    </insert>
+    <insert id="insertSewingCraftPartPositionForeach" parameterType="java.util.List">
+        insert into big_order_part_postion
+         (part_craft_main_code,sewing_craft_random_code,part_position_code,part_position_name,craft_code)
+         values
+         <foreach collection="positionList" item="position" separator=",">
+             (#{position.partCraftMainCode},#{position.sewingCraftRandomCode},#{position.partPositionCode},#{position.partPositionName},#{position.craftCode})
+         </foreach>
+    </insert>
+
+    <select id="getDataBySewingCraftRandomCodeAndCraftCode" resultMap="SewingCraftPartPositionResult" >
+        select  * from big_order_part_postion where sewing_craft_random_code= #{randomCode} and craft_code = #{craftCode}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndCraftCode" >
+        delete from big_order_part_postion where sewing_craft_random_code=#{randomCode} and craft_code=#{craftCode}
+    </delete>
+    <delete id="deleteDataByids" >
+        delete from big_order_part_postion where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIDsBySewingCraftRandomCodeAndCraftCode" resultType="java.lang.Long">
+        select  id from big_order_part_postion where sewing_craft_random_code=#{randomCode} and craft_code=#{craftCode}
+    </select>
+    <select id="getIDsBySewingCraftRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id from big_order_part_postion where sewing_craft_random_code=#{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </select>
+    <delete id="deleteDataBySewingCraftRandomCodeAndPartCraftMainCode" >
+        delete from big_order_part_postion where sewing_craft_random_code=#{randomCode} and part_craft_main_code=#{partCraftMainCode}
+    </delete>
+</mapper>

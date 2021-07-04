@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftStdPartDao">
+
+    <resultMap type="CraftStdPart" id="CraftStdPartResult">
+        <result column="craft_std_id" property="craftStdId"/>
+        <result column="craft_part_id" property="craftPartId"/>
+        <result column="craft_category_id" property="craftCategoryId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <select id="getCraftStdPartById" resultMap="CraftStdPartResult">
+        select * from craft_std_part
+        where craft_std_id=#{craftStdId} and craft_part_id=#{craftPartId}
+    </select>
+
+    <delete id="deleteCraftStdPart">
+        delete from craft_std_part
+        where craft_std_id=#{craftStdId}
+        <if test="craftPartId != null">
+            and craft_part_id=#{craftPartId}
+        </if>
+
+    </delete>
+
+    <delete id="deleteCraftStdPartRawDataById">
+        delete from craft_std_part_raw_data where craft_std_id=#{craftStdId}
+    </delete>
+
+    <select id="getCraftStdPartByPage" resultMap="CraftStdPartResult">
+        select * from craft_std_part
+        where 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (1=1)
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="craftPartId != null">
+            and craft_part_id=#{craftPartId}
+        </if>
+        <if test="craftStdId != null">
+            and craft_std_id=#{craftStdId}
+        </if>
+        order by id desc
+    </select>
+
+
+    <update id="updateCraftStdPart">
+        UPDATE
+        craft_std_part
+        <set>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="craftCategoryId != null">
+                craft_category_id=#{craftCategoryId},
+            </if>
+        </set>
+        WHERE craft_std_id = #{craftStdId}
+        AND craft_part_id = #{craftPartId}
+    </update>
+
+    <insert id="addCraftStdParts" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT IGNORE INTO craft_std_part (
+        craft_std_id,
+        craft_part_id,
+        craft_category_id,
+        update_time,
+        update_user
+        )
+        VALUES
+        <foreach collection="craftStdParts" item="itm" index="index" separator=",">
+            (
+            #{itm.craftStdId},
+            #{itm.craftPartId},
+            #{itm.craftCategoryId},
+            #{itm.updateTime},
+            #{itm.updateUser}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addCraftPartRawDataByCraftStdId">
+        insert into craft_std_part_raw_data select * from craft_std_part where craft_std_id = #{craftStdId}
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.FabricScoreDao">
+    <resultMap id="FabricScoreResult" type="FabricScore">
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+        <result column="fabric_score_name" property="fabricScoreName"/>
+        <result column="fabric_score_code" property="fabricScoreCode"/>
+        <result column="remark" property="remark"/>
+        <result column="score_range" property="scoreRange"/>
+        <result column="fabric_grade_code" property="fabricGradeCode"/>
+        <result column="max_value" property="maxValue"/>
+        <result column="min_value" property="minValue"/>
+    </resultMap>
+    <select id="getFabricScoreByPlanCode" resultMap="FabricScoreResult">
+        select  fabric_score_plan_code,fabric_score_name,fabric_score_code,fabric_grade_code,remark,max_value,min_value
+         from  fabric_score where  fabric_score_plan_code=#{0}
+    </select>
+    <select id="getAllFabricScore" resultMap="FabricScoreResult">
+        select  fabric_score_plan_code,fabric_score_name,fabric_score_code,fabric_grade_code,remark,max_value,min_value from  fabric_score
+    </select>
+</mapper>

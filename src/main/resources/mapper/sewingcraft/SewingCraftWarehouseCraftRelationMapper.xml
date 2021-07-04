@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftWarehouseRelationCraftDao">
+
+    <insert id="insertBatchRelationCraft">
+        insert into sewing_craft_warehouse_relation_craft (sewing_craft_relation_random_code,sewing_craft_random_code)
+        values
+        <foreach collection="craftRandomCodes" item="item" index="index" separator="," >
+            (#{relationRandomCode},#{item})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRelationRandomCode">
+        delete from sewing_craft_warehouse_relation_craft where sewing_craft_relation_random_code = #{relationRandomCode}
+        and sewing_craft_random_code in
+        <foreach collection="craftRandomCodes" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+
+
+    <select id="selectRelationCrafts"
+            resultType="com.ylzs.entity.sewingcraft.relation.SewingCraftWarehouseRelationResp">
+        select
+         sew.craft_code,
+         sew.description,
+         sew.craft_grade_code,
+         sew.machine_name,
+         sew.standard_time,
+         sew.standard_price,
+         sew.status,
+         b.craft_flow_num,
+         rc.sewing_craft_random_code sewingCraftRandomCode,
+         rc.sewing_craft_relation_random_code sewingCraftRelationRandomCode,
+         sew.craft_category_code
+         from sewing_craft_warehouse sew
+         left join sewing_craft_warehouse_relation_craft rc on sew.random_code=rc.sewing_craft_random_code
+         left join
+         (
+			 select scw.craft_flow_num ,scw.sewing_craft_random_code,cmf.craft_category_code
+			 from sewing_craft_warehouse_workplace scw
+             inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+             where cmf.status!=1090 and cmf.frame_type ='大货' and cmf.is_default=1
+		 )b on sew.random_code=b.sewing_craft_random_code and b.craft_category_code=sew.craft_category_code
+		 where rc.sewing_craft_relation_random_code = #{randomCode}
+         order by b.craft_flow_num asc,sew.craft_code asc
+    </select>
+
+    <select id="selectCountByRandomCode" resultType="java.lang.Integer">
+        select count(*) from sewing_craft_warehouse_relation_craft wrc
+        left join sewing_craft_warehouse_relation wr on wrc.sewing_craft_relation_random_code = wr.random_code
+        where wr.sewing_craft_random_code = #{randomCode}
+    </select>
+
+</mapper>

@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.workplacecraft.WorkplaceCraftDao">
+    <resultMap id="BaseResultMap" type="WorkplaceCraft">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="workplace_craft_code" property="workplaceCraftCode"/>
+        <result column="workplace_craft_name" property="workplaceCraftName"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="production_part_random_code" property="productionPartRandomCode"/>
+        <result column="production_part_code" property="productionPartCode"/>
+        <result column="production_part_name" property="productionPartName"/>
+        <result column="main_frame_random_code" property="mainFrameRandomCode"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="craft_category_random_code" property="craftCategoryRandomCode"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="create_user_name" property="createUserName" />
+        <result column="update_user_name" property="updateUserName" />
+        <result column="audit_user_name" property="auditUserName" />
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        random_code, id, `status`, workplace_craft_code, workplace_craft_name, craft_flow_num,
+        production_part_random_code, production_part_code, production_part_name, main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, is_invalid, audit_user, audit_time, create_user, create_time,
+        update_user, update_time, version,create_user_name,update_user_name,audit_user_name,
+        station,station_device
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from workplace_craft
+        where random_code = #{randomCode}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--@mbg.generated-->
+        delete from workplace_craft
+        where random_code = #{randomCode}
+    </delete>
+
+    <insert id="insert" parameterType="WorkplaceCraft" useGeneratedKeys="true" keyProperty="id">
+        <!--@mbg.generated-->
+        insert into workplace_craft (random_code, `status`, workplace_craft_code, workplace_craft_name,
+        craft_flow_num, production_part_random_code, production_part_code, production_part_name,
+        main_frame_random_code, main_frame_code, main_frame_name, craft_category_random_code,
+        craft_category_code, craft_category_name, remark, is_invalid, audit_user,
+        audit_time, create_user, create_time, update_user, update_time, version,create_user_name,update_user_name,audit_user_name,
+        station,station_device
+        )
+        values (#{randomCode}, #{status}, #{workplaceCraftCode}, #{workplaceCraftName},
+        #{craftFlowNum}, #{productionPartRandomCode}, #{productionPartCode}, #{productionPartName},
+        #{mainFrameRandomCode}, #{mainFrameCode}, #{mainFrameName}, #{craftCategoryRandomCode},
+        #{craftCategoryCode}, #{craftCategoryName}, #{remark}, #{isInvalid}, #{auditUser},
+        #{auditTime}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime}, #{version},
+        #{createUserName},#{updateUserName},#{auditUserName},#{station},#{stationDevice}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="WorkplaceCraft">
+        <!--@mbg.generated-->
+        insert into workplace_craft
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                random_code,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="workplaceCraftCode != null">
+                workplace_craft_code,
+            </if>
+            <if test="workplaceCraftName != null">
+                workplace_craft_name,
+            </if>
+            <if test="craftFlowNum != null">
+                craft_flow_num,
+            </if>
+            <if test="productionPartRandomCode != null">
+                production_part_random_code,
+            </if>
+            <if test="productionPartCode != null">
+                production_part_code,
+            </if>
+            <if test="productionPartName != null">
+                production_part_name,
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code,
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code,
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name,
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code,
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code,
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="isInvalid != null">
+                is_invalid,
+            </if>
+            <if test="auditUser != null">
+                audit_user,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="createUserName != null">
+                create_user_name,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+            <if test="auditUserName != null">
+                audit_user_name,
+            </if>
+            <if test="station != null">
+                station,
+            </if>
+            <if test="stationDevice != null">
+                station_device,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                #{randomCode},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="workplaceCraftCode != null">
+                #{workplaceCraftCode},
+            </if>
+            <if test="workplaceCraftName != null">
+                #{workplaceCraftName},
+            </if>
+            <if test="craftFlowNum != null">
+                #{craftFlowNum},
+            </if>
+            <if test="productionPartRandomCode != null">
+                #{productionPartRandomCode},
+            </if>
+            <if test="productionPartCode != null">
+                #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+            <if test="isInvalid != null">
+                #{isInvalid},
+            </if>
+            <if test="auditUser != null">
+                #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="version != null">
+                #{version},
+            </if>
+            <if test="createUserName != null">
+                #{createUserName},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName},
+            </if>
+            <if test="auditUserName != null">
+                #{auditUserName},
+            </if>
+            <if test="station != null">
+                #{station},
+            </if>
+            <if test="stationDevice != null">
+                #{stationDevice},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="WorkplaceCraft">
+        <!--@mbg.generated-->
+        update workplace_craft
+        <set>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="workplaceCraftCode != null">
+                workplace_craft_code = #{workplaceCraftCode},
+            </if>
+            <if test="workplaceCraftName != null">
+                workplace_craft_name = #{workplaceCraftName},
+            </if>
+            <if test="craftFlowNum != null">
+                craft_flow_num = #{craftFlowNum},
+            </if>
+            <if test="productionPartRandomCode != null">
+                production_part_random_code = #{productionPartRandomCode},
+            </if>
+            <if test="productionPartCode != null">
+                production_part_code = #{productionPartCode},
+            </if>
+            <if test="productionPartName != null">
+                production_part_name = #{productionPartName},
+            </if>
+            <if test="mainFrameRandomCode != null">
+                main_frame_random_code = #{mainFrameRandomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code = #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name = #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code = #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code = #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name = #{craftCategoryName},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="auditUser == auditUser">
+                audit_user = #{auditUser},
+            </if>
+            <if test="auditTime == auditTime">
+                audit_time = #{auditTime},
+            </if>
+            <if test="auditUserName == auditUserName">
+                audit_user_name = #{auditUserName},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="createUserName != null">
+                create_user_name = #{createUserName},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName},
+            </if>
+
+            <if test="station != null">
+                station = #{station},
+            </if>
+            <if test="stationDevice != null">
+                station_device = #{stationDevice},
+            </if>
+        </set>
+        where random_code = #{randomCode}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="WorkplaceCraft">
+        <!--@mbg.generated-->
+        update workplace_craft
+        set
+        `status` = #{status},
+        workplace_craft_code = #{workplaceCraftCode},
+        workplace_craft_name = #{workplaceCraftName},
+        craft_flow_num = #{craftFlowNum},
+        production_part_random_code = #{productionPartRandomCode},
+        production_part_code = #{productionPartCode},
+        production_part_name = #{productionPartName},
+        main_frame_random_code = #{mainFrameRandomCode},
+        main_frame_code = #{mainFrameCode},
+        main_frame_name = #{mainFrameName},
+        craft_category_random_code = #{craftCategoryRandomCode},
+        craft_category_code = #{craftCategoryCode},
+        craft_category_name = #{craftCategoryName},
+        remark = #{remark},
+        is_invalid = #{isInvalid},
+        audit_user = #{auditUser},
+        audit_time = #{auditTime},
+        create_user = #{createUser},
+        create_time = #{createTime},
+        update_user = #{updateUser},
+        update_time = #{updateTime},
+        version = #{version},
+        create_user_name = #{createUserName},
+        update_user_name = #{updateUserName},
+        audit_user_name = #{auditUserName},
+        station = #{station},
+        station_device = #{stationDevice}
+        where random_code = #{randomCode}
+    </update>
+
+    <update id="updateRelateWorkplaceCraft">
+        update part_craft_detail a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code and a.craft_flow_num=c.craft_flow_num
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode} and ifnull(a.lock_data,0)=0;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.source_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,b.craft_code,d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.source_craft_code)>0;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.action_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=get_replace_str(a.action_craft_code, a.action_craft_flow_num, b.craft_code, d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.action_craft_code)>0;
+
+
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.source_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,b.craft_code,d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.source_craft_code)>0;
+
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.action_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=get_replace_str(a.action_craft_code, a.action_craft_flow_num, b.craft_code, d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.action_craft_code)>0;
+
+
+
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.source_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,b.craft_code,d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.source_craft_code)>0;
+
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.action_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=get_replace_str(a.action_craft_code, a.action_craft_flow_num, b.craft_code, d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.action_craft_code)>0;
+
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.source_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,b.craft_code,d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.source_craft_code)>0;
+
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=d.craft_flow_num
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode};
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on locate(b.craft_code,a.action_craft_code)>0
+        inner join sewing_craft_warehouse_workplace c
+            on c.sewing_craft_random_code=b.random_code
+        inner join workplace_craft d on d.workplace_craft_code=c.workplace_craft_code
+        set a.action_craft_flow_num=get_replace_str(a.action_craft_code, a.action_craft_flow_num, b.craft_code, d.craft_flow_num)
+        where b.status!=1090 and d.workplace_craft_code=#{workplaceCraftCode}
+            and locate('#',a.action_craft_code)>0;
+
+
+
+        update sewing_craft_warehouse_workplace a
+        inner join workplace_craft b on a.workplace_craft_code=b.workplace_craft_code
+        set a.craft_flow_num=b.craft_flow_num,
+        a.workplace_craft_name=b.workplace_craft_name,
+        a.main_frame_code=b.main_frame_code,
+        a.main_frame_name=b.main_frame_name,
+        a.station=b.station,
+        a.station_device=b.station_device
+        where b.workplace_craft_code=#{workplaceCraftCode};
+    </update>
+
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into workplace_craft
+        (random_code, `status`, workplace_craft_code, workplace_craft_name, craft_flow_num,
+        production_part_random_code, production_part_code, production_part_name, main_frame_random_code,
+        main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, remark, is_invalid, audit_user, audit_time, create_user, create_time,
+        update_user, update_time, version, create_user_name,update_user_name,audit_user_name,
+        station,station_device)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.randomCode}, #{item.status}, #{item.workplaceCraftCode}, #{item.workplaceCraftName},
+            #{item.craftFlowNum}, #{item.productionPartRandomCode}, #{item.productionPartCode},
+            #{item.productionPartName}, #{item.mainFrameRandomCode}, #{item.mainFrameCode},
+            #{item.mainFrameName}, #{item.craftCategoryRandomCode}, #{item.craftCategoryCode},
+            #{item.craftCategoryName}, #{item.remark}, #{item.isInvalid}, #{item.auditUser},
+            #{item.auditTime}, #{item.createUser}, #{item.createTime}, #{item.updateUser},
+            #{item.updateTime}, #{item.version}, #{item.createUserName},#{item.updateUserName},#{item.auditUserName},
+            #{item.station}, #{item.stationDevice})
+        </foreach>
+    </insert>
+    <select id="getByCondition" resultType="WorkplaceCraft" parameterType="hashmap">
+        select * from workplace_craft
+        <where>
+            and ifnull(is_invalid,0)=0
+            and ifnull(status,1000)!=1090
+            <if test="productionPartRandomCode != null">
+                and production_part_random_code=#{productionPartRandomCode}
+            </if>
+            <if test="keywords != null and keywords != ''">
+                and (
+                workplace_craft_code like concat('%',#{keywords},'%')
+                or workplace_craft_name like concat('%',#{keywords},'%')
+                )
+            </if>
+            <if test="craftCategory != null and craftCategory != ''">
+                and (
+                craft_category_code like concat('%',#{craftCategory},'%')
+                or craft_category_name like concat('%',#{craftCategory},'%'))
+            </if>
+            <if test="craftCategoryList != null and craftCategoryList.size > 0">
+                and craft_category_code in
+                <foreach collection="craftCategoryList" open="(" separator="," close=")" item="code_">
+                    #{code_}
+                </foreach>
+            </if>
+            <if test="mainFrameRandomCode != null">
+                and (main_frame_random_code=#{mainFrameRandomCode})
+            </if>
+            <if test="mainFrameCode != null and mainFrameCode !='' ">
+                and (main_frame_code=#{mainFrameCode})
+            </if>
+            <if test="craftFlowNum != null and craftFlowNum != ''">
+                and concat(craft_flow_num,'') like concat('%',#{craftFlowNum},'%')
+            </if>
+            <if test="workplaceCraftCode != null and workplaceCraftCode != ''">
+                and workplace_craft_code like concat('%',#{workplaceCraftCode},'%')
+            </if>
+            <if test="workplaceCraftName != null and workplaceCraftName != ''">
+                and workplace_craft_name like concat('%',#{workplaceCraftName},'%')
+            </if>
+            <if test="status != null">
+                and  `status` = #{status}
+            </if>
+            <if test="createDateStart != null">
+                <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')>=DATE_FORMAT(#{createDateStart}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="createDateStop != null">
+                <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')<=DATE_FORMAT(#{createDateStop}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="updateDateStart != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')>=DATE_FORMAT(#{updateDateStart}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="updateDateStop != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')<=DATE_FORMAT(#{updateDateStop}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="createUser != null and createUser != ''">
+                and create_user like concat('%',#{createUser},'%')
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                and update_user like concat('%',#{updateUser},'%')
+            </if>
+        </where>
+        order by craft_flow_num asc
+    </select>
+    <select id="isSawingCraftWorkplaceExists" resultType="boolean">
+        select exists(select 1 from sewing_craft_warehouse_workplace where workplace_craft_code=#{workplaceCraftCode}
+        and ifnull(status,1000)!=1090) from dual
+    </select>
+    <select id="isFlowNumExistsInMainFrame" resultType="boolean">
+        select exists(select 1 from workplace_craft where craft_flow_num=#{craftFlowNum}
+        and main_frame_random_code=#{mainFrameRandomCode}
+        and ifnull(random_code,-1)!=ifnull(#{excludeRandomCode},-1)
+        and ifnull(status,1000)!=1090) from dual
+    </select>
+
+    <select id="isWorkplaceCraftNameExistsInMainFrame" resultType="boolean">
+        select exists(select 1 from workplace_craft where workplace_craft_name=#{workplaceCraftName}
+        and main_frame_random_code=#{mainFrameRandomCode}
+        and ifnull(random_code,-1)!=ifnull(#{excludeRandomCode},-1)
+        and ifnull(status,1000)!=1090) from dual
+    </select>
+    <select id="getWorkplaceCraftInUsed" resultType="java.lang.String">
+    select distinct group_concat(t.myname separator ',')  from (
+            select distinct concat('工序',b.craft_code) myname from sewing_craft_warehouse_workplace a
+                inner join sewing_craft_warehouse b on a.sewing_craft_random_code=b.random_code
+                where b.status!=1090 and a.workplace_craft_code=#{workplaceCraftCode}
+<!--            union
+            select distinct concat('款式工艺路线',b.big_style_analyse_code) myname from big_style_analyse_workplace a
+                inner join big_style_analyse_master b on a.sewing_craft_random_code=b.random_code
+                where b.status!=1090 and a.workplace_craft_code=#{workplaceCraftCode}
+            union
+            select distinct concat('工单工艺路线',b.big_style_analyse_code) myname from big_order_workplace a
+                inner join big_order_master b on a.sewing_craft_random_code=b.random_code
+                where b.status!=1090 and a.workplace_craft_code=#{workplaceCraftCode}-->
+
+        ) t
+    </select>
+</mapper>

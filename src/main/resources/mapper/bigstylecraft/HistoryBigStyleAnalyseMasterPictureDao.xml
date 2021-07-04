@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseMasterPictureDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMasterPicture">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="style_random_code" jdbcType="BIGINT" property="styleRandomCode" />
+    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, style_random_code, ct_style_code, pic_url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_master_picture
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_master_picture
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMasterPicture" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master_picture (style_random_code, ct_style_code, pic_url
+      )
+    values (#{styleRandomCode,jdbcType=BIGINT}, #{ctStyleCode,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMasterPicture" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master_picture
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="styleRandomCode != null">
+        style_random_code,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="picUrl != null">
+        pic_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="styleRandomCode != null">
+        #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null">
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMasterPicture">
+    update history_big_style_analyse_master_picture
+    <set>
+      <if test="styleRandomCode != null">
+        style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null">
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseMasterPicture">
+    update history_big_style_analyse_master_picture
+    set style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      pic_url = #{picUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

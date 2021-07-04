@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.BigStyleMasterDataSKCDao">
+        <resultMap type="BigStyleMasterDataSKC" id="BigStyleMasterDataSKCResult">
+            <result column="id" property="id" />
+            <result column="style_skc_code" property="styleSKCcode" />
+            <result column="skc_color_code" property="skcColorCode" />
+            <result column="skc_color_name" property="skcColorName" />
+            <result column="skc_image_url" property="skcImageURL" />
+            <result column="brightness" property="brightness" />
+            <result column="ct_style_code" property="ctStyleCode" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateBigStyleDataSKCList" parameterType="BigStyleMasterDataSKC">
+		insert into capp_pi_big_style_skc (
+		style_skc_code,skc_color_code,skc_color_name, skc_image_url, brightness,ct_style_code
+		)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.styleSKCcode}, #{item.skcColorCode},#{item.skcColorName}, #{item.skcImageURL},#{item.brightness},#{item.ctStyleCode}
+            )
+        </foreach>
+        on duplicate key update
+        style_skc_code=values(style_skc_code), skc_color_code=values(skc_color_code),
+        skc_color_name=values(skc_color_name),skc_image_url= values(skc_image_url),
+        brightness=values(brightness),ct_style_code=values(ct_style_code)
+    </insert>
+
+    <select id="listBigStyleMasterDataSKC" resultType="com.ylzs.entity.plm.BigStyleMasterDataSKC">
+        select distinct * from capp_pi_big_style_skc where ct_style_code=#{ctStyleCode}
+    </select>
+
+
+</mapper>

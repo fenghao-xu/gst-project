@@ -1,0 +1,31 @@
+spring:
+  profiles:
+    active: prod
+
+
+elasticsearch:
+  #集群地址
+  hosts: 127.0.0.1:9200,127.0.0.1:9201
+  #集群名称
+  clusterName: elasticsearch_cluster
+  #协议
+  schema: http
+  #连接超时时间
+  connectTimeOut: 1000
+  socketTimeOut: 3000
+  #获取连接的超时时间
+  connectionRequestTimeOut: 500
+  #最大连接数
+  maxConnectNum: 100
+  #最大路由连接数
+  maxConnectPerRoute: 100
+
+
+
+#mybatis-plus:
+#  config-location: classpath:/mybatis-config.xml
+#  type-aliases-package: com.ylzs.eneity
+#  mapper-locations: classpath:/mapper/**/*.xml
+#  global-config:
+#    db-config:
+#      id-type: auto

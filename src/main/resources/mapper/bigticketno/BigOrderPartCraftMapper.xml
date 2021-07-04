@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.BigOrderPartCraftDao">
+    <resultMap type="BigStyleAnalysePartCraft" id="BigStyleAnalysePartCraftResult" >
+        <result column="styleRandomCode" property="style_random_code"/>
+        <result column="ct_style_code" property="ctStyleCode"/>
+        <result column="part_code" property="partCode"/>
+        <result column="part_name" property="partName"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+        <result column="part_craft_main_name" property="partCraftMainName"/>
+        <result column="pattern_symmetry" property="patternSymmetry"/>
+        <result column="pattern_symmetry_name" property="patternSymmetryName"/>
+        <result column="import_order" property="importOrder"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="release_user" property="releaseUser"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+        <collection property="partCraftDetailList" javaType="java.util.ArrayList" ofType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraftDetail" >
+            <result column="big_style_analyse_code" property="bigStyleAnalyseCode"/>
+            <result column="detail_id" property="id"/>
+            <result column="order_num" property="orderNum"/>
+            <result column="time_update" property="timeUpdate"/>
+            <result column="detail_update_user" property="updateUser"/>
+            <result column="ct_style_code" property="ctStyleCode"/>
+            <result property="craftCode" column="craft_code"/>
+            <result property="craftRemark" column="craft_remark"/>
+            <result property="craftNo" column="craft_no"/>
+            <result column="station" property="station" />
+            <result column="station_device" property="stationDevice" />
+            <result property="workOrderNo" column="work_order_no"/>
+            <result property="craftName" column="craft_name"/>
+            <result property="machineCode" column="machine_code"/>
+            <result property="machineName" column="machine_name"/>
+            <result property="standardTime" column="standard_time"/>
+            <result property="standardPrice" column="standard_price"/>
+            <!--<result property="remark" column="remark"/>-->
+            <result property="timeSupplement" column="time_supplement"/>
+            <result property="isNew" column="is_new"/>
+            <result property="hasColor" column="has_color"/>
+            <result property="fabricGradeCode" column="fabric_grade_code"/>
+           <!-- <result property="isCancelSend" column="is_cancel_send" />-->
+            <result column="detail_part_craft_main_code" property="partCraftMainCode"/>
+            <result column="detail_part_craft_main_name" property="partCraftMainName"/>
+        </collection>
+    </resultMap>
+    <select id="getDataByStyleRandomCode" parameterType="java.lang.Long" resultMap="BigStyleAnalysePartCraftResult">
+       select * from big_order_partcraft where style_random_code = #{0} order by import_order asc
+    </select>
+    <select id="getIdByStyleRandomCode" parameterType="java.lang.Long" resultType="java.lang.Long">
+       select id from big_order_partcraft where style_random_code = #{0} order by import_order asc
+    </select>
+    <insert id="insertPartCraftForeach" parameterType="java.util.List">
+        insert into big_order_partcraft
+        (import_order,style_random_code,ct_style_code,part_code,part_name,part_craft_main_code,part_craft_main_name,pattern_symmetry,pattern_symmetry_name,create_time,create_user,update_time,update_user)
+        values
+        <foreach collection="partCraftList" item="part" separator=",">
+            (#{part.importOrder},#{part.styleRandomCode},#{part.ctStyleCode},#{part.partCode},#{part.partName},#{part.partCraftMainCode},#{part.partCraftMainName},#{part.patternSymmetry},#{part.patternSymmetryName},#{part.createTime},#{part.createUser},#{part.updateTime},#{part.updateUser})
+        </foreach>
+    </insert>
+    <delete id="deleteByStyleIds" parameterType="java.util.List">
+        delete from big_order_partcraft where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getPartAndDetailByStyleRandomCode" parameterType="java.lang.Long" resultMap="BigStyleAnalysePartCraftResult">
+        select part.part_craft_main_code, part.part_craft_main_name,part.import_order,part.part_code,part.create_user,part.create_time,part.update_user,part.update_time,part.pattern_symmetry,part.pattern_symmetry_name,
+        detail.craft_code,detail.craft_name,detail.craft_remark,detail.craft_no,detail.work_order_no,detail.machine_code,detail.machine_name,detail.standard_time,detail.standard_price,detail.time_supplement,detail.station,detail.station_device,detail.order_num,detail.time_update,detail.update_user as detail_update_user,
+        detail.is_new,detail.has_color,detail.fabric_grade_code,detail.part_craft_main_code as detail_part_craft_main_code,detail.part_craft_main_name as detail_part_craft_main_code,detail.id as detail_id
+         from big_order_partcraft as part
+        LEFT JOIN big_order_partcraft_detail detail on detail.style_random_code = part.style_random_code and detail.part_craft_main_code = part.part_craft_main_code
+       where  part.style_random_code=#{0} ORDER BY part.import_order asc,detail.order_num asc, detail.craft_no asc
+        <!-- where  part.style_random_code=#{0} ORDER BY part.import_order asc,detail.craft_no asc -->
+    </select>
+
+    <select id="getBigOrderDesignPart" resultType="DesignPart">
+        select a.part_craft_main_code remark,d.design_code,d.design_name,d.design_image from big_order_partcraft a
+        inner join part_craft_master_data b on a.part_craft_main_code=b.part_craft_main_code
+        inner join part_craft_design_parts c on b.random_code=c.part_craft_main_random_code
+        inner join design_part d on c.design_code=d.design_code
+        where b.status!=1090 and a.style_random_code=#{styleRandomCode}
+    </select>
+    <select id="getPartAndDetailByStyleRandomCodeAndOrderByCraftNo" parameterType="java.lang.Long" resultMap="BigStyleAnalysePartCraftResult">
+        select part.part_craft_main_code,part.import_order,part.part_craft_main_name,part.part_code,part.create_user,part.create_time,part.update_user,part.update_time,part.pattern_symmetry,part.pattern_symmetry_name,
+        detail.craft_code,detail.craft_name,detail.craft_remark,detail.craft_no,detail.work_order_no,detail.machine_code,mac.machine_name_cn as machine_name,detail.standard_time,detail.standard_price,detail.time_supplement,detail.station,detail.station_device,detail.order_num,detail.time_update,detail.update_user as detail_update_user,
+        detail.is_new,detail.has_color,detail.fabric_grade_code,detail.part_craft_main_code as detail_part_craft_main_code,detail.part_craft_main_name as detail_part_craft_main_code,detail.id as detail_id
+        from big_order_partcraft as part
+        LEFT JOIN big_order_partcraft_detail detail on detail.style_random_code = part.style_random_code and detail.part_craft_main_code = part.part_craft_main_code
+        left join machine as mac on mac.machine_code = detail.machine_code
+        where  part.style_random_code=#{0} ORDER BY part.import_order asc,detail.craft_no asc
+        <!-- where  part.style_random_code=#{0} ORDER BY part.import_order asc, detail.craft_no asc -->
+    </select>
+</mapper>

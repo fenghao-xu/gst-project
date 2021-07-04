@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.designPart.DesignPartDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.designPart.DesignPart" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="designCode" column="design_code"/>
+        <result property="designName" column="design_name"/>
+        <result property="designImage" column="design_image"/>
+        <result property="clothingCategory" column="clothing_category"/>
+        <result property="partMiddleCode" column="part_middle_code"/>
+        <result property="partPosition" column="part_position"/>
+        <result property="patternType" column="pattern_type"/>
+        <result property="patternMode" column="pattern_mode"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result column="small_category" property="smallCategory" />
+        <result column="style_type" property="styleType" />
+        <result column="style_code" property="styleCode" />
+        <result column="seam_line1" property="seamLine1" />
+        <result column="seam_line2" property="seamLine2" />
+        <result column="stitch_mid_type" property="stitchMidType" />
+        <result column="stitch_small_type" property="stitchSmallType" />
+        <result column="image_url_mtm" property="imageUrlMtm" />
+        <result column="image_durl_mtm" property="imageDurlMtm" />
+        <result column="warp_offset" property="warpOffset" />
+        <result column="weft_offset" property="weftOffset" />
+        <result column="oblique_offset" property="obliqueOffset" />
+        <result column="active" property="active" />
+        <result column="applicable_position" property="applicablePosition" />
+        <result column="stitch_number" property="stitchNumber" />
+        <result column="w_stitch" property="wStitch" />
+        <result column="gong_yi_explain" property="gongYiExplain" />
+        <result column="pattern_technology_d" property="patternTechnologyD" />
+        <result column="pattern_msg" property="patternMsg" />
+        <result column="affect_craft" property="affectCraft" />
+        <result column="receive_time" property="receiveTime" />
+    </resultMap>
+
+    <select id="getDataByDesignCode" resultMap="resultMap">
+        select * from design_part where design_code=#{designCode}
+    </select>
+    <select id="getDesignDataList" resultType="com.ylzs.vo.designpart.DesignPartVo" parameterType="HashMap">
+        SELECT
+            des.`id` AS `id`,
+            des.`random_code` AS `randomCode`,
+            des.`design_code` AS `designCode`,
+            des.`design_name` AS `designName`,
+            des.`design_image` AS `designImage`,
+            des.`clothing_category` AS `clothingCategory`,
+            des.`part_middle_code` AS `partMiddleCode`,
+            des.`part_position` AS `partPosition`,
+            des.`pattern_type` AS `patternType`,
+            des.`pattern_mode` AS `patternMode`,
+            des.`remark` AS `remark`,
+            des.`version` AS `version`,
+            des.`gong_yi_explain` AS `gongYiExplain`,
+            des.`pattern_technology_d` AS `patternTechnologyD`,
+            des.`pattern_technology` AS `patternTechnology`,
+            des.`pattern_msg` AS `patternMsg`,
+            des.`affect_craft` AS `affectCraft`,
+            des.create_user as createUser,
+            des.create_time as createTime,
+            des.receive_time as receiveTime,
+            t.`value_desc` AS `craftCategoryName`,
+            ts.`value_desc` AS `patternTypeName`,
+            pmd.`part_middle_name` AS `partMiddleName`
+        FROM
+            design_part des
+            LEFT JOIN dictionary t ON t.dic_value = des.clothing_category AND t.dictionary_type_code = 'ClothesCategory'
+            LEFT JOIN dictionary ts ON ts.dic_value = des.pattern_type AND ts.dictionary_type_code = 'PatternTechnology'
+            LEFT JOIN part_middle pmd ON pmd.part_middle_code = des.part_middle_code
+        WHERE
+            ifnull(des.is_invalid,0) = 0
+            <choose>
+                <when test="clothingCode != null and general != null">
+                    AND des.clothing_category in(#{clothingCode},'1')
+                </when>
+                <when test="clothingCode == null and general != null">
+                    AND des.clothing_category = '1'
+                </when>
+                <when test="clothingCode != null and general == null">
+                    AND des.clothing_category = #{clothingCode}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+            <if test="partMiddleCode != null">
+                AND des.part_middle_code = #{partMiddleCode}
+            </if>
+            <if test="params != null">
+                AND (des.design_code LIKE CONCAT('%',#{params},'%')
+                OR  des.design_name LIKE CONCAT('%',#{params},'%'))
+            </if>
+            <if test="designPartCode != null">
+                and des.design_code like CONCAT('%',#{designPartCode},'%')
+            </if>
+            <if test="designPartName != null">
+                and des.design_name like CONCAT('%',#{designPartName},'%')
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[   and DATE_FORMAT(des.receive_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[   and DATE_FORMAT(des.receive_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+            </if>
+    </select>
+
+    <select id="selectByRandomCode" resultType="com.ylzs.vo.designpart.DesignPartVo">
+        select
+        des.`design_code` as `designCode`,
+        des.`design_name` as `designName`,
+        t.`value_desc` as `craftCategoryName`
+        from design_part des
+        left join dictionary t on t.dic_value = des.clothing_category
+        <where>
+            des.is_invalid = 0 and t.dictionary_type_code = 'ClothesCategory'
+            <if test="randomCode != null">
+                and des.random_code = #{randomCode}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addOrUpdatePartData" parameterType="DesignPartMasterData">
+		insert into design_part (
+		random_code,status,design_code,design_name,design_image,clothing_category,part_middle_code,part_position,pattern_type,pattern_mode,remark,
+		create_user,create_time,small_category,style_type,style_code,
+		seam_line1,seam_line2,stitch_mid_type,stitch_small_type,image_url_mtm,image_durl_mtm,warp_offset,weft_offset,oblique_offset,
+		active,applicable_position,stitch_number,w_stitch,gong_yi_explain,pattern_technology_d,pattern_msg,affect_craft,receive_time
+		)
+		values (
+		#{randomCode},#{status},#{designCode}, #{designName},#{designImage},#{clothingCategory},#{partMiddleCode},#{partPosition},#{patternType},#{patternMode},#{remark},
+		#{createUser},#{createTime},#{smallCategory},#{styleType},#{styleCode},
+		#{seamLine1},#{seamLine2},#{stitchMidType},#{stitchSmallType},#{imageUrlMtm},#{imageDurlMtm},#{warpOffset},#{weftOffset},#{obliqueOffset},
+		#{active},#{applicablePosition},#{stitchNumber},#{wStitch},#{gongYiExplain},#{patternTechnologyD},#{patternMsg},#{affectCraft},#{receiveTime})
+		on duplicate key update
+		status=#{status},update_user=#{updateUser},design_code=#{designCode},design_name=#{designName},design_image=#{designImage},clothing_category=#{clothingCategory},part_middle_code=#{partMiddleCode},
+		part_position=#{partPosition},pattern_type=#{patternType},pattern_mode=#{patternMode},small_category=#{smallCategory},
+		style_type=#{styleType},style_code=#{styleCode},seam_line1=#{seamLine1},seam_line2=#{seamLine2},stitch_mid_type=#{stitchMidType},stitch_small_type=#{stitchSmallType},image_url_mtm=#{imageUrlMtm},image_durl_mtm=#{imageDurlMtm},
+		warp_offset=#{warpOffset},weft_offset=#{weftOffset},oblique_offset=#{obliqueOffset},active=#{active},applicable_position=#{applicablePosition},stitch_number=#{stitchNumber},w_stitch=#{wStitch},
+		gong_yi_explain=#{gongYiExplain},pattern_technology_d=#{patternTechnologyD},pattern_msg=#{patternMsg},affect_craft=#{affectCraft},receive_time=#{receiveTime}
+	</insert>
+
+    <select id="getDesignCodeAll" resultType="com.ylzs.vo.designpart.DesignPartVo">
+        SELECT
+
+        `id` AS `id`,
+        `design_code` AS `designCode`,
+        `design_name` AS `designName`,
+        `part_middle_code` AS `partMiddleCode`,
+        `part_position` AS `partPosition`
+        FROM
+        design_part
+        WHERE `design_code` IN
+        <foreach collection="partCodes" separator="," open="(" close=")"  item="code">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="getDesignPartSourceVos" resultType="com.ylzs.vo.designpart.DesignPartSourceVo">
+        select * from (
+        <choose>
+            <when test="useIn == null or useIn==0 ">
+                select 0 lineNo,a.part_craft_main_code code,a.part_craft_main_name name,'' customStyleNo,'部件工艺'
+                source,a.create_user createUser,a.create_time createTime
+                from part_craft_master_data a
+                where exists(select 1 from part_craft_design_parts
+                where ifnull(status,1000) not in (1030,1090) and part_craft_main_random_code=a.random_code and design_code=#{designPartCode})
+            </when>
+            <when test="useIn == null or useIn==1 ">
+                select 1 lineNo,a.think_style_code code,a.style_name name,'' customStyleNo,'智库款工艺'
+                source,a.create_user createUser,a.create_time createTime
+                from think_style_warehouse a
+                where exists(select 1 from think_style_part
+                where style_random_code=a.random_code and design_part_code=#{designPartCode})
+            </when>
+            <when test="useIn == null or useIn==2 ">
+                select 2 lineNo,concat(a.order_no,'-',a.order_line_id) code,a.think_style_name name,a.style_code
+                customStyleNo, '订单工艺路线' source,a.create_user createUser,a.create_time createTime
+                from custom_style_craft_course a
+                where exists(select 1 from custom_style_part
+                where custom_main_random_code=a.random_code and design_part_code=#{designPartCode})
+            </when>
+        </choose>
+         ) t
+    </select>
+    <select id="getAllEmbroideryParts" resultType="com.ylzs.vo.designpart.DesignPartVo">
+         SELECT
+        des.`design_code` AS `designCode`,
+        des.`design_name` AS `designName`,
+        des.`clothing_category` AS `clothingCategory`,
+        des.`part_middle_code` AS `partMiddleCode`,
+        des.`part_position` AS `partPosition`,
+        des.`pattern_type` AS `patternType`,
+        des.`pattern_mode` AS `patternMode`,
+        des.`pattern_technology_d` AS `patternTechnologyD`,
+        des.`pattern_technology` AS `patternTechnology`
+        FROM
+            design_part des  where  des.part_middle_code like 'VT-%' OR part_middle_code like 'YT-%' ;
+    </select>
+
+</mapper>

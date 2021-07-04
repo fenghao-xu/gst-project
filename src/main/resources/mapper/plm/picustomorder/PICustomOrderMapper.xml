@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.PICustomOrderDao">
+        <resultMap type="PICustomOrder" id="PICustomOrderResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="order_type" property="orderType" />
+            <result column="style_code" property="styleCode" />
+            <result column="style_skc_code" property="styleSKCCode" />
+            <result column="cust_style_code" property="custStyleCode" />
+            <result column="cust_style_name" property="custStyleName" />
+            <result column="pattern_symmetry" property="patternSymmetry"/>
+            <result column="quantity" property="quantity" />
+            <result column="customer_name" property="customerName" />
+            <result column="sales_outlets_name" property="salesOutletsName" />
+            <result column="employee_phone" property="employeePhone" />
+            <result column="employee_name" property="employeeName" />
+            <result column="other_request" property="otherRequest" />
+            <result column="fabric_direction" property="fabricDirection" />
+            <result column="discharge_mode" property="dischargeMode" />
+            <result column="main_material_code" property="mainMaterialCode" />
+            <result column="receive_time" property="receiveTime" />
+            <!--<collection property="units" ofType="com.ylzs.entity.plm.PICustomOrderPart" javaType="java.util.ArrayList" columnPrefix="part_">-->
+            <collection property="units" ofType="com.ylzs.entity.plm.PICustomOrderPart" javaType="java.util.ArrayList" >
+                <result column="order_id" property="orderId"/>
+                <result column="order_line_id" property="orderLineId"/>
+                <result column="unit_code" property="unitCode"/>
+                <result column="unit_position_code" property="unitPositionCode"/>
+                <result column="random_code" property="randomCode"/>
+                <result column="receive_time" property="receiveTime"/>
+                <!--<collection property="ums" column="ums" ofType="com.ylzs.entity.plm.PICustomOrderPartMaterial" javaType="java.util.ArrayList" columnPrefix="material_">-->
+                    <collection property="ums" column="ums" ofType="com.ylzs.entity.plm.PICustomOrderPartMaterial" javaType="java.util.ArrayList">
+                    <result column="order_id" property="orderId"/>
+                    <result column="order_line_id" property="orderLineId"/>
+                    <result column="parent_random_code" property="parentRandomCode"/>
+                    <result column="code" property="code"/>
+                    <result column="material_name" property="materialName"/>
+                    <result column="pattern_symmetry" property="patternSymmetry"/>
+                    <result column="grand_category" property="grandCategory"/>
+                    <result column="mid_category" property="midCategory"/>
+                    <result column="small_category" property="smallCategory"/>
+                    <result column="material_grade" property="materialGrade"/>
+                    <result column="material_style" property="materialStyle"/>
+                    <result column="weight" property="weight"/>
+                    <result column="weight_grade" property="weightGrade"/>
+                    <result column="weft_elastic_grade" property="weftElasticGrade"/>
+                    <result column="warp_elastic_grade" property="warpElasticGrade"/>
+                    <result column="draping_grade" property="drapingGrade"/>
+                    <result column="draping" property="draping"/>
+                    <result column="HY_grade" property="HYGrade"/>
+                    <result column="hardness_grade" property="hardnessGrade"/>
+                    <result column="thick_grade" property="thickGrade"/>
+                    <result column="material_direction" property="materialDirection"/>
+                    <result column="position_code" property="positionCode"/>
+                    <result column="buttonhole" property="buttonhole"/>
+                    <result column="clasp" property="clasp"/>
+                    <result column="rhinestone_hole" property="rhinestoneHole"/>
+                    <result column="material_number" property="materialNumber"/>
+                    <result column="mtm_position_code" property="mtmPositionCode"/>
+                    <result column="receive_time" property="receiveTime"/>
+                </collection>
+            </collection>
+    </resultMap>
+
+
+    <insert id="addCustomOrder" parameterType="list">
+        insert into capp_pi_custom_order (
+        order_id,order_line_id,order_type,style_code,cust_style_code,cust_style_name,quantity,customer_name,sales_outlets_name,employee_phone,employee_name,other_request,
+        fabric_direction,discharge_mode,main_material_code,receive_time,pattern_symmetry,style_skc_code
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.orderId},#{item.orderLineId},#{item.orderType}, #{item.styleCode},#{item.custStyleCode},#{item.custStyleName},#{item.quantity},#{item.customerName},#{item.salesOutletsName},
+            #{item.employeePhone},#{item.employeeName},#{item.otherRequest},#{item.fabricDirection},#{item.dischargeMode},#{item.mainMaterialCode},#{item.receiveTime},#{item.patternSymmetry},#{item.styleSKCCode}
+            )
+        </foreach>
+        on duplicate key update
+        order_id=values(order_id), order_line_id=values(order_line_id), order_type=values(order_type), style_code=values(style_code), cust_style_code=values(cust_style_code), cust_style_name=values(cust_style_name), quantity=values(quantity),
+        customer_name=values(customer_name), sales_outlets_name=values(sales_outlets_name), employee_phone=values(employee_phone), employee_name=values(employee_name), other_request=values(other_request),
+        fabric_direction=values(fabric_direction), discharge_mode=values(discharge_mode), main_material_code=values(main_material_code), receive_time=values(receive_time),pattern_symmetry=values(pattern_symmetry),style_skc_code=values(style_skc_code)
+    </insert>
+
+    <select id="selOrderById" resultMap="PICustomOrderResult">
+          select co.*,cop.*,copm.*
+          from capp_pi_custom_order co
+          left join capp_pi_custom_order_part cop on co.order_id = cop.order_id and co.order_line_id = cop.order_line_id
+          left join capp_pi_custom_order_part_material copm on co.order_id = copm.order_id and co.order_line_id = copm.order_line_id
+          where co.order_id = #{orderId}
+          and co.order_line_id = #{orderLineId}
+    </select>
+
+    <select id="getOrderId" resultMap="PICustomOrderResult">
+          select co.*
+          from capp_pi_custom_order co
+          where co.order_id = #{orderId}
+          and co.order_line_id = #{orderLineId}
+    </select>
+    <select id="getCustomOrderInvalid" resultType="com.ylzs.entity.plm.PICustomOrder">
+        select a.* from capp_pi_custom_order a where a.order_type in ('30','40','50','70') and a.style_code=#{styleCode}
+            and not exists(select * from custom_style_craft_course where status=1020 and order_no=a.order_id and order_line_id=a.order_line_id)
+    </select>
+    <select id="getCustomOrderInvalidByRandomCode" resultType="com.ylzs.entity.plm.PICustomOrder">
+        select distinct a.* from capp_pi_custom_order a
+            inner join think_style_warehouse b on a.style_code=b.style_code
+            inner join think_style_part c on b.random_code=c.style_random_code
+            inner join part_craft_design_parts d on d.design_code=c.design_part_code
+            inner join part_craft_master_data e on e.random_code=d.part_craft_main_random_code
+        where a.order_type in ('30','40','50','70')
+            and ifnull(b.status,1000)=1020
+            and ifnull(c.is_special,0)=0
+            and ifnull(c.is_valid,0)=1
+            and e.random_code=#{partCraftMainRandomCode}
+            and not exists(select * from custom_style_craft_course where status=1020 and order_no=a.order_id and order_line_id=a.order_line_id)
+    </select>
+    <select id="getOrderDataListLike" resultType="com.ylzs.vo.orderdata.OrderDataVo">
+        select t.* from (
+        select
+        a.order_type order_type,
+        c.clothes_category_name clothes_category_name,
+        c.clothes_category_code clothes_category_code,
+        concat(a.order_id,'-',a.order_line_id) order_no,
+        a.style_code think_style_code,
+        a.cust_style_code style_code,
+        a.style_skc_code style_skc_Code,
+        ifnull(concat(a.pattern_symmetry,' ',f.value_desc),a.pattern_symmetry) pattern_symmetry,
+        '' sub_brand,
+        '' packing,
+        a.quantity qty,
+        b.status status,
+        (select aa.processing_status_name from order_processing_status aa
+        where aa.order_no=concat(a.order_id,'-',a.order_line_id)
+        order by aa.create_time desc limit 1) remark,
+        (
+        case
+        when a.fabric_direction='A' then
+            (case when exists(select 1 from capp_pi_custom_order_part_material where code=a.main_material_code and
+            order_id=a.order_id and order_line_id=a.order_line_id and material_direction='1') then '拉布工序顺毛亮面拉布'
+            else ''
+            end)
+        when a.fabric_direction='B' then
+            (case when exists(select 1 from capp_pi_custom_order_part_material where code=a.main_material_code and
+            order_id=a.order_id and order_line_id=a.order_line_id and material_direction='1') then '拉布工序逆毛暗面拉布'
+            else ''
+            end)
+        else ''
+        end
+        ) fabric_direction,
+        a.employee_name create_user_name,
+        a.receive_time create_time,
+        a.employee_name update_user_name,
+        a.receive_time update_time,
+        1 source_type
+        from capp_pi_custom_order a
+        left join custom_style_craft_course b on a.order_id=b.order_no and a.order_line_id=b.order_line_id
+        left join think_style_warehouse c on a.style_code=c.style_code
+        left join dictionary f on a.pattern_symmetry=f.dic_value and f.dictionary_type_code='patternSymmetry'
+        <where>
+                ifnull(b.status,1000) != 1030
+                <if test="orderId != null and orderId != ''">
+                    and a.order_id like concat('%', #{orderId},'%')
+                </if>
+                <if test="orderLineId != null and orderLineId != ''">
+                    and a.order_line_id like concat('%',#{orderLineId},'%')
+                </if>
+                <if test="thinkStyleCode != null and thinkStyleCode != ''">
+                    and a.style_code like concat('%',#{thinkStyleCode},'%')
+                </if>
+                <if test="styleCode != null and styleCode != ''">
+                    and a.cust_style_code like concat('%',#{styleCode},'%')
+                </if>
+                <if test="createTimeBeginDate != null and createTimeBeginDate != '' ">
+                    and date_format(a.receive_time,'%Y-%m-%d') <![CDATA[>=]]> date_format(#{createTimeBeginDate},'%Y-%m-%d')
+                </if>
+                <if test="createTimeEndDate != null and createTimeEndDate != '' ">
+                    and date_format(a.receive_time,'%Y-%m-%d') <![CDATA[<=]]> date_format(#{createTimeEndDate},'%Y-%m-%d')
+                </if>
+            </where>
+
+            <if test="(styleCode != null and styleCode != '') or ((orderId == null or orderId == '') and (orderLineId == null or orderLineId == '') and (styleCode == null or styleCode == '') and (thinkStyleCode == null or thinkStyleCode == ''))">
+            union all
+            select
+            '' order_type,
+            '' clothes_category_name,
+            '' clothes_category_code,
+            '' order_no,
+            '' think_style_code,
+            a.ct_style_code style_code,
+            '' style_skc_Code,
+            '' pattern_symmetry,
+            a.sub_brand sub_brand,
+            a.packing_method_coat packing,
+            null qty,
+            b.status status,
+            '' remark,
+            '' fabric_direction,
+            '' create_user_name,
+            a.receive_time create_time,
+            '' update_user_name,
+            a.receive_time update_time,
+            2 source_type
+            from capp_pi_big_style a
+            left join big_style_analyse_master b on a.ct_style_code=b.ct_style_code
+            <where>
+                ifnull(b.status,1000) != 1090
+                <if test="styleCode != null and styleCode != ''">
+                    and a.ct_style_code like concat('%',#{styleCode},'%')
+                </if>
+                <if test="createTimeBeginDate != null and createTimeBeginDate != '' ">
+                    and date_format(a.receive_time,'%Y-%m-%d') <![CDATA[>=]]> date_format(#{createTimeBeginDate},'%Y-%m-%d')
+                </if>
+                <if test="createTimeEndDate != null and createTimeEndDate != '' ">
+                    and date_format(a.receive_time,'%Y-%m-%d') <![CDATA[<=]]> date_format(#{createTimeEndDate},'%Y-%m-%d')
+                </if>
+            </where>
+        </if>
+        ) t order by t.create_time desc
+
+    </select>
+
+
+</mapper>

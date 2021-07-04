@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.exp.infrastructure.repository.mapper.InterfaceExpLogDao">
+
+
+
+    <select id="getAll" parameterType="hashmap" resultType="com.ylzs.exp.interfaces.dto.ReceiveExpLogDTO">
+
+        SELECT
+            pi_recive_id as reciveId,
+            receive_type as receiveType,
+            result_status as resultStatus,
+            result_status_name as resultStatusName,
+            result_desc as resultDesc,
+            create_time as createTime,
+            receive_time as receiveTime,
+            process_status as processStatus,
+            process_user as processUser,
+            process_time as processTime
+         FROM
+        interface_exp_log
+
+        <where>
+            <if test="receiveType != null">
+                and receive_type = #{receiveType}
+            </if>
+            <if test="processStatus != null">
+                and process_status = #{processStatus}
+            </if>
+            <if test="createTimeBeginDate != null">
+                and create_time between #{createTimeBeginDate} and #{createTimeEndDate}
+            </if>
+        </where>
+
+    </select>
+
+    <update id="updateReceiveStatus" parameterType="hashmap" >
+        UPDATE interface_exp_log
+        set  process_status = #{processStatus}
+        process_user = #{processUser},
+        process_time = #{processTime}
+        WHERE pi_recive_id = #{reciveId}
+    </update>
+
+</mapper>

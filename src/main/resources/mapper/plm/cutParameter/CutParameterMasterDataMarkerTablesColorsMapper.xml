@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataMarkerTablesColorsDao">
+    <resultMap type="CutParameterMasterDataMarkerTablesColors" id="CutParameterMasterDataMarkerTablesColorsResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+			<result column="index" property="index" />
+			<result column="material_code" property="materialCode" />
+			<result column="plies" property="plies" />
+			<result column="packages" property="packages" />
+	</resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterDataMarkerTablesColors" parameterType="CutParameterMasterDataMarkerTablesColors">
+		insert into capp_pi_cut_parameter_markertables_colors (
+		order_id,order_line_id,index,
+		material_code,plies,packages
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.orderId}, #{item.orderLineId},#{item.index},#{item.materialCode}, #{item.plies}, #{item.packages}
+			)
+		</foreach>
+		on duplicate key update
+		order_id=values(order_id), order_line_id=values(order_line_id),index=values(index),
+		material_code= values(material_code),plies=values(plies), packages=values(packages)
+	</insert>
+
+
+
+
+</mapper>

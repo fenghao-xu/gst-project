@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.timeparam.WideCoefficientDao">
+    <resultMap type="WideCoefficient" id="WideCoefficientResult">
+        <result column="wide_code" property="wideCode"/>
+        <result column="wide_name" property="wideName"/>
+        <result column="remark" property="remark"/>
+        <result column="coefficient" property="coefficient"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+    <select id="getAllWideCoefficient" resultMap="WideCoefficientResult">
+        select  * from wide_coefficient
+    </select>
+
+    <!-- 根据工艺品类查找对应的款房系数-->
+    <select id="getWideCoefficientByCraftCatagory" resultMap="WideCoefficientResult">
+        select  * from wide_coefficient where craft_category_code = #{0}
+    </select>
+
+    <update id="deleteWideCoefficient" parameterType="list">
+        <foreach collection="wideCoefficientList" item="item" separator=";">
+            update wide_coefficient
+            <set>
+                <if test="item.updateUser != null">
+                    update_user = #{item.updateUser},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+                <if test="item.status != null">
+                    status = #{item.status}
+                </if>
+            </set>
+            where random_code=#{item.randomCode}
+        </foreach>
+    </update>
+
+    <update id="deleteByWideCode" parameterType="WideCoefficient">
+        update wide_coefficient
+        <set>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </set>
+        where wide_code=#{wideCode}
+    </update>
+
+    <select id="getWideCoefficientByCode" resultMap="WideCoefficientResult" parameterType="java.util.List">
+        select * from wide_coefficient where wide_code in
+        <foreach collection="wideCodeList" item="wideCode" open="(" close=")"  separator=",">
+            #{wideCode}
+        </foreach>
+    </select>
+
+    <select id="getWideCoefficientByPage" resultMap="WideCoefficientResult">
+        select a.id,a.random_code,a.status,a.wide_code,a.wide_name,a.coefficient,group_concat(cc.craft_category_name) craft_category_code,a.remark,a.update_user,a.update_time from wide_coefficient a
+        left JOIN craft_category cc ON cc.craft_category_code = a.craft_category_code
+        WHERE a.`status` &lt; '1090'
+        <if test="keywords!=null and keywords!=''">
+            and (a.wide_code like concat('%',#{keywords},'%')
+            or a.wide_name like concat('%',#{keywords},'%')
+            or a.coefficient like concat('%',#{keywords},'%')
+            or a.update_user LIKE concat('%',(SELECT user_code  FROM user WHERE user_name LIKE concat('%', #{keywords}, '%')) , '%')
+            or a.remark like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        GROUP BY a.wide_code
+        order by a.update_time desc,a.id asc
+    </select>
+
+    <select id="getWideCoefficientByWideCode" resultMap="WideCoefficientResult" parameterType="string">
+        SELECT
+            a.id,
+            a.random_code,
+            a. STATUS,
+            a.wide_code,
+            a.wide_name,
+            a.coefficient,
+            group_concat(a.craft_category_code) craft_category_code,
+            a.remark,
+            a.update_user,
+            a.update_time
+        FROM
+            wide_coefficient a
+        WHERE
+            a.wide_code = #{wideCode}
+            and a.status &lt; 1090
+            GROUP BY a.wide_code
+    </select>
+
+    <insert id="addWideCoefficient" parameterType="list">
+        insert into
+        wide_coefficient(random_code,status,wide_code,wide_name,coefficient,craft_category_code,remark,update_user,update_time)
+        values
+        <foreach collection="wideCoefficientList" item="item" separator=",">
+            (#{item.randomCode},#{item.status},#{item.wideCode},#{item.wideName},#{item.coefficient},#{item.craftCategoryCode},#{item.remark},#{item.updateUser},#{item.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="updateByWideAndCategory" parameterType="list" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        wide_coefficient(random_code,status,wide_code,wide_name,coefficient,craft_category_code,remark,update_user,update_time)
+        values
+        <foreach collection="wideCoefficientList" item="item" separator=",">
+            (#{item.randomCode},#{item.status},#{item.wideCode},#{item.wideName},#{item.coefficient},#{item.craftCategoryCode},#{item.remark},#{item.updateUser},#{item.updateTime})
+        </foreach>
+        on duplicate key update
+        status=values(status),wide_name=values(wide_name),coefficient=values(coefficient),remark=values(remark),update_user=values(update_user),update_time=values(update_time)
+    </insert>
+
+
+    <delete id="deleteCoefficientCode" parameterType="list">
+        delete from wide_coefficient where wide_code = #{wideCode}
+    </delete>
+
+</mapper>

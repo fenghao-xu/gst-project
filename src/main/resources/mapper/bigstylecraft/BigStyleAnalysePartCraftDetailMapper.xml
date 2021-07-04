@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.BigStyleAnalysePartCraftDetailDao">
+    <resultMap type="BigStyleAnalysePartCraftDetail" id="BigStyleAnalysePartCraftDetailResult" >
+      <!--  <result column="ct_style_code" property="ctStyleCode"/>-->
+        <result property="craftCode" column="craft_code"/>
+        <result property="craftRemark" column="craft_remark"/>
+        <result property="craftName" column="craft_name"/>
+        <result property="craftNo" column="craft_no"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+        <result property="workOrderNo" column="work_order_no"/>
+        <result property="machineCode" column="machine_code"/>
+        <result property="machineName" column="machine_name"/>
+        <result property="standardTime" column="standard_time"/>
+        <result property="standardPrice" column="standard_price"/>
+        <!--<result property="remark" column="remark"/>-->
+
+        <result property="timeSupplement" column="time_supplement"/>
+        <result property="isNew" column="is_new"/>
+        <result property="hasColor" column="has_color"/>
+        <result property="craftGradeCode" column="craft_grade_code"/>
+        <result property="fabricGradeCode" column="fabric_grade_code"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+        <result column="part_craft_main_name" property="partCraftMainName"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="time_update" property="timeUpdate"/>
+        <result column="update_user" property="updateUser"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+
+    </resultMap>
+    <update id="updatePartCraftDetail" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraftDetail">
+        update big_style_analyse_partcraft_detail set craft_remark=#{craftRemark},machine_code=#{machineCode},
+        standard_time=#{standardTime},standard_price=#{standardPrice},time_update=#{timeUpdate},update_user =#{updateUser} where id=#{id}
+    </update>
+    <insert id="insertPartCraftDetailForeach" parameterType="java.util.List">
+        insert into big_style_analyse_partcraft_detail
+        (update_user,time_update,order_num,style_random_code,
+        craft_code,craft_remark,craft_no,craft_name,machine_code,standard_time ,
+        standard_price,time_supplement,is_new,has_color,craft_grade_code,fabric_grade_code,part_craft_main_code,
+        part_craft_main_name,work_order_no,station,station_device)
+        values
+        <foreach collection="detailList" item="detail" separator=",">
+            (#{detail.updateUser},#{detail.timeUpdate},#{detail.orderNum},#{detail.styleRandomCode},
+            #{detail.craftCode},#{detail.craftRemark},#{detail.craftNo},#{detail.craftName},#{detail.machineCode},#{detail.standardTime},
+            #{detail.standardPrice},#{detail.timeSupplement},#{detail.isNew},#{detail.hasColor},#{detail.craftGradeCode},#{detail.fabricGradeCode},#{detail.partCraftMainCode},
+            #{detail.partCraftMainName},#{detail.workOrderNo},#{detail.station},#{detail.stationDevice})
+        </foreach>
+    </insert>
+    <delete id="deleteByStyleIds" >
+        delete from big_style_analyse_partcraft_detail where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIdsByStyleRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id from big_style_analyse_partcraft_detail where style_random_code = #{randomCode} and part_craft_main_code = #{partCraftMainCode}
+    </select>
+    <select id="getIdsByStyleRandomCodeAndPartCraftMainCodeAndCraftCode" resultType="java.lang.Long">
+        select  id from big_style_analyse_partcraft_detail where style_random_code = #{randomCode} and part_craft_main_code = #{partCraftMainCode} and craft_code=#{craftCode}
+    </select>
+    <select id="getBigStyleSectionTime" resultMap="BigStyleAnalysePartCraftDetailResult">
+        SELECT c.section_code craft_code,c.section_name craft_name,
+        sum(b.standard_time) standard_time,
+        sum(b.standard_price) standard_price
+         from big_style_analyse_partcraft a
+            inner JOIN big_style_analyse_sewing_craft b
+                on a.style_random_code=b.random_code and a.part_craft_main_code=b.part_craft_main_code
+            left join work_type c on b.work_type_code = c.work_type_code
+            where a.style_random_code=#{styleRandomCode}
+        group by c.section_code,c.section_name
+    </select>
+
+    <select id="getBigStyleAnalysePartCraftDetail"
+            resultMap="BigStyleAnalysePartCraftDetailResult">
+        select b.*
+        from big_style_analyse_partcraft a
+        inner join big_style_analyse_partcraft_detail b
+            on a.style_random_code=b.style_random_code and a.part_craft_main_code=b.part_craft_main_code
+        where a.style_random_code=#{styleRandomCode} order by b.craft_no
+    </select>
+
+    <select id="getBigStyleAnalyseNewCraft"
+            resultType="com.ylzs.entity.bigstylecraft.BigStyleAnalysePartCraftDetail">
+        select b.*
+        from big_style_analyse_partcraft a
+        inner join big_style_analyse_partcraft_detail b
+        on a.style_random_code=b.style_random_code and a.part_craft_main_code=b.part_craft_main_code
+        where a.style_random_code=#{styleRandomCode} and b.is_new=1
+    </select>
+    <select id="checkCraftName" resultType="java.lang.String">
+        select craft_name from big_style_analyse_partcraft_detail
+            where style_random_code=#{styleRandomCode} and char_length(craft_name)>40
+        union
+        select craft_name from big_style_analyse_sewing_craft
+            where random_code=#{styleRandomCode} and char_length(craft_name)>40
+
+    </select>
+
+
+    <!-- 一年一次刷数据-->
+    <update id="updateCraftLevelAndPrice" parameterType="hashmap">
+        update  big_style_analyse_partcraft_detail
+        set
+        <if test="craftGradeCode !=null">
+            craft_grade_code=#{craftGradeCode}
+        </if>
+        where craft_code = #{craftCode}
+    </update>
+    <update id="updatePriceByStyleRandomCodeAndCraftCode">
+         update  big_style_analyse_partcraft_detail set standard_price = #{standardPrice}  where craft_code = #{craftCode} and style_random_code=#{styleRandomCode}
+    </update>
+
+</mapper>

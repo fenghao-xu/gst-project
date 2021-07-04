@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftmainframe.CraftMainFrameDao">
+    <resultMap id="BaseResultMap" type="CraftMainFrame">
+        <!--@mbg.generated-->
+        <id column="random_code" property="randomCode"/>
+        <result column="id" property="id"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="craft_category_random_code" property="craftCategoryRandomCode"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="description" property="description"/>
+        <result column="frame_type" property="frameType"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="version" property="version"/>
+        <result column="is_default" property="isDefault" />
+        <result column="create_user_name" property="createUserName" />
+        <result column="update_user_name" property="updateUserName" />
+        <result column="audit_user_name" property="auditUserName" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        random_code, id, main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, description, `status`, is_invalid, create_user, create_time,frame_type,
+        update_user, update_time, audit_user, audit_time, version, is_default,create_user_name,update_user_name,audit_user_name
+    </sql>
+    <select id="selectByCode" parameterType="string" resultMap="BaseResultMap">
+        select * from craft_main_frame where main_frame_code = #{0}
+    </select>
+    <select id="getAllMainFrameToMap" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from craft_main_frame where IFNULL(is_invalid,0)=0
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from craft_main_frame
+        where random_code = #{randomCode}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--@mbg.generated-->
+        delete from craft_main_frame
+        where random_code = #{randomCode}
+    </delete>
+
+    <insert id="insert" parameterType="CraftMainFrame">
+        <!--@mbg.generated-->
+        insert into craft_main_frame (random_code, main_frame_code, main_frame_name, craft_category_random_code,
+        craft_category_code, craft_category_name, description, `status`, is_invalid,
+        create_user, create_time, update_user, update_time, audit_user, audit_time,
+        version, is_default,create_user_name,update_user_name,audit_user_name,frame_type)
+        values (#{randomCode}, #{mainFrameCode}, #{mainFrameName}, #{craftCategoryRandomCode},
+        #{craftCategoryCode}, #{craftCategoryName}, #{description}, #{status}, #{isInvalid},
+        #{createUser}, #{createTime}, #{updateUser}, #{updateTime}, #{auditUser}, #{auditTime},
+        #{version}, #{isDefault},#{createUserName},#{updateUserName},#{auditUserName},#{frameType})
+    </insert>
+    <insert id="insertSelective" parameterType="CraftMainFrame">
+        <!--@mbg.generated-->
+        insert into craft_main_frame
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                random_code,
+            </if>
+            <if test="mainFrameCode != null">
+                main_frame_code,
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name,
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code,
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code,
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="frameType != null">
+                frame_type,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="isInvalid != null">
+                is_invalid,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="auditUser != null">
+                audit_user,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="isDefault != null">
+                is_default,
+            </if>
+            <if test="createUserName != null">
+                create_user_name,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+            <if test="auditUserName != null">
+                audit_user_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="randomCode != null">
+                #{randomCode},
+            </if>
+            <if test="mainFrameCode != null">
+                #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                #{craftCategoryName},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="frameType != null">
+                #{frameType},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="isInvalid != null">
+                #{isInvalid},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="auditUser != null">
+                #{auditUser},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime},
+            </if>
+            <if test="version != null">
+                #{version},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault},
+            </if>
+            <if test="createUserName != null">
+                #{createUserName},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName},
+            </if>
+            <if test="auditUserName != null">
+                #{auditUserName},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="CraftMainFrame">
+        <!--@mbg.generated-->
+        update craft_main_frame
+        <set>
+            <if test="mainFrameCode != null">
+                main_frame_code = #{mainFrameCode},
+            </if>
+            <if test="mainFrameName != null">
+                main_frame_name = #{mainFrameName},
+            </if>
+            <if test="craftCategoryRandomCode != null">
+                craft_category_random_code = #{craftCategoryRandomCode},
+            </if>
+            <if test="craftCategoryCode != null">
+                craft_category_code = #{craftCategoryCode},
+            </if>
+            <if test="craftCategoryName != null">
+                craft_category_name = #{craftCategoryName},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="frameType != null">
+                frame_type = #{frameType},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="auditUser == auditUser">
+                audit_user = #{auditUser},
+            </if>
+            <if test="auditTime == auditTime">
+                audit_time = #{auditTime},
+            </if>
+            <if test="auditUserName == auditUserName">
+                audit_user_name = #{auditUserName},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault},
+            </if>
+            <if test="createUserName != null">
+                create_user_name = #{createUserName},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName},
+            </if>
+
+        </set>
+        where random_code = #{randomCode}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="CraftMainFrame">
+        <!--@mbg.generated-->
+        update craft_main_frame
+        set
+        main_frame_code = #{mainFrameCode},
+        main_frame_name = #{mainFrameName},
+        craft_category_random_code = #{craftCategoryRandomCode},
+        craft_category_code = #{craftCategoryCode},
+        craft_category_name = #{craftCategoryName},
+        description = #{description},
+        frame_type = #{frameType},
+        `status` = #{status},
+        is_invalid = #{isInvalid},
+        create_user = #{createUser},
+        create_time = #{createTime},
+        update_user = #{updateUser},
+        update_time = #{updateTime},
+        audit_user = #{auditUser},
+        audit_time = #{auditTime},
+        version = #{version},
+        is_default = #{isDefault},
+        create_user_name = #{createUserName},
+        update_user_name = #{updateUserName},
+        audit_user_name = #{auditUserName}
+        where random_code = #{randomCode}
+    </update>
+
+    <update id="updateRelateMainFrameInfo">
+        update workplace_craft a
+        inner join craft_main_frame b on a.main_frame_code=b.main_frame_code
+        set a.main_frame_name=b.main_frame_name
+        where a.main_frame_code=#{mainFrameCode};
+
+        update sewing_craft_warehouse_workplace a
+        inner join craft_main_frame b on a.main_frame_code=b.main_frame_code
+        set a.main_frame_name=b.main_frame_name
+        where a.main_frame_code=#{mainFrameCode};
+    </update>
+
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into craft_main_frame
+        (random_code, main_frame_code, main_frame_name, craft_category_random_code, craft_category_code,
+        craft_category_name, description, `status`, is_invalid, create_user, create_time,
+        update_user, update_time, audit_user, audit_time, version, is_default,create_user_name,update_user_name,audit_user_name,frame_type)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.randomCode}, #{item.mainFrameCode}, #{item.mainFrameName},
+            #{item.craftCategoryRandomCode},
+            #{item.craftCategoryCode}, #{item.craftCategoryName}, #{item.description}, #{item.status},
+            #{item.isInvalid}, #{item.createUser}, #{item.createTime}, #{item.updateUser},
+            #{item.updateTime}, #{item.auditUser}, #{item.auditTime}, #{item.version}, #{item.isDefault},
+            #{item.createUserName},#{item.updateUserName},#{item.auditUserName},#{item.frameType})
+        </foreach>
+    </insert>
+    <select id="getByCondition"  resultMap="BaseResultMap">
+        select * from craft_main_frame
+        <where>
+            ifnull(is_invalid,0)=0
+            and ifnull(status,1000)!=1090
+            <if test="keywords != null and keywords != ''">
+                and (main_frame_code like concat('%',#{keywords},'%')
+                or main_frame_name like concat('%', #{keywords}, '%')
+                or craft_category_code like concat('%', #{keywords}, '%')
+                or craft_category_name like concat('%', #{keywords},'%')
+                or description like concat('%', #{keywords}, '%'))
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+            </if>
+        </where>
+        order by id desc
+    </select>
+    <select id="isDefaultMainFrameExists" resultType="boolean">
+        select exists(select 1 from craft_main_frame where ifnull(is_invalid,0)=0 and craft_category_random_code=#{craftCategoryRandomCode}
+         and random_code!=ifnull(#{excludeMainFrameRandomCode}, -1) and ifnull(is_default,0)=1) from dual
+    </select>
+
+    <select id="selectMainFrameByClothesCategoryCode"
+            resultType="com.ylzs.entity.craftmainframe.CraftMainFrame">
+        select a.* from craft_main_frame a
+            inner join category_relation b on a.craft_category_random_code=b.craft_category_id
+            where b.clothes_category_code=#{clothesCategoryCode}
+                and FIND_IN_SET('定制',a.frame_type) limit 1
+    </select>
+    <select id="selectMainFrameListByClothesCategoryCode" resultType="com.ylzs.entity.craftmainframe.CraftMainFrame">
+        SELECT
+            a.*
+        FROM
+            craft_main_frame a
+            INNER JOIN category_relation b ON a.craft_category_random_code = b.craft_category_id
+        WHERE
+             b.clothes_category_code = #{clothesCategoryCode} and a.frame_type like concat('%',#{frameType},'%')
+    </select>
+    <select id="getByCraftCategoryAndType" resultType="com.ylzs.entity.craftmainframe.CraftMainFrame">
+        SELECT
+            a.*
+        FROM
+            craft_main_frame a
+        WHERE craft_category_code =  #{craftCategoryCode} and frame_type like concat('%',#{frameType},'%')
+    </select>
+    <select id="getCraftMainFrameAll" resultType="com.ylzs.vo.craftstd.CraftMainFrameVo">
+        select main_frame_code,main_frame_name from craft_main_frame
+            where ifnull(is_invalid,0)=0 and ifnull(status,1000)!=1090
+
+    </select>
+</mapper>

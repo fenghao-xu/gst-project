@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partThesaurus.PartWarehouseDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.partThesaurus.PartWarehouse" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="clothesCategoryCode" column="clothes_category_code"/>
+        <result property="partRandomCode" column="part_random_code"/>
+        <result property="partPropertyCode" column="part_property_code"/>
+        <result property="partCode" column="part_code"/>
+        <result property="partName" column="part_name"/>
+        <result property="description" column="description"/>
+        <result property="producePartRandomCode" column="produce_part_random_code"/>
+        <result property="sharePartRandomCode" column="share_part_random_code"/>
+        <result property="patternCode" column="pattern_code"/>
+        <result property="standardTime" column="standard_time"/>
+        <result property="standardPrice" column="standard_price"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="sketchPictureUrl" column="sketch_picture_url"/>
+        <result property="remark" column="remark"/>
+        <result property="auditTime" column="audit_time"/>
+
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+
+</mapper>

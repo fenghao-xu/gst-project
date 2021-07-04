@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.processCombCraft.ProcessCombCraftDao">
+
+    <resultMap type="com.ylzs.entity.processCombCraft.resp.ProcessCombCraftAllDataResp" id="getProcessComb">
+        <id column="id" property="id"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="process_comb_craft_code" property="processCombCraftCode"/>
+        <result column="process_comb_craft_name" property="processCombCraftName"/>
+        <result column="clothing_category_code" property="clothingCategoryCode"/>
+        <result column="clothing_category_name" property="clothingCategoryName"/>
+        <result column="process_comb_craft_desc" property="processCombCraftDesc"/>
+        <result column="process_numbers" property="processNumbers"/>
+        <result column="status" property="status"/>
+        <!-- 方案 -->
+        <collection property="programs" javaType="list"
+                    ofType="com.ylzs.entity.processCombCraft.ProcessCombCraftProgram">
+            <result column="process_comb_craft_random_code" property="processCombCraftRandomCode"/>
+            <result column="process_craft_code" property="processCraftCode"/>
+            <result column="process_craft_name" property="processCraftName"/>
+            <result column="process_number" property="processNumber"/>
+            <result column="process_index" property="processIndex"/>
+        </collection>
+        <!-- 规则 -->
+        <collection property="rules" javaType="list"
+                    ofType="com.ylzs.entity.processCombCraft.ProcessCombCraftRule">
+            <result column="process_comb_craft_random_code" property="processCombCraftRandomCode"/>
+            <result column="source_craft_code" property="sourceCraftCode"/>
+            <result column="source_craft_name" property="sourceCraftName"/>
+            <result column="action_craft_code" property="actionCraftCode"/>
+            <result column="action_craft_name" property="actionCraftName"/>
+            <result column="processing_sort_num" property="processingSortNum"/>
+            <result column="source_craft_flow_num" property="sourceCraftFlowNum"/>
+            <result column="action_craft_flow_num" property="actionCraftFlowNum"/>
+            <result column="rule_index" property="ruleIndex"/>
+            <result column="process_type" property="processType"/>
+        </collection>
+    </resultMap>
+
+    <sql id="processCraftAll">
+        pcc.id,
+        pcc.random_code,
+        pcc.process_comb_craft_code,
+        pcc.process_comb_craft_name,
+        pcc.clothing_category_code,
+        pcc.clothing_category_name,
+        pcc.process_comb_craft_desc,
+        pcc.process_numbers,
+        pcc.status,
+
+        pccp.process_comb_craft_random_code,
+        pccp.process_craft_code,
+        pccp.process_craft_name,
+        pccp.process_number,
+        pccp.process_index,
+
+        pccr.process_comb_craft_random_code,
+        pccr.source_craft_code,
+        pccr.source_craft_name,
+        pccr.action_craft_code,
+        pccr.action_craft_name,
+        pccr.processing_sort_num,
+        pccr.source_craft_flow_num,
+        pccr.action_craft_flow_num,
+        pccr.rule_index,
+        pccr.process_type
+    </sql>
+
+    <select id="selectListByCategoryCode" resultType="string">
+        select group_concat(p.process_craft_code) processCraftCodes
+        from process_comb_craft_program p
+        join (
+        select random_code from process_comb_craft where
+        clothing_category_code= #{clothingCategoryCode} and status not in(1030,1090)
+        <if test="randomCode != null">
+            and random_code != #{randomCode}
+        </if>
+        ) a on a.random_code = p.process_comb_craft_random_code
+        group by p.process_comb_craft_random_code,p.process_number
+    </select>
+
+    <sql id="queryProcess">
+      pcc.id,
+      pcc.random_code,
+      pcc.process_comb_craft_code,
+      pcc.process_comb_craft_name,
+      pcc.clothing_category_code,
+      pcc.clothing_category_name,
+      pcc.process_comb_craft_desc,
+      pcc.status,
+      pcc.process_numbers,
+      ifnull(u.user_name,pcc.create_user) createUser,
+      pcc.create_time
+    </sql>
+
+    <select id="selectProcessCombCraftChecklist" resultType="com.ylzs.entity.processCombCraft.ProcessCombCraft"
+            parameterType="com.ylzs.entity.processCombCraft.req.QueryProcessCombCraftReq">
+        select
+        <include refid="queryProcess"></include>
+        from process_comb_craft pcc
+        join process_comb_craft_program pccp on pcc.random_code = pccp.process_comb_craft_random_code
+        join process_comb_craft_rule pccr on pcc.random_code = pccr.process_comb_craft_random_code
+        left join user u on u.user_code = pcc.create_user
+        <where>
+            <if test="status !=null">
+                pcc.status = #{status}
+            </if>
+            <if test="searchText !=null and searchText !='' ">
+                and pcc.process_comb_craft_name like concat('%',#{searchText},'%') or
+                pccp.process_craft_code like concat('%',#{searchText},'%') or
+                pccp.process_craft_name like concat('%',#{searchText},'%')
+            </if>
+            <if test="craftCode != null and craftCode != ''">
+                and pccp.process_craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="craftDescript != null and craftDescript != ''">
+                and pccp.process_craft_name like concat('%',#{craftDescript},'%')
+            </if>
+            <if test="craftCombCraftCode != null and craftCombCraftCode != ''">
+                and pcc.process_comb_craft_code like concat('%',#{craftCombCraftCode},'%')
+            </if>
+            <if test="craftCombCraftName != null and craftCombCraftName != ''">
+                and pcc.process_comb_craft_name like concat('%',#{craftCombCraftName},'%')
+            </if>
+            <if test="userCode !=null and userCode !=''">
+                and pcc.create_user = #{userCode}
+            </if>
+            <if test="clothingCategoryCode != null and clothingCategoryCode !=''">
+                and pcc.clothing_category_code = #{clothingCategoryCode}
+            </if>
+            <if test="processCraft != null and processCraft !=''">
+                and pccr.source_craft_code like concat('%',#{processCraft},'%') or
+                pccr.source_craft_name like concat('%',#{processCraft},'%')
+            </if>
+            and pcc.status in(1000,1020) and pccp.status in(1000,1020) and pccr.status in(1000,1020)
+        </where>
+        group by pcc.random_code order by pcc.create_time desc
+    </select>
+
+    <select id="selectProcessCreateUser" resultType="com.ylzs.entity.partCombCraft.resp.UserResp">
+        select pcc.create_user userCode,u.user_name from process_comb_craft pcc
+        left join user u on u.user_code = pcc.create_user
+        where pcc.status in(1000,1020) group by pcc.create_user
+    </select>
+
+    <select id="selectProcessListByCategoryCode" resultMap="getProcessComb">
+        select <include refid="processCraftAll"></include>
+        from process_comb_craft pcc
+        join process_comb_craft_program pccp on pcc.random_code = pccp.process_comb_craft_random_code
+        join process_comb_craft_rule pccr on pcc.random_code = pccr.process_comb_craft_random_code
+        where pcc.clothing_category_code =#{clothingCategoryCode}
+        and pcc.status =1020 and pccp.status =1020 and pccr.status =1020
+    </select>
+
+    <select id="selectNameCount" resultType="java.lang.Integer">
+        select count(*) from process_comb_craft
+        <where>
+            process_comb_craft_name = #{name} and status not in (1030,1090)
+            <if test="randomCode !=null and randomCode != 0">
+                and random_code != #{randomCode}
+            </if>
+        </where>
+    </select>
+
+    <sql id="processCombCraftSql">
+      pcc.random_code,
+      pcc.process_comb_craft_code,
+      pcc.process_comb_craft_name,
+      pcc.clothing_category_code,
+      pcc.clothing_category_name,
+      pcc.process_comb_craft_desc,
+      pcc.status,
+      pcc.process_numbers,
+      u.user_name createUser,
+      pcc.create_time,
+      pcc.update_time,
+      u.user_name updateUser
+    </sql>
+
+    <select id="selectProcessCombCraft" resultType="com.ylzs.entity.processCombCraft.ProcessCombCraft">
+        select
+        <include refid="processCombCraftSql"></include>
+        from process_comb_craft pcc
+        left join user u on u.user_code = pcc.create_user
+        left join user u1 on u1.user_code = pcc.update_user
+        where pcc.random_code = #{randomCode}
+    </select>
+
+</mapper>

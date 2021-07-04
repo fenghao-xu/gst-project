@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.timeparam.SameLevelCraftDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.timeparam.SameLevelCraft" id="resultMap">
+        <result column="id" property="id" />
+        <result column="craft_category_code" property="craftCategoryCode" />
+        <result column="clothes_big_catogory_code" property="clothesBigCatogoryCode" />
+        <result column="big_catogory_name" property="craftCategoryName" />
+        <result column="make_type_code" property="makeTypeCode" />
+        <result column="make_type_numerical_code" property="makeTypeNumericalCode" />
+        <result column="make_type_name" property="makeTypeName" />
+        <result column="same_level_craft_name" property="sameLevelCraftName" />
+        <result column="same_level_craft_serial" property="sameLevelCraftSerial" />
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="hard_level" property="hardLevel" />
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="release_user" property="releaseUser"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="remark" property="remark"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+
+    </resultMap>
+    <select id="getAllData" resultMap="resultMap">
+     select  *  from same_level_sewing_craft
+    </select>
+    <select id="getAllDataToMap" resultMap="resultMap">
+     select  *  from same_level_sewing_craft
+    </select>
+    <select id="getSameLevelCraftMap" resultMap="resultMap">
+        select same_level_craft_numerical_code,same_level_craft_name,hard_level from same_level_sewing_craft
+            where same_level_craft_numerical_code in
+        <foreach collection="codes" separator="," open="(" close=")" item="code">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="getByParam" resultMap="resultMap">
+        select slsc.id, slsc.same_level_craft_serial,slsc.same_level_craft_name,slsc.craft_category_code,slsc.clothes_big_catogory_code,slsc.craft_category_name,slsc.make_type_code,slsc.make_type_numerical_code,
+        slsc.make_type_name,slsc.status,slsc.same_level_craft_numerical_code,slsc.hard_level,slsc.remark,slsc.create_user,slsc.update_user,slsc.release_user,slsc.create_time,slsc.update_time,slsc.release_time
+        from same_level_sewing_craft slsc
+        <where>
+            <if test="keywords!=null and keywords!=''">
+                and (slsc.same_level_craft_serial like concat('%',#{keywords},'%')
+                or slsc.same_level_craft_name like concat('%',#{keywords},'%')
+                or slsc.same_level_craft_numerical_code like concat('%',#{keywords},'%'))
+            </if>
+
+            <if test="sameLevelCraftNumericalCode!=null and sameLevelCraftNumericalCode!=''">
+                and slsc.same_level_craft_numerical_code like concat('%',#{sameLevelCraftNumericalCode},'%')
+            </if>
+
+            <if test="sameLevelCraftSerial!=null and sameLevelCraftSerial!=''">
+                and slsc.same_level_craft_serial like concat('%',#{sameLevelCraftSerial},'%')
+            </if>
+
+            <if test="sameLevelCraftName!=null and sameLevelCraftName!=''">
+                and slsc.same_level_craft_name like concat('%',#{sameLevelCraftName},'%')
+            </if>
+
+            <if test="craftCategoryCode!=null and craftCategoryCode !=''">
+                and slsc.craft_category_code = #{craftCategoryCode}
+            </if>
+
+            <if test="makeTypeCodes != null and makeTypeCodes.size() != 0">
+                and slsc.make_type_code in
+                <foreach collection="makeTypeCodes" separator="," open="(" close=")" item="makeTypeCode">
+                    #{makeTypeCode}
+                </foreach>
+            </if>
+
+        </where>
+        order by slsc.create_time desc
+    </select>
+
+
+    <select id="getDetails" resultMap="resultMap" parameterType="integer">
+        select * from same_level_sewing_craft where id =#{id}
+    </select>
+
+    <select id="getMaxNumber" parameterType="string" resultType="string">
+        SELECT
+            same_level_craft_serial
+        FROM
+            same_level_sewing_craft
+        WHERE
+            craft_category_code = #{craftCategoryCode}
+        ORDER BY
+            same_level_craft_serial DESC
+        LIMIT 0,
+         1
+    </select>
+
+    <update id="updateSameLevelCraft" parameterType="com.ylzs.entity.timeparam.SameLevelCraft">
+        update same_level_sewing_craft
+        <trim prefix="set" suffixOverrides=",">
+            <if test="craftCategoryCode!=null and craftCategoryCode !=''">
+                craft_category_code = #{craftCategoryCode},
+            </if>
+            <if test="clothesBigCatogoryCode!=null and clothesBigCatogoryCode !=''">
+                clothes_big_catogory_code = #{clothesBigCatogoryCode},
+            </if>
+            <if test="makeTypeNumericalCode!=null and makeTypeNumericalCode !=''">
+                make_type_numerical_code = #{makeTypeNumericalCode},
+            </if>
+            <if test="makeTypeCode!=null and makeTypeCode !=''">
+                make_type_code = #{makeTypeCode},
+            </if>
+            <if test="makeTypeName!=null and makeTypeName !=''">
+                make_type_name = #{makeTypeName},
+            </if>
+            <if test="sameLevelCraftName!=null and sameLevelCraftName !=''">
+                same_level_craft_name = #{sameLevelCraftName},
+            </if>
+            <if test="sameLevelCraftNumericalCode!=null and sameLevelCraftNumericalCode !=''">
+                same_level_craft_numerical_code = #{sameLevelCraftNumericalCode},
+            </if>
+            <if test="sameLevelCraftSerial!=null and sameLevelCraftSerial !=''">
+                same_level_craft_serial = #{sameLevelCraftSerial},
+            </if>
+            <if test="hardLevel!=null and hardLevel !=''">
+                hard_level = #{hardLevel},
+            </if>
+            <if test="remark!=null and remark !=''">
+                remark = #{remark},
+            </if>
+            <if test="status!=null">
+                status = #{status},
+            </if>
+            <if test="releaseUser!=null">
+                release_user = #{releaseUser},
+            </if>
+<!--            <if test="releaseTime!=null">-->
+<!--                -->
+<!--            </if>-->
+            <if test="updateUser!=null and updateUser !=''">
+                update_user = #{updateUser},
+            </if>
+                release_time = #{releaseTime},
+                update_time = #{updateTime}
+        </trim>
+        where id = #{id}
+    </update>
+
+    <insert id="addSameLevelCraft" useGeneratedKeys="true" keyProperty="id" parameterType="com.ylzs.entity.timeparam.SameLevelCraft">
+        insert into same_level_sewing_craft  (craft_category_code, clothes_big_catogory_code, make_type_code, make_type_numerical_code,
+        make_type_name,same_level_craft_name,same_level_craft_serial,same_level_craft_numerical_code,hard_level,craft_category_name,remark,status,create_user,create_time)
+		values (#{craftCategoryCode}, #{clothesBigCatogoryCode}, #{makeTypeCode},#{makeTypeNumericalCode},#{makeTypeName},#{sameLevelCraftName},
+		#{sameLevelCraftSerial},#{sameLevelCraftNumericalCode},#{hardLevel},#{craftCategoryName},#{remark},#{status},#{createUser},#{createTime})
+
+    </insert>
+
+    <delete id="deleteSameLevelCraft" parameterType="long">
+        DELETE FROM same_level_sewing_craft WHERE id = #{id}
+</delete>
+
+
+
+</mapper>

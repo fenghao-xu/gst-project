@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.NotifyMsgDao">
+    <resultMap type="NotifyMsg" id="NotifyMsgResult">
+        <result column="id" property="id"/>
+        <result column="msg_type" property="msgType"/>
+        <result column="msg_key_id" property="msgKeyId"/>
+        <result column="msg_key_code" property="msgKeyCode"/>
+        <result column="msg_txt" property="msgTxt"/>
+        <result column="is_read" property="isRead"/>
+        <result column="create_time" property="createTime"/>
+        <result column="read_time" property="readTime"/>
+        <result column="read_user" property="readUser"/>
+        <result column="create_user" property="createUser"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="getNotifyMsgById" resultMap="NotifyMsgResult">
+        select * from notify_msg where id=#{id}
+    </select>
+
+    <delete id="deleteNotifyMsg" parameterType="long">
+        delete from notify_msg where id=#{id}
+    </delete>
+
+    <update id="updateNotifyMsg">
+        UPDATE
+        notify_msg
+        <set>
+            <if test="msgType != null">
+                msg_type = #{msgType},
+            </if>
+
+            <if test="msgKeyId != null">
+                msg_key_id = #{msgKeyId},
+            </if>
+
+            <if test="msgKeyCode != null">
+                msg_key_code = #{msgKeyCode},
+            </if>
+
+            <if test="msgTxt != null">
+                msg_txt = #{msgTxt},
+            </if>
+
+            <if test="isRead != null">
+                is_read = #{isRead},
+            </if>
+
+
+            <if test="readUser != null">
+                read_user = #{readUser},
+            </if>
+
+            <if test="readTime != null">
+                read_time = #{readTime},
+            </if>
+
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+
+
+
+    <insert id="addNotifyMsg">
+        INSERT IGNORE INTO notify_msg (
+        msg_type,
+        msg_key_id,
+        msg_key_code,
+        msg_txt,
+        is_read,
+        create_time,
+        read_time,
+        create_user,
+        read_user,
+        remark
+        )
+        VALUES
+        (
+        #{msgType},
+        #{msgKeyId},
+        #{msgKeyCode},
+        #{msgTxt},
+        #{isRead},
+        #{createTime},
+        #{readTime},
+        #{createUser},
+        #{readUser},
+        #{remark}
+        )
+    </insert>
+
+
+    <insert id="addNotifyMsgs" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT IGNORE INTO notify_msg (
+        msg_type,
+        msg_key_id,
+        msg_key_code,
+        msg_txt,
+        is_read,
+        create_time,
+        read_time,
+        create_user,
+        read_user,
+        remark
+        )
+        VALUES
+        <foreach collection="notifyMsgs" item="itm" index="index" separator=",">
+            (
+            #{itm.msgType},
+            #{itm.msgKeyId},
+            #{itm.msgKeyCode},
+            #{itm.msgTxt},
+            #{itm.isRead},
+            #{itm.createTime},
+            #{itm.readTime},
+            #{itm.createUser},
+            #{itm.readUser},
+            #{itm.remark}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getNotifyMsgByPage" resultMap="NotifyMsgResult">
+        select *
+        from notify_msg
+        where 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (msg_txt like concat('%',#{keywords},'%') or remark like concat('%',#{keywords},'%'))
+        </if>
+        <if test="isRead != null">
+            and is_read=#{isRead}
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(create_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="readUser != null">
+            and read_user=#{readUser}
+        </if>
+        order by id desc
+    </select>
+
+
+</mapper>

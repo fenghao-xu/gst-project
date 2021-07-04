@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.staticdata.PatternSymmetryDao">
+    <resultMap type="PatternSymmetry" id="PatternSymmetryResult" >
+
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="sewing_ratio" property="sewingRatio"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="getAllPatternSymmetrys" resultMap="PatternSymmetryResult">
+        select * from pattern_symmetry
+    </select>
+
+    <select id="getPatternSymmetrysCode" resultType="java.math.BigDecimal">
+        SELECT `sewing_ratio` FROM pattern_symmetry WHERE `code` = #{code}
+    </select>
+    <select id="getPatternSymmetrysToMap" resultMap="PatternSymmetryResult">
+        SELECT `sewing_ratio`,code,`name` FROM pattern_symmetry
+    </select>
+
+</mapper>

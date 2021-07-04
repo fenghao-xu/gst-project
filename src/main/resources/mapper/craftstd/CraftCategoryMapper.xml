@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftCategoryDao">
+    <resultMap type="CraftCategory" id="CraftCategoryResult">
+        <result column="id" property="id"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="seq_num" property="seqNum"/>
+        <result column="clothes_category_ids" property="clothesCategoryIds"/>
+        <result column="description" property="description"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="category_code_name" property="categoryCodeName"/>
+        <result column="clothes_big_category_code" property="clothesBigCategoryCode" />
+
+        <result column="clothes_category_names" property="clothesCategoryNames"/>
+    </resultMap>
+    <resultMap type="CategoryRelation" id="CategoryRelationResult">
+        <result column="craft_category_id" property="craftCategoryId"/>
+        <result column="clothes_category_id" property="clothesCategoryId"/>
+        <result column="clothes_category_code" property="clothesCategoryCode" />
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="craft_category_code" property="craftCategoryCode" />
+    </resultMap>
+
+    <resultMap type="CraftCategory" id="CraftCategoryPartResult">
+        <id column="id" property="id"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="seq_num" property="seqNum"/>
+        <result column="clothes_category_ids" property="clothesCategoryIds"/>
+        <result column="clothes_big_category_code" property="clothesBigCategoryCode"/>
+        <result column="description" property="description"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="clothes_category_names" property="clothesCategoryNames"/>
+        <collection property="craftPartList" column="id" ofType="com.ylzs.entity.craftstd.CraftPart">
+            <id column="craft_part_id" property="id"/>
+            <result column="craft_category_id" property="craftCategoryId"/>
+            <result column="craft_part_code" property="craftPartCode"/>
+            <result column="craft_part_name" property="craftPartName"/>
+            <result column="section_id" property="sectionId"/>
+            <result column="parent_craft_part_id" property="parentCraftPartId"/>
+            <result column="craft_category_part_name" property="craftCategoryPartName" />
+        </collection>
+    </resultMap>
+
+    <resultMap type="CraftCategory" id="CraftCategoryClothesCategoryResult">
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <collection property="clothesCategoryList" javaType="java.util.ArrayList" ofType="com.ylzs.vo.thinkstyle.ClothesCategoryVo">
+            <result column="clothes_category_code" property="clothesCategoryCode"/>
+            <result column="clothes_category_name" property="clothesCategoryName"/>
+        </collection>
+        <collection property="craftMainFrameList" javaType="java.util.ArrayList" ofType="com.ylzs.entity.craftmainframe.CraftMainFrame">
+            <result column="main_frame_code" property="mainFrameCode"/>
+            <result column="main_frame_name" property="mainFrameName"/>
+        </collection>
+    </resultMap>
+    <select id="getCraftCategoryByClothesCategoryCode" resultMap="CraftCategoryResult">
+       SELECT a.* FROM `craft_category` as a
+    LEFT JOIN category_relation as b on b.craft_category_id=a.id
+    where IFNULL(a.is_invalid,0)=0 and b.clothes_category_code=#{0}
+    </select>
+    <select id="getCraftCategoryClothesCategory" resultMap="CraftCategoryClothesCategoryResult">
+        SELECT a.craft_category_code,a.craft_category_name,b.clothes_category_code,c.value_desc as clothes_category_name,frame.main_frame_code,frame.main_frame_name FROM `craft_category` as a
+        LEFT JOIN category_relation as b on b.craft_category_id=a.id
+        LEFT JOIN dictionary as c on c.dic_value=b.clothes_category_code
+				LEFT JOIN craft_main_frame as frame on frame.craft_category_code= a.craft_category_code
+        where IFNULL(a.is_invalid,0)=0 and c.dictionary_type_code='ClothesCategory' and IFNULL(frame.is_invalid,0)=0
+    </select>
+    <select id="getCraftCategoryAndPart" resultMap="CraftCategoryPartResult">
+        select a.id,a.random_code,a.status,a.craft_category_code,a.clothes_big_category_code,a.craft_category_name,a.seq_num,
+        a.description,a.remark,a.is_invalid,a.audit_user,a.audit_time,a.create_user,a.create_time,a.update_user,a.update_time,
+        a.version,b.id craft_part_id,b.craft_category_id,b.craft_part_code,b.craft_part_name,b.section_id,b.parent_craft_part_id
+        ,concat(a.craft_category_name,'-',b.craft_part_name) craft_category_part_name
+         from craft_category a left join craft_part b on a.id=b.craft_category_id
+         where ifnull(a.is_invalid,0)=0 and ifnull(b.is_invalid,0)=0
+     </select>
+
+    <select id="getCraftCategoryCodeAndName" resultMap="CraftCategoryResult">
+           select a.id,a.craft_category_code,a.craft_category_name
+             from craft_category a
+             order by a.id
+    </select>
+
+
+    <select id="getCraftCategoryCodeByPartIds" parameterType="java.util.ArrayList" resultType="java.lang.String">
+        select craft_category_code from craft_category where ifnull(is_invalid,0)=0 and id in
+        (select craft_category_id from craft_part where ifnull(is_invalid,0)=0 and id in
+        <foreach collection="array" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="getCraftCategoryCodeByIds" parameterType="java.util.ArrayList" resultType="java.lang.String">
+        select craft_category_code from craft_category where id in
+        <foreach collection="array" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="addCraftCategory" parameterType="CraftCategory" useGeneratedKeys="true" keyProperty="id">
+        insert IGNORE into craft_category(random_code,craft_category_code,craft_category_name,clothes_big_category_code,seq_num,
+        description,remark,is_invalid,update_user,update_time)
+        value (#{randomCode},#{craftCategoryCode},#{craftCategoryName},#{clothesBigCategoryCode},#{seqNum},
+        #{description},#{remark},#{isInvalid},#{updateUser},#{updateTime})
+    </insert>
+
+    <insert id="addCategoryRelation">
+        insert IGNORE into category_relation(craft_category_id,clothes_category_id,clothes_category_code,update_user,update_time,craft_category_code)
+        value(#{craftCategoryId},#{clothesCategoryId},#{clothesCategoryCode},#{updateUser},#{updateTime},#{craftCategoryCode})
+    </insert>
+
+
+    <insert id="addCraftCategories">
+        insert IGNORE into craft_category(random_code,craft_category_code,clothes_big_category_code,craft_category_name,seq_num,
+        description,remark,is_invalid,update_user,update_time)
+        values
+        <foreach collection="craftCategories" item="craftCategory" separator=",">
+            (#{craftCategory.randomCode},#{craftCategory.craftCategoryCode},#{craftCategory.clothesBigCategoryCode},#{craftCategory.craftCategoryName},#{craftCategory.seqNum},
+            #{craftCategory.description},#{craftCategory.remark},#{craftCategory.isInvalid},#{craftCategory.updateUser},#{craftCategory.updateTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteCraftCategory" parameterType="string">
+        delete from craft_category where craft_category_code=#{craftCategoryCode}
+    </delete>
+
+    <delete id="deleteCategoryRelation" parameterType="integer">
+        delete from category_relation where craft_category_id=#{craftCategoryId} and
+        clothes_category_id=#{clothesCategoryId}
+    </delete>
+
+    <delete id="deleteCategoryRelationById" parameterType="integer">
+        delete from category_relation where id=#{id}
+    </delete>
+
+    <delete id="deleteCategoryRelationByCraftCategoryId" parameterType="integer">
+        delete from category_relation where craft_category_id=#{craftCategoryId}
+    </delete>
+
+    <update id="updateCraftCategory">
+        update craft_category
+        <set>
+            <if test="craftCategoryName != null">
+                craft_category_name=#{craftCategoryName},
+            </if>
+            <if test="clothesBigCategoryCode != null">
+                clothes_big_category_code=#{clothesBigCategoryCode},
+            </if>
+            <if test="seqNum != null">
+                seq_num=#{seqNum},
+            </if>
+            <if test="description != null">
+                description=#{description},
+            </if>
+            <if test="remark != null">
+                remark=#{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid=#{isInvalid},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user=#{updateUser},
+            </if>
+        </set>
+        where craft_category_code=#{craftCategoryCode}
+    </update>
+
+    <select id="getCraftCategoryByPage" resultMap="CraftCategoryResult">
+        select a.*,
+        (select group_concat(clothes_category_id) from category_relation where craft_category_id=a.id) clothes_category_ids,
+        (select group_concat(b.value_desc) from dictionary b
+        where b.id in (select c.clothes_category_id from category_relation c where c.craft_category_id=a.id))
+        clothes_category_names
+        from craft_category a
+        where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.craft_category_name like concat('%',#{keywords},'%')
+            or a.description like concat('%',#{keywords},'%')
+            or a.remark like concat('%',#{keywords},'%')
+            or a.craft_category_code like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.id in
+            (select aa.craft_category_id
+                from category_relation aa inner join dictionary bb on aa.clothes_category_id=bb.id
+                where (bb.dic_value like concat('%',#{keywords},'%') or bb.value_desc like concat('%',#{keywords},'%')) and bb.parent_id in
+                (select id from dictionary where dic_value='ClothesCategory' and ifnull(parent_id,-1)=-1)))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        order by a.update_time desc,a.id asc
+
+    </select>
+
+    <select id="getCraftCategoryByCode" resultMap="CraftCategoryResult">
+        select a.*,
+        (select group_concat(clothes_category_id) from category_relation where craft_category_id=a.id) clothes_category_ids,
+        (select group_concat(b.value_desc) from dictionary b
+        where b.id in (select c.clothes_category_id from category_relation c where c.craft_category_id=a.id))
+        clothes_category_names
+        from craft_category a where IFNULL(a.is_invalid,0)=0 and a.craft_category_code in
+        <foreach collection="codes" separator="," open="(" close=")" item="code">
+            #{code}
+        </foreach>
+    </select>
+
+
+    <select id="getCategoryRelationByCraftCategoryId" resultMap="CategoryRelationResult">
+        select * from category_relation where craft_category_id = #{craftCategoryId}
+    </select>
+
+    <select id="getStdCountByCode" resultType="Long">
+        select count(1) from craft_std a inner join craft_std_part c on a.id=c.craft_std_id
+        inner join craft_category b on c.craft_category_id=b.id where b.craft_category_code=#{code}
+        limit 1
+    </select>
+
+    <select id="getMaxSeqNum" resultType="java.lang.Integer">
+        select max(seq_num) from craft_category
+    </select>
+
+    <select id="getCraftCategoryById" resultMap="CraftCategoryResult">
+        select * from craft_category where id=#{id}
+    </select>
+    <!-- 查找所有有效的工艺品牌-->
+    <select id="getAllValidCraftCategory" resultMap="CraftCategoryResult">
+        SELECT id,random_code,craft_category_code,craft_category_name,clothes_big_category_code,
+        CONCAT(SUBSTR(craft_category_code FROM 1 FOR 1),'.',craft_category_name) as category_code_name
+         FROM `craft_category` where IFNULL(is_invalid,0) =0
+    </select>
+    <select id="isCraftStdNameExists" resultType="boolean">
+        select exists(select 1 from craft_std where ifnull(is_invalid,0)=0 and id!=ifnull(#{craftStdId},-1) and craft_std_name=#{craftStdName}) from Dual
+    </select>
+
+    <select id="getClothesAll" parameterType="java.lang.Integer" resultType="com.ylzs.vo.clothes.ClothesVo">
+         SELECT
+            cr.craft_category_id AS craftCategoryId,
+            cr.clothes_category_code AS clothesCategoryCode,
+            dc.dictionary_type_code,
+            dc.value_desc AS clothesCategoryName
+        FROM
+            category_relation cr
+            LEFT JOIN dictionary dc ON cr.clothes_category_code = dc.dic_value
+            AND dc.dictionary_type_code = 'ClothesCategory'
+        WHERE
+            cr.craft_category_id in
+        <foreach collection="idArray" separator="," close=")" open="(" item="ids">
+            #{ids}
+        </foreach>
+
+        ORDER BY
+            cr.craft_category_id
+    </select>
+
+    <select id="getCraftCategoryAndClothesCategory" resultType="map">
+        SELECT b.clothes_category_code clothesCategoryCode,a.craft_category_code craftCategoryCode
+        FROM `craft_category` AS a
+        LEFT JOIN category_relation AS b ON b.craft_category_id=a.id
+        LEFT JOIN dictionary AS c ON c.dic_value=b.clothes_category_code
+        WHERE IFNULL(a.is_invalid,0)=0 AND c.dictionary_type_code='ClothesCategory'
+    </select>
+
+    <select id="getCraftCategoryCode" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            a.craft_category_code craftCategoryCode
+        FROM
+            `craft_category` AS a
+            LEFT JOIN category_relation AS b ON b.craft_category_id = a.id
+        WHERE
+            IFNULL( a.is_invalid, 0 )= 0
+            AND b.clothes_category_code  = #{clotheCategoryCode}
+    </select>
+
+    <select id="getAll" resultType="com.ylzs.entity.craftstd.CraftCategory">
+        SELECT * FROM craft_category
+    </select>
+    <select id="getForMap" resultType="com.ylzs.entity.craftstd.CraftCategory">
+        SELECT * FROM craft_category
+    </select>
+    <select id="getCraftCateggoryByCode" resultType="com.ylzs.entity.craftstd.CraftCategory">
+        select * from craft_category where IFNULL(is_invalid, 0)=0 and craft_category_code=#{craftCategoryCode}
+    </select>
+</mapper>

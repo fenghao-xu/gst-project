@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.cutParameter.CutParameterMasterDataMarkerTablesSizesDao">
+    <resultMap type="CutParameterMasterDataMarkerTablesSizes" id="CutParameterMasterDataMarkerTablesSizesResult">
+        <result column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="order_line_id" property="orderLineId" />
+        <result column="index1" property="index" />
+        <result column="size" property="size" />
+        <result column="count" property="count" />
+    </resultMap>
+
+    <insert id="addOrUpdateCutParameterMasterDataMarkerTablesSizes" parameterType="CutParameterMasterDataMarkerTablesSizes">
+        insert into capp_pi_cut_parameter_markertables_sizes (
+        order_id,order_line_id,index1,size,count
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.orderId}, #{item.orderLineId}, #{item.index},#{item.size},#{item.count}
+            )
+        </foreach>
+        on duplicate key update
+        order_id=values(order_id),order_line_id=values(order_line_id),index1=values(index1),
+        size=values(size),count= values(count)
+
+    </insert>
+    <insert id="addOrUpdateCutParameterMasterDataMarkerTablesSizes2" parameterType="CutParameterMasterDataMarkerTablesSizes">
+        insert into capp_pi_cut_parameter_markertables_sizes (
+        order_id,order_line_id,index1,size,count
+        )
+        values
+        (
+         #{orderId},#{orderLineId},#{index},#{size},#{count}
+        )
+
+    </insert>
+
+
+</mapper>

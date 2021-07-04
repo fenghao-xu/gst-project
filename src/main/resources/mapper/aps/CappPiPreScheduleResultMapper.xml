@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.aps.CappPiPreScheduleResultMapper">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.aps.CappPiPreScheduleResult">
+    <!--@mbg.generated-->
+    <id column="id" property="id" />
+    <result column="purchase_requisition" property="purchaseRequisition" />
+    <result column="product" property="product" />
+    <result column="plan_code" property="planCode" />
+    <result column="quantity" property="quantity" />
+    <result column="workcenter_code" property="workcenterCode" />
+    <result column="schedule_time" property="scheduleTime" />
+    <result column="delivery_time" property="deliveryTime" />
+    <result column="receive_time" property="receiveTime" />
+    <result column="type" property="type" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, purchase_requisition, product, plan_code, quantity, workcenter_code, schedule_time, 
+    delivery_time, receive_time, type, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from capp_pi_pre_schedule_result
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from capp_pi_pre_schedule_result
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.aps.CappPiPreScheduleResult" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into capp_pi_pre_schedule_result (purchase_requisition, product, plan_code, quantity, workcenter_code, 
+      schedule_time, delivery_time, receive_time, type, remark)
+    values (#{purchaseRequisition}, #{product}, #{planCode}, #{quantity}, #{workcenterCode}, 
+      #{scheduleTime}, #{deliveryTime}, #{receiveTime},#{type}, #{remark})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.aps.CappPiPreScheduleResult" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into capp_pi_pre_schedule_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="purchaseRequisition != null">
+        purchase_requisition,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="planCode != null">
+        plan_code,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="workcenterCode != null">
+        workcenter_code,
+      </if>
+      <if test="scheduleTime != null">
+        schedule_time,
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time,
+      </if>
+      <if test="receiveTime != null">
+        receive_time,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="purchaseRequisition != null">
+        #{purchaseRequisition},
+      </if>
+      <if test="product != null">
+        #{product},
+      </if>
+      <if test="planCode != null">
+        #{planCode},
+      </if>
+      <if test="quantity != null">
+        #{quantity},
+      </if>
+      <if test="workcenterCode != null">
+        #{workcenterCode},
+      </if>
+      <if test="scheduleTime != null">
+        #{scheduleTime},
+      </if>
+      <if test="deliveryTime != null">
+        #{deliveryTime},
+      </if>
+      <if test="receiveTime != null">
+        #{receiveTime},
+      </if>
+      <if test="type != null">
+        #{type},
+      </if>
+      <if test="remark != null">
+        #{remark},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.aps.CappPiPreScheduleResult">
+    <!--@mbg.generated-->
+    update capp_pi_pre_schedule_result
+    <set>
+      <if test="purchaseRequisition != null">
+        purchase_requisition = #{purchaseRequisition},
+      </if>
+      <if test="product != null">
+        product = #{product},
+      </if>
+      <if test="planCode != null">
+        plan_code = #{planCode},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity},
+      </if>
+      <if test="workcenterCode != null">
+        workcenter_code = #{workcenterCode},
+      </if>
+      <if test="scheduleTime != null">
+        schedule_time = #{scheduleTime},
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time = #{deliveryTime},
+      </if>
+      <if test="receiveTime != null">
+        receive_time = #{receiveTime},
+      </if>
+      <if test="type != null">
+        type = #{type},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.aps.CappPiPreScheduleResult">
+    <!--@mbg.generated-->
+    update capp_pi_pre_schedule_result
+    set purchase_requisition = #{purchaseRequisition},
+      product = #{product},
+      plan_code = #{planCode},
+      quantity = #{quantity},
+      workcenter_code = #{workcenterCode},
+      schedule_time = #{scheduleTime},
+      delivery_time = #{deliveryTime},
+      receive_time = #{receiveTime},
+      type = #{type},
+      remark = #{remark}
+    where id = #{id}
+  </update>
+</mapper>

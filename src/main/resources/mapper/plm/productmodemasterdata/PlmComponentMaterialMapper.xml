@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.PlmComponentMaterialDao">
+        <resultMap type="PlmComponentMaterial" id="PlmComponentMaterialResult">
+            <result column="id" property="id" />
+            <result column="style_code" property="styleCode" />
+            <result column="component_code" property="componentCode" />
+            <result column="material_large_type" property="materialLargeType" />
+            <result column="material_mid_type" property="materialMidType" />
+            <result column="default_material" property="defaultMaterial" />
+            <result column="belong_to_component_code" property="belongToComponentCode" />
+            <result column="receive_time" property="receiveTime" />
+            <result column="is_main_component_or_material" property="isMainComponentOrMaterial" />
+    </resultMap>
+
+
+    <!--<insert id="addOrUpdatePlmComponentMaterial" parameterType="ProductModelMasterData">
+		insert into capp_pi_component_material (
+		style_code,component_code,material_large_type, material_mid_type, default_material,belong_to_component_code,receive_time
+		values (
+		#{styleCode}, #{componentCode},#{materialLargeType},#{materialMidType}, #{defaultMaterial},#{belongToComponentCode},#{receiveTime}
+		on duplicate key update
+		style_code=#{styleCode},component_code=#{componentCode},material_large_type=#{materialLargeType},material_mid_type=#{materialMidType},default_material=#{defaultMaterial},
+		belong_to_component_code=#{belongToComponentCode},receive_time=#{receiveTime}
+	</insert>-->
+
+    <insert id="addPlmComponentMaterial" parameterType="list">
+		insert into capp_pi_component_material (
+		style_code,component_code,material_large_type, material_mid_type, default_material,belong_to_component_code,receive_time,is_main_component_or_material)
+		values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+        #{item.styleCode}, #{item.componentCode},#{item.materialLargeType},#{item.materialMidType}, #{item.defaultMaterial},#{item.belongToComponentCode},#{item.receiveTime},#{item.isMainComponentOrMaterial}
+            )
+        </foreach>
+    </insert>
+
+
+
+    <delete id="delPlmComponentMaterial" parameterType="string">
+        delete from capp_pi_component_material where style_code =#{styleCode}
+    </delete>
+
+    <select id="getAll" resultMap="PlmComponentMaterialResult">
+        select * from capp_pi_component_material
+    </select>
+
+    <select id="findComponentMaterialByCode" parameterType="String" resultMap="PlmComponentMaterialResult">
+        select * from capp_pi_component_material where style_code = #{code}
+    </select>
+
+
+
+</mapper>

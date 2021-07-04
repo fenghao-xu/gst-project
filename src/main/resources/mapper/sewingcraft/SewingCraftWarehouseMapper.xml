@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.sewingcraft.SewingCraftWarehouseDao">
+    <resultMap type="SewingCraftWarehouse" id="SewingCraftWarehouseResult" >
+
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_part_code" property="craftPartCode"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result column="description" property="description"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="allowance_code" property="allowanceCode"/>
+        <result column="allowance_random_code" property="allowanceRandomCode"/>
+        <result column="strapping_code" property="strappingCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="is_fabric_style_fix" property="isFabricStyleFix"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="remark" property="remark"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="help_tool_code" property="helpToolCode"/>
+        <result column="make_description" property="makeDescription"/>
+        <result column="quality_spec" property="qualitySpec"/>
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+        <result column="effect_pic_urls" property="effectPicUrls"/>
+
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="station" property="station" />
+        <result column="station_device" property="stationDevice" />
+
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="is_send_cut_pic" property="isSendCutPic" />
+        <result column="same_level_craft_name" property="sameLevelCraftName" />
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="release_user" property="releaseUser"/>
+        <result column="machine_floatover" property="machineFloatover"/>
+    </resultMap>
+    <resultMap id="SewingCraftResourceResult" type="com.ylzs.vo.SewingCraftResource">
+        <result column="resouceType" property="resouceType"/>
+        <result column="url" property="url"/>
+        <result column="craftStdCode" property="craftStdCode"/>
+    </resultMap>
+    <select id="getSewingStdPicAndVedio" resultMap="SewingCraftResourceResult" >
+        SELECT c.file_url as url,c.resource_type as resouceType,b.craft_std_code craftStdCode FROM sewing_craft_warehouse_std as a
+            LEFT JOIN craft_std as b on b.craft_std_code=a.craft_std_code
+            LEFT JOIN craft_file as c on c.key_id=b.id
+            where a.sewing_craft_random_code=#{param}
+                and c.resource_type != 20 and ifnull(b.is_invalid,0)=0
+                and ifnull(b.status,'0') in
+                <foreach collection="status" open="(" separator="," close=")" item="status_">
+                    #{status_}
+                </foreach>
+    </select>
+    <!-- 通过工序编码和工序主框架 查询对应的工序流 -->
+    <select id="getCraftFlowNumByCraftCodeAndMainFrameCode" resultMap="SewingCraftWarehouseResult" >
+        SELECT a.craft_code,b.craft_flow_num FROM sewing_craft_warehouse as a
+        LEFT JOIN sewing_craft_warehouse_workplace as b on b.sewing_craft_random_code=a.random_code
+        where b.main_frame_code=#{mainFrameCode} and a.craft_code in
+            <foreach collection="craftCodeList" item="code" open="(" separator="," close=")">
+                #{code}
+            </foreach>
+    </select>
+    <delete id="deleteByRandomCode" parameterType="java.lang.Long">
+        delete  from sewing_craft_warehouse where random_code=#{randomCode}
+    </delete>
+    <insert id="addSewingCraftWarehouse" parameterType="hashmap">
+        insert into sewing_craft_warehouse
+        (random_code,craft_code,work_type_code,craft_name,craft_category_code,craft_category_name,craft_part_code,craft_part_name,description,make_type_code,allowance_code,allowance_random_code,strapping_code,craft_grade_code,is_fabric_style_fix,standard_time,standard_price,machine_code,machine_name,help_tool_code,make_description,quality_spec,fabric_score_plan_code,fixed_time,floating_time,sewing_length,param_length,create_user,create_time,status,stitch_length,release_user,release_time,same_level_craft_numerical_code,is_send_cut_pic,effect_pic_urls)
+        values
+        (#{randomCode},#{craftCode},#{workTypeCode},#{craftName},#{craftCategoryCode},#{craftCategoryName},#{craftPartCode},#{craftPartName},#{description},#{makeTypeCode},#{allowanceCode},#{allowanceRandomCode},#{strappingCode},#{craftGradeCode},#{isFabricStyleFix},#{standardTime},#{standardPrice},#{machineCode},#{machineName},#{helpToolCode},#{makeDescription},#{qualitySpec},#{fabricScorePlanCode},#{fixedTime},#{floatingTime},#{sewingLength},#{paramLength},#{createUser},#{createTime},#{status},#{stitchLength},#{releaseUser},#{releaseTime},#{sameLevelCraftNumericalCode},#{isSendCutPic},#{effectPicUrls})
+    </insert>
+    <update id="updateSewingCraftWarehouse" parameterType="hashmap">
+        update  sewing_craft_warehouse
+        set craft_code=#{craftCode},craft_name=#{craftName},craft_category_code=#{craftCategoryCode} ,
+        craft_category_name=#{craftCategoryName},craft_part_code=#{craftPartCode},craft_part_name=#{craftPartName},
+        description=#{description},make_type_code=#{makeTypeCode},allowance_code=#{allowanceCode},allowance_random_code=#{allowanceRandomCode},strapping_code=#{strappingCode},
+        craft_grade_code=#{craftGradeCode},is_fabric_style_fix=#{isFabricStyleFix},standard_time=#{standardTime},
+        standard_price=#{standardPrice},machine_code=#{machineCode},machine_name=#{machineName},
+        help_tool_code=#{helpToolCode},make_description=#{makeDescription},quality_spec=#{qualitySpec},fabric_score_plan_code=#{fabricScorePlanCode},same_level_craft_numerical_code=#{sameLevelCraftNumericalCode},
+        fixed_time=#{fixedTime},floating_time=#{floatingTime},sewing_length=#{sewingLength},param_length=#{paramLength},update_user=#{updateUser},update_time=#{updateTime},status=#{status},work_type_code=#{workTypeCode},stitch_length=#{stitchLength},release_user=#{releaseUser},release_time=#{releaseTime},
+        is_send_cut_pic=#{isSendCutPic},effect_pic_urls=#{effectPicUrls}
+        where random_code = #{randomCode}
+    </update>
+    <select id="getDataByRandom" resultMap="SewingCraftWarehouseResult" parameterType="java.lang.Long" >
+        select  cw.*,m.machine_floatover from sewing_craft_warehouse cw left join machine m on cw.machine_code = m.machine_code and  cw.work_type_code=m.work_type_code
+        where cw.random_code = #{0} and cw.`status` !=1090
+    </select>
+    <select id="getDataByCraftCodeList" resultMap="SewingCraftWarehouseResult" parameterType="java.util.List" >
+        select  * from sewing_craft_warehouse
+        <where>
+            ifnull(`status`,1000) !=1090 and  craft_code in
+            <foreach collection="codeList" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+    </select>
+    <!-- 通过工序编码模糊查找-->
+    <select id="getDataByCraftCodeLike" resultMap="SewingCraftWarehouseResult" parameterType="java.util.HashMap" >
+        select  * from sewing_craft_warehouse
+        <where>
+            <if test="status !=null ">
+               and status = #{status}
+            </if>
+            <if test="code !=null and code !='' ">
+               and  craft_code like concat(#{code},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getDataByPager" resultMap="SewingCraftWarehouseResult" parameterType="hashmap">
+        select  distinct a.*,lev.same_level_craft_name
+        <if test="mainFrameCode != null and mainFrameCode != ''" >
+            ,b.craft_flow_num,b.station,b.station_device
+        </if>
+        <if test="isRelation == true">
+            ,wr.create_user relationCreateUser,wr.create_time relationCreateTime
+        </if>
+        from sewing_craft_warehouse as a
+        left  join  same_level_sewing_craft as lev on lev.same_level_craft_numerical_code = a.same_level_craft_numerical_code
+        <if test="toBeConfirm != null and toBeConfirm !=''">
+            inner join sewing_craft_warehouse_std as std on  std.sewing_craft_random_code=a.random_code
+            inner join craft_std_raw_data as ssd on ssd.craft_std_code=std.craft_std_code and ssd.status in('1','7')
+            inner join craft_std as ss on ss.craft_std_code=std.craft_std_code and ss.status ='2'
+        </if>
+        <choose>
+            <when test="(mainFrameCode != null and mainFrameCode != '') or (workplaceCraftCode != null and workplaceCraftCode != '') or (craftFlowNum != null and craftFlowNum != '')">
+                left  join  sewing_craft_warehouse_workplace as b on b.sewing_craft_random_code = a.random_code
+                <if test="mainFrameCode != null and mainFrameCode != ''" >
+                     and  b.main_frame_code = #{mainFrameCode}
+                </if>
+            </when>
+        </choose>
+        <if test="isRelation != null">
+            left join sewing_craft_warehouse_relation wr on a.random_code = wr.sewing_craft_random_code
+            left join sewing_craft_warehouse_relation_craft wrc on wrc.sewing_craft_relation_random_code = wr.random_code
+        </if>
+        <where>
+            a.`status` !=1090
+            <if test = "isRelation == false">
+                and wrc.sewing_craft_relation_random_code is null
+            </if>
+            <if test = "isRelation == true">
+                and wrc.sewing_craft_relation_random_code is not null
+            </if>
+            <if test="keywords != null and keywords !=''">
+                and  (a.craft_code like concat('%',#{keywords},'%') or  a.craft_name like concat('%',#{keywords},'%') or a.description like concat('%',#{keywords},'%'))
+            </if>
+            <if test="craftName != null and craftName !=''">
+                and  a.craft_name like concat('%',#{craftName},'%')
+            </if>
+            <if test="craftCode != null and craftCode !=''">
+                and  a.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="workplaceCraftCode != null and workplaceCraftCode != ''" >
+                and  b.workplace_craft_code like concat('%',#{workplaceCraftCode},'%')
+            </if>
+            <if test="craftFlowNum != null and craftFlowNum != ''">
+                and  b.craft_flow_num like concat('%',#{craftFlowNum},'%')
+            </if>
+            <if test="description != null and description !=''">
+                and  a.description like concat('%',#{description},'%')
+            </if>
+            <if test="craftCategoryCode != null and craftCategoryCode !=''">
+                and  a.craft_category_code like concat('%',#{craftCategoryCode},'%')
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and  a.craft_part_code like concat('%',#{craftPartCode},'%')
+            </if>
+            <if test="createUser !=null and createUser.size()>0  ">
+                and  a.create_user in
+                <foreach collection="createUser" item="user_" open="(" close=")" separator=",">
+                    #{user_}
+                </foreach>
+            </if>
+            <if test="releaseUser !=null and releaseUser.size()>0 ">
+                and  a.release_user in
+                <foreach collection="releaseUser" item="ruser_" open="(" close=")" separator=",">
+                    #{ruser_}
+                </foreach>
+            </if>
+            <if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+                and   date(a.create_time) BETWEEN  #{createTimeBeginDate} and #{createTimeEndDate}
+            </if>
+            <if test="releaseTimeBeginDate !=null and releaseTimeEndDate != null ">
+                and   date(a.release_time) BETWEEN #{releaseTimeBeginDate} and #{releaseTimeEndDate}
+            </if>
+
+            <if test="status != null">
+                and a.status = #{status}
+            </if>
+            <if test="isRelation == true">
+                <if test="relationCreateUser != null and relationCreateUser != ''">
+                    and wr.create_user like CONCAT('%',#{relationCreateUser},'%')
+                </if>
+                <if test="relationBeginDate != null and relationBeginDate != '' ">
+                    <![CDATA[   and DATE_FORMAT(wr.create_time, '%Y-%m-%d')>=DATE_FORMAT(#{relationBeginDate}, '%Y-%m-%d')   ]]>
+                </if>
+                <if test="relationEndDate != null and relationEndDate != '' ">
+                    <![CDATA[   and DATE_FORMAT(wr.create_time, '%Y-%m-%d')<=DATE_FORMAT(#{relationEndDate}, '%Y-%m-%d')   ]]>
+                </if>
+            </if>
+        </where>
+        <choose>
+            <when test="mainFrameCode != null and mainFrameCode != ''">
+                order by b.craft_flow_num ASC
+            </when>
+            <otherwise>
+                order by a.id desc
+            </otherwise>
+        </choose>
+    </select>
+    <!-- 通过工艺主框架和结构部件查询-->
+    <select id="getDataByMainFramePartCode" resultMap="SewingCraftWarehouseResult" parameterType="hashmap">
+        select  sew.*
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            ,wor.craft_flow_num,
+            wor.main_frame_code,
+            wor.main_frame_name,
+            wor.station,
+            wor.station_device
+        </if>
+        from sewing_craft_warehouse as sew
+       <!-- <if test="mainFrameCode !=null and mainFrameCode != ''">
+            INNER JOIN craft_main_frame as frame on frame.craft_category_code=sew.craft_category_code
+        </if>-->
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            LEFT JOIN sewing_craft_warehouse_workplace wor on sew.random_code=wor.sewing_craft_random_code
+        </if>
+        <where>
+            sew.status = 1020
+            <if test="mainFrameCode != null and mainFrameCode !=''">
+                and wor.main_frame_code = #{mainFrameCode}
+            </if>
+            <if test="craftPartCode != null and craftPartCode !=''">
+                and sew.craft_part_code =#{craftPartCode}
+            </if>
+            <if test="craftCode != null and craftCode !=''">
+                and sew.craft_code  like  concat('%', #{craftCode},'%')
+            </if>
+            <if test="craftName != null and craftName !=''">
+                and sew.craft_name like  concat('%',#{craftName},'%')
+            </if>
+            <if test="description != null and description !=''">
+                and sew.description like concat('%',#{description},'%')
+            </if>
+            <if test="categoryCode != null and categoryCode != '' ">
+                AND sew.`craft_category_code` like  concat('%', #{categoryCode},'%')
+            </if>
+        </where>
+        order by
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            wor.craft_flow_num asc,
+        </if>
+        sew.craft_code asc
+    </select>
+    <select id="selectListByCraftCode" resultType="java.lang.String" >
+        select concat(craft_code,'-',craft_name) codeAndName from sewing_craft_warehouse where 1=1
+        <if test="list != null and list.size()>0">
+            craft_code in
+            <foreach collection="list" open="(" separator="," close=")" item="code">
+                #{code}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateStatus">
+        update  sewing_craft_warehouse set `status`=#{status}
+        <if test="status == 1020">
+          ,release_user = #{userCode},release_time=#{releaseTime}
+        </if>
+        <if test="status != 1020">
+            ,release_user = null,release_time=null
+        </if>
+        where random_code = #{randomCode}
+    </update>
+    
+    
+    <select id="getCraftCodeDataAll" resultType="com.ylzs.vo.sewing.VSewingCraftVo">
+         SELECT
+            sew.`random_code` AS `randomCode`,
+            sew.`status` AS `status`,
+            sewk.`craft_flow_num` AS `craftFlowNum`,
+            sew.`craft_code` AS `craftCode`,
+            sew.`craft_name` AS `craftName`,
+            sew.`description` AS `craftDescript`,
+            sew.`craft_category_code` AS `craftCategoryCode`,
+            sew.`craft_category_name` AS `craftCategoryName`,
+            sew.`craft_part_name` AS `craftPartName`,
+            sew.`craft_part_code` AS `craftPartCode`,
+            sew.`make_type_code` AS `makeTypeCode`,
+            sew.`craft_grade_code` AS `craftGradeCode`,
+            sew.`machine_code` AS `machineCode`,
+            sew.`machine_name` AS `machineName`,
+            sew.`allowance_random_code` AS `allowanceRandomCode`,
+            sew.`allowance_code` AS `allowanceCode`,
+            sew.`strapping_code` AS `strappingCode`,
+            sew.`is_fabric_style_fix` AS `isFabricStyleFix`,
+            fgd.`fabric_grade_code` AS `fabricGrade`,
+            sew.`standard_time` AS `standardTime`,
+            sew.`standard_price` AS `standardPrice`,
+            sew.`fabric_score_plan_code` AS `fabricScorePlanCode`,
+            sew.`section_code` AS `sectionCode`,
+            sew.`work_type_code` AS `workTypeCode`,
+            fgd.`time_coefficient` AS `fabricTimeCoefficient`,
+            ogd.`order_code` AS `orderGrade`,
+            sew.`make_description` AS `makeDescription`,
+            sew.`quality_spec` AS `qualitySpec`,
+            sew.`fixed_time` AS `fixedTime`,
+            sew.`floating_time` AS `floatingTime`,
+            sew.`sewing_length` AS `sewingLength`,
+            sew.`param_length` AS `paramLength`,
+            sew.`remark` AS `remark`,
+            sew.`stitch_length` AS `stitchLength`,
+            seep.`part_position_code` AS partPositionCode,
+            seep.`part_position_name` AS partPositionName,
+            mc.`rpm` AS `rpm`,
+            sew.same_level_craft_numerical_code as sameLevelCraftNumericalCode
+        FROM
+            sewing_craft_warehouse sew
+            LEFT JOIN sewing_craft_warehouse_workplace sewk ON sewk.sewing_craft_random_code = sew.random_code  AND sewk.main_frame_code = #{mainFrameCode}
+            LEFT JOIN machine mc ON mc.machine_code = sewk.machine_code AND mc.work_type_code = sew.work_type_code
+            LEFT JOIN sewing_craft_warehouse_part_position seep ON seep.sewing_craft_random_code = sew.random_code
+            LEFT JOIN fabric_score fsc ON fsc.fabric_score_plan_code = sew.fabric_score_plan_code AND #{materialGrade} BETWEEN fsc.min_value  AND fsc.max_value
+            LEFT JOIN fabric_grade fgd ON fgd.fabric_grade_code = fsc.fabric_grade_code
+            LEFT JOIN order_grade ogd  ON #{materialGrade} BETWEEN ogd.min_value  AND ogd.max_value
+        <where>
+            sew.`STATUS` not in (1030,1090)
+            <if test="status != null">
+                and sew.`STATUS` = #{status}
+            </if>
+            <if test="craftCodeArray != null and craftCodeArray.length>0">
+                AND sew.`craft_code` IN
+                <foreach collection="craftCodeArray" open="(" separator="," close=")" item="code">
+                    #{code}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+    <select id="getSewingCraftRandomCode" resultType="java.lang.Long" parameterType="string">
+        select random_code from sewing_craft_warehouse where craft_code = #{craftCode}
+    </select>
+
+    <select id="getCraftCodeCraftFlowNumDataAll" resultType="com.ylzs.vo.sewing.VSewingCraftVo">
+         SELECT
+            sew.`status` AS `status`,
+            sewk.`craft_flow_num` AS `craftFlowNum`,
+            sew.`craft_code` AS `craftCode`,
+            sew.`craft_name` AS `craftName`,
+            sew.`description` AS `craftDescript`,
+            sew.`craft_category_code` AS `craftCategoryCode`,
+            sew.`craft_category_name` AS `craftCategoryName`
+        FROM
+            sewing_craft_warehouse sew
+            LEFT JOIN sewing_craft_warehouse_workplace sewk ON sewk.sewing_craft_random_code = sew.random_code AND sewk.main_frame_code = #{mainFrameCode}
+            LEFT JOIN sewing_craft_warehouse_part_position seep ON seep.sewing_craft_random_code = sew.random_code
+        <where>
+            sew.`STATUS` = 1020
+
+            <if test="craftCodeArray != null and craftCodeArray.length>0">
+                AND sew.`craft_code` IN
+                <foreach collection="craftCodeArray" open="(" separator="," close=")" item="code">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getCraftInUsed" resultType="java.lang.String">
+        select distinct group_concat(t.myname separator ',')  from (
+            select distinct concat('定制部件',b.part_craft_main_code) myname from part_craft_detail a
+                inner join part_craft_master_data b on a.part_craft_main_random_code=b.random_code
+                where b.status!=1090 and a.craft_code=#{craftCode} and b.business_type='定制'
+            union
+            select distinct concat('定制部件',b.part_craft_main_code) myname from part_craft_rule a
+                inner join part_craft_master_data b on a.part_craft_main_random_code=b.random_code
+                where b.status!=1090 and b.business_type='定制'
+                    and (a.source_craft_code like concat('%',#{craftCode},'%')
+                            or a.action_craft_code like concat('%',#{craftCode},'%'))
+            union
+            select distinct concat('材料工艺',b.material_craft_code) myname from material_craft_rule a
+                inner join material_craft b on a.material_craft_random_code=b.random_code
+                where b.status!=1090
+                    and (a.source_craft_code like concat('%',#{craftCode},'%')
+                            or a.action_craft_code like concat('%',#{craftCode},'%'))
+            union
+            select distinct concat('工序组合工艺',b.process_comb_craft_code) myname from process_comb_craft_rule a
+                inner join process_comb_craft b on a.process_comb_craft_random_code=b.random_code
+                where b.status!=1090
+                    and (a.source_craft_code like concat('%',#{craftCode},'%')
+                            or a.action_craft_code like concat('%',#{craftCode},'%'))
+            union
+            select distinct concat('部件组合工艺',b.part_comb_craft_code) myname from part_comb_craft_rule a
+                inner join part_comb_craft b on a.part_comb_craft_random_code=b.random_code
+                where b.status!=1090
+                    and (a.source_craft_code like concat('%',#{craftCode},'%')
+                            or a.action_craft_code like concat('%',#{craftCode},'%'))
+            union
+            select distinct concat('智库款',c.think_style_code) myname from think_style_craft a
+                inner join think_style_part b on a.part_random_code=b.random_code
+                inner join think_style_warehouse c on b.style_random_code=c.random_code
+                where c.status!=1090 and b.is_special=1 and b.is_valid=1 and a.craft_code=#{craftCode}
+            union
+            select distinct concat('智库款',c.think_style_code) myname from think_style_process_rule a
+                inner join think_style_part b on a.part_random_code=b.random_code
+                inner join think_style_warehouse c on b.style_random_code=c.random_code
+                where c.status!=1090 and b.is_special=1 and b.is_valid=1
+                    and (a.source_craft_code like concat('%',#{craftCode},'%')
+                            or a.action_craft_code like concat('%',#{craftCode},'%'))
+            union
+            select distinct concat('定制订单',c.order_no,c.order_line_id) myname from custom_style_part_craft a
+                inner join custom_style_part b on a.style_part_random_code=b.random_code
+                inner join custom_style_craft_course c on b.custom_main_random_code=c.random_code
+                where c.status!=1090 and a.craft_code=#{craftCode}
+
+        ) t
+    </select>
+
+    <select id="getCraftListByRandomCode"
+            resultType="com.ylzs.entity.sewingcraft.relation.SewingCraftWarehouseRelationResp">
+        select
+            sew.craft_code,
+            sew.description,
+            sew.craft_grade_code,
+            sew.machine_name,
+            sew.standard_time,
+            sew.standard_price,
+            sew.status,
+            b.craft_flow_num,
+            sew.random_code sewingCraftRandomCode,
+            sew.craft_category_code
+        from sewing_craft_warehouse sew left join
+        (
+			 select scw.craft_flow_num ,
+			 scw.sewing_craft_random_code,
+			 cmf.craft_category_code
+			 from sewing_craft_warehouse_workplace scw
+             inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+             where cmf.status!=1090 and cmf.frame_type ='大货' and cmf.is_default=1
+		)b on sew.random_code=b.sewing_craft_random_code and b.craft_category_code=sew.craft_category_code
+        where sew.random_code= #{randomCode} limit 1
+    </select>
+
+    <select id="getCraftRelationList" resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+        select
+        sew.*
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            ,wor.craft_flow_num,
+            wor.main_frame_code,
+            wor.main_frame_name,
+            wor.station,
+            wor.station_device
+        </if>
+        from sewing_craft_warehouse as sew
+        <if test="mainFrameCode !=null and mainFrameCode != ''">
+            left join
+            (
+                select
+                scw.craft_flow_num ,
+                scw.main_frame_code,
+                scw.main_frame_name,
+                scw.station,
+                scw.station_device,
+                scw.sewing_craft_random_code,
+                cmf.craft_category_code
+                from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where cmf.status!=1090
+                and scw.main_frame_code =#{mainFrameCode}
+            )wor on sew.random_code=wor.sewing_craft_random_code and wor.craft_category_code=sew.craft_category_code
+        </if>
+        where sew.random_code in
+        (
+            select wrc.sewing_craft_random_code from sewing_craft_warehouse_relation_craft wrc
+            left join sewing_craft_warehouse_relation wr on wrc.sewing_craft_relation_random_code = wr.random_code
+            where wr.sewing_craft_random_code = #{randomCode}
+        )
+    </select>
+
+    <select id="getSewingCraftDataByCraftCode" resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+
+        select
+            sew.craft_code,
+            sew.description,
+            sew.standard_time,
+            sew.standard_price,
+            sew.machine_code,
+            sew.machine_name,
+            sew.craft_grade_code,
+            b.craft_flow_num,
+            b.is_default
+        from sewing_craft_warehouse sew left join
+        (
+			 select scw.craft_flow_num ,scw.sewing_craft_random_code,cmf.craft_category_code,cmf.is_default
+			 from sewing_craft_warehouse_workplace scw
+             inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+             <where>
+                 <if test="mainFrameCode!='' and mainFrameCode!=null ">
+                    scw.main_frame_code= #{mainFrameCode}
+                 </if>
+             </where>
+		)b on sew.random_code=b.sewing_craft_random_code
+		where sew.craft_code =#{craftCode}
+    </select>
+
+    <select id="getSewingStdRawPicAndVedioGroup" resultType="com.ylzs.vo.SewingCraftResource">
+        select group_concat(c.file_url) as url,c.resource_type as resouceType,b.craft_std_code craftStdCode,b.`status` stdStatus
+        from sewing_craft_warehouse_std as a
+        left join craft_std_raw_data as b on b.craft_std_code=a.craft_std_code
+        left join craft_file_raw_data as c on c.key_id=b.id
+        where a.sewing_craft_random_code=#{0} and c.resource_type != 20 and ifnull(b.is_invalid,0)=0
+        group by  b.craft_std_code ,c.resource_type
+    </select>
+
+    <select id="getSewingStdPicAndVedioGroup" resultType="com.ylzs.vo.SewingCraftResource">
+        select group_concat(c.file_url) as url,c.resource_type as resouceType,b.craft_std_code craftStdCode,b.`status` stdStatus
+        from sewing_craft_warehouse_std as a
+        left join craft_std as b on b.craft_std_code=a.craft_std_code
+        left join craft_file as c on c.key_id=b.id
+        where a.sewing_craft_random_code=#{randomCode}
+        and c.resource_type != 20 and ifnull(b.is_invalid,0)=0
+        group by  b.craft_std_code ,c.resource_type
+    </select>
+
+    <select id="getCustomPicAndVedio" resultType="com.ylzs.vo.SewingCraftResource">
+            select e.file_url as url,e.resource_type as resouceType, ssd.craft_std_code
+             FROM custom_style_craft_course as a
+             INNER JOIN custom_style_part b ON b.custom_main_random_code=a.random_code
+             INNER JOIN custom_style_part_craft c ON c.style_part_random_code=b.random_code
+             LEFT JOIN sewing_craft_warehouse d ON d.craft_code=c.craft_code
+             LEFT JOIN sewing_craft_warehouse_std as std ON std.sewing_craft_random_code=d.random_code
+             LEFT JOIN craft_std as ssd ON ssd.craft_std_code=std.craft_std_code
+             LEFT JOIN craft_file as e ON e.key_id=ssd.id
+             WHERE a.random_code=#{randomCode} and d.craft_code=#{craftCode} and e.resource_type != 20;
+    </select>
+
+    <select id="getCraftCodeDataByRandomCode" resultType="java.lang.String">
+        select distinct a.craft_code from sewing_craft_warehouse as a
+        inner join sewing_craft_warehouse_std as std on  std.sewing_craft_random_code=a.random_code
+        inner join craft_std_raw_data as ssd on ssd.craft_std_code=std.craft_std_code and ssd.status not in('2','9')
+        where a.random_code = #{randomCode}
+    </select>
+
+
+    <update id="updateSameLevel" parameterType="java.util.HashMap">
+        update  sewing_craft_warehouse set same_level_craft_numerical_code = #{num} where craft_code = #{craftCode}
+    </update>
+    <update id="updatePrice">
+         update  sewing_craft_warehouse set standard_price = #{standardPrice} where id = #{id}
+    </update>
+    <update id="updateRelateCraftInfo">
+        update part_craft_detail a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        set
+            a.standard_time=b.standard_time,
+            a.standard_price=b.standard_price,
+            a.craft_remark=b.description,
+            a.machine_code=b.machine_code,
+            a.machine_name=b.machine_name
+        where a.craft_code=#{craftCode};
+
+        update part_craft_detail a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where b.status!=1090 and c.business_type='定制' and a.craft_code=#{craftCode} and ifnull(a.lock_data,false) = false;
+
+        update part_craft_detail a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code
+                    and cmf.status!=1090
+                    and locate('大货',cmf.frame_type)>0
+                    and cmf.craft_category_code=c.craft_category_code
+                    and cmf.is_default=1 limit 1
+            )
+        where b.status!=1090 and c.business_type='大货' and a.craft_code=#{craftCode} and ifnull(a.lock_data,false) = false;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        set
+            a.source_craft_name=b.description
+        where a.source_craft_code=#{craftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.source_craft_name=get_replace_str(a.source_craft_code,a.source_craft_name,#{craftCode},b.description)
+        where a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where b.status!=1090 and c.business_type='定制' and a.source_craft_code=#{craftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code
+                    and cmf.status!=1090
+                    and locate('大货',cmf.frame_type)>0
+                    and cmf.craft_category_code=c.craft_category_code
+                    and cmf.is_default=1 limit 1
+            )
+        where b.status!=1090 and c.business_type='大货' and a.source_craft_code=#{craftCode};
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where b.status!=1090 and c.business_type='定制' and a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code
+                    and cmf.status!=1090
+                    and locate('大货',cmf.frame_type)>0
+                    and cmf.craft_category_code=c.craft_category_code
+                    and cmf.is_default=1 limit 1
+            ))
+        where b.status!=1090 and c.business_type='大货' and a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        set
+            a.action_craft_name=b.description
+        where a.action_craft_code=#{craftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.action_craft_name=get_replace_str(a.action_craft_code,a.action_craft_name,#{craftCode},b.description)
+        where a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#', a.action_craft_code)>0;
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where b.status!=1090 and c.business_type='定制' and a.action_craft_code=#{craftCode};
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code
+                    and cmf.status!=1090
+                    and locate('大货',cmf.frame_type)>0
+                    and cmf.craft_category_code=c.craft_category_code
+                    and cmf.is_default=1 limit 1
+            )
+        where b.status!=1090 and c.business_type='大货' and a.action_craft_code=#{craftCode};
+
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where b.status!=1090 and c.business_type='定制' and a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.action_craft_code)>0;
+
+        update part_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        inner join part_craft_master_data c on c.random_code=a.part_craft_main_random_code
+        set
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code
+                    and cmf.status!=1090
+                    and locate('大货',cmf.frame_type)>0
+                    and cmf.craft_category_code=c.craft_category_code
+                    and cmf.is_default=1 limit 1
+            ))
+        where b.status!=1090 and c.business_type='大货' and a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.action_craft_code)>0;
+
+
+        update part_craft_master_data a
+        inner join (select part_craft_main_random_code,sum(standard_time) standard_time,sum(standard_price) standard_price
+            from part_craft_detail group by part_craft_main_random_code) b on a.random_code=b.part_craft_main_random_code
+        set
+            a.standard_time=b.standard_time,
+            a.standard_price=b.standard_price
+        where a.random_code in (select distinct part_craft_main_random_code from part_craft_detail where craft_code=#{craftCode});
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        set
+            a.source_craft_name=b.description,
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.source_craft_code=#{craftCode};
+
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.source_craft_name=get_replace_str(a.source_craft_code,a.source_craft_name,#{craftCode},b.description),
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        set
+            a.action_craft_name=b.description,
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.action_craft_code=#{craftCode};
+
+        update material_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.action_craft_name=get_replace_str(a.action_craft_code,a.action_craft_name,#{craftCode},b.description),
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#', a.action_craft_code)>0;
+
+
+
+
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        set
+            a.source_craft_name=b.description,
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.source_craft_code=#{craftCode};
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.source_craft_name=get_replace_str(a.source_craft_code,a.source_craft_name,#{craftCode},b.description),
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        set
+            a.action_craft_name=b.description,
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.action_craft_code=#{craftCode};
+
+        update part_comb_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.action_craft_name=get_replace_str(a.action_craft_code,a.action_craft_name,#{craftCode},b.description),
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.action_craft_code)>0;
+
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        set
+            a.source_craft_name=b.description,
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.source_craft_code=#{craftCode};
+
+        update process_comb_craft_program a
+        inner join sewing_craft_warehouse b on a.process_craft_code=b.craft_code
+        set
+            a.process_craft_name=b.craft_name
+        where a.process_craft_code=#{craftCode};
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.source_craft_name=get_replace_str(a.source_craft_code,a.source_craft_name,#{craftCode},b.description),
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        set
+            a.action_craft_name=b.description,
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.action_craft_code=#{craftCode};
+
+        update process_comb_craft_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.action_craft_name=get_replace_str(a.action_craft_code,a.action_craft_name,#{craftCode},b.description),
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.action_craft_code)>0;
+
+
+        update think_style_craft a
+        inner join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        set
+            a.craft_name=b.craft_name,
+            a.craft_desc=b.description,
+            a.craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.craft_code=#{craftCode};
+
+        update think_style_process_rule a
+        inner join sewing_craft_warehouse b on a.source_craft_code=b.craft_code
+        set
+            a.source_craft_name=b.description,
+            a.source_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.source_craft_code=#{craftCode};
+
+        update think_style_process_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.source_craft_name=get_replace_str(a.source_craft_code,a.source_craft_name,#{craftCode},b.description),
+            a.source_craft_flow_num=get_replace_str(a.source_craft_code,a.source_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.source_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.source_craft_code)>0;
+
+        update think_style_process_rule a
+        inner join sewing_craft_warehouse b on a.action_craft_code=b.craft_code
+        set
+            a.action_craft_name=b.description,
+            a.action_craft_flow_num=(
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            )
+        where a.action_craft_code=#{craftCode};
+
+        update think_style_process_rule a
+        inner join sewing_craft_warehouse b on b.craft_code=#{craftCode}
+        set
+            a.action_craft_name=get_replace_str(a.action_craft_code,a.action_craft_name,#{craftCode},b.description),
+            a.action_craft_flow_num=get_replace_str(a.action_craft_code,a.action_craft_flow_num,
+            #{craftCode},
+            (
+                select scw.craft_flow_num from sewing_craft_warehouse_workplace scw
+                inner join craft_main_frame cmf on scw.main_frame_code=cmf.main_frame_code
+                where scw.sewing_craft_random_code=b.random_code and cmf.status!=1090
+                    and locate('定制',cmf.frame_type)>0 limit 1
+            ))
+        where a.action_craft_code like concat('%',#{craftCode},'%')
+            and locate('#',a.action_craft_code)>0;
+
+
+    </update>
+
+    <!-- 一年一次刷数据-->
+    <update id="updateCraftLevelAndPrice" parameterType="hashmap">
+        update  sewing_craft_warehouse
+        set
+         <if test="craftGradeCode !=null">
+             craft_grade_code=#{craftGradeCode}
+         </if>
+<!--        <if test="standardPrice !=null">-->
+<!--            standard_price=#{standardPrice}-->
+<!--        </if>-->
+        where craft_code = #{craftCode}
+    </update>
+    <update id="updateCraftMakeTypeCode" parameterType="hashmap">
+        update  sewing_craft_warehouse
+        set
+        <if test="makeTypeCode !=null">
+            make_type_code=#{makeTypeCode}
+        </if>
+        where craft_code = #{craftCode}
+    </update>
+    <update id="updatePriceByCraftCode">
+         update  sewing_craft_warehouse set standard_price = #{standardPrice}  where craft_code = #{craftCode}
+    </update>
+
+    <select id="isExistByNeedlePitchValue" parameterType="string" resultType="string">
+        select 1 from sewing_craft_warehouse where stitch_length = #{needlePitchValue} limit 1;
+    </select>
+</mapper>

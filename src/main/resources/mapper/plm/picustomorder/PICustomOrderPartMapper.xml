@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.PICustomOrderPartDao">
+        <resultMap type="PICustomOrderPart" id="PICustomOrderPartResult">
+            <result column="id" property="id" />
+            <result column="order_id" property="orderId" />
+            <result column="order_line_id" property="orderLineId" />
+            <result column="unit_code" property="unitCode" />
+            <result column="unit_position_code" property="unitPositionCode" />
+            <result column="random_code" property="randomCode" />
+            <result column="receive_time" property="receiveTime" />
+            <result column="position_code" property="positionCode" />
+            <result column="mtm_position_code" property="mtmPositionCode" />
+    </resultMap>
+
+
+
+    <insert id="addCustomOrderPartList" parameterType="list">
+        insert into capp_pi_custom_order_part (
+        order_id,order_line_id,unit_code, unit_position_code, random_code,receive_time
+        ,position_code,mtm_position_code
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.orderId}, #{item.orderLineId},#{item.unitCode}, #{item.unitPositionCode},#{item.randomCode},#{item.receiveTime}
+            ,#{item.positionCode},#{item.mtmPositionCode}
+            )
+        </foreach>
+        on duplicate key update
+        order_id=values(order_id), order_line_id=values(order_line_id),
+        unit_code=values(unit_code),unit_position_code= values(unit_position_code),random_code=values(random_code),receive_time= values(receive_time)
+        ,position_code=values(position_code),mtm_position_code=values(mtm_position_code)
+    </insert>
+    <delete id="deleteCustomOrderPart">
+        delete FROM capp_pi_custom_order_part WHERE order_id = #{orderId} AND order_line_id = #{orderLineId}
+    </delete>
+
+    <select id="getOrderAll" resultMap="PICustomOrderPartResult">
+        SELECT * FROM capp_pi_custom_order_part WHERE order_id = #{orderId} AND order_line_id = #{orderLineId}
+    </select>
+
+    <select id="getOrderDataDetail" resultType="com.ylzs.vo.orderdata.OrderPartDataVo">
+        select
+            a.unit_code part_code,
+            c.design_name part_name,
+            group_concat(a.position_code) sewing_position,
+            group_concat(a.mtm_position_code) mtmPosition,
+            d.material_grade fabric_fraction,
+            d.weight weight,
+            d.weight_grade weight_grade,
+            d.weft_elastic_grade weft_elastic_grade,
+            d.warp_elastic_grade warp_elastic_grade,
+            d.draping_grade draping_grade,
+            d.HY_grade HY_grade,
+            ifnull(concat(d.small_category,' ',e.value_desc),d.small_category) texture,
+            d.hardness_grade hardness_grade,
+            ifnull(concat(d.color_system_code,'-',d.color_system_name),'') colorName
+
+        from capp_pi_custom_order_part a
+            left join capp_pi_custom_order_part_material d on a.order_id=d.order_id and a.order_line_id=d.order_line_id and d.is_main=1
+            left join design_part c on a.unit_code=c.design_code
+            left join dictionary e on d.small_category=e.dic_value and e.dictionary_type_code='MaterialCategoryL2'
+        where a.order_id=#{orderId} and a.order_line_id=#{orderLineId}
+            group by a.unit_code
+    </select>
+
+</mapper>

@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftAnalyse.CraftAnalyseDao">
+    <!-- 从部件工艺查询-->
+    <select id="getFromPartCraft" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select 0 as is_new,c.craft_code,c.description craft_descript,c.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,c.standard_time,c.standard_price,'部件工艺' craft_source,
+        a.part_craft_main_code out_code,a.part_craft_main_name out_name,'' out_descript,
+        '' custom_order_no,'' production_ticket_no,a.status,c.craft_part_name,c.craft_category_code,c.craft_category_name,a.update_user,a.update_time,
+        '1' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        b.craft_flow_num,des.design_code
+        from part_craft_master_data a
+        LEFT JOIN (
+            SELECT
+            ts.part_craft_main_random_code,
+            ts.craft_code,
+            ts.craft_flow_num
+            FROM
+            (
+                SELECT
+                    a.random_code as part_craft_main_random_code,
+                    SUBSTRING_INDEX(SUBSTRING_INDEX(a.craft_code,',',a.craft_code+1),'#',-1) AS craft_code,
+                    a.craft_flow_num
+                from (
+                    SELECT
+                    md.random_code,
+                    CASE WHEN re.craft_code  IS NOT NULL THEN (
+                    case when d.craft_code is not null then CONCAT(re.craft_code ,'#',d.craft_code) else re.craft_code  end)
+                    else (case when d.craft_code is not null then d.craft_code else null end) end craft_code,
+                    d.craft_flow_num
+                    FROM
+                    part_craft_master_data md
+                        left join
+                        (
+                        SELECT
+                        part_craft_main_random_code,
+                        CASE WHEN source_craft_code is not null THEN (case when action_craft_code is not null then CONCAT(source_craft_code,'#',action_craft_code) else source_craft_code end)
+                        else (case when action_craft_code is not null then action_craft_code else null end) end craft_code
+                        FROM part_craft_rule
+                        )re on re.part_craft_main_random_code = md.random_code
+                        LEFT JOIN part_craft_detail d on d.part_craft_main_random_code = md.random_code
+                    )a
+                    WHERE
+                    a.craft_code<![CDATA[ < ]]> LENGTH(a.craft_code)-LENGTH(REPLACE(a.craft_code,'#',''))+1
+            ) ts
+            GROUP BY
+            ts.part_craft_main_random_code,
+            ts.craft_code,
+            ts.craft_flow_num
+        )b  ON b.part_craft_main_random_code = a.random_code
+        LEFT join sewing_craft_warehouse c on b.craft_code=c.craft_code
+        LEFT JOIN sewing_craft_warehouse_std as std on  std.sewing_craft_random_code=c.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        LEFT JOIN part_craft_design_parts des ON des.part_craft_main_random_code = a.random_code AND des.`status` != 1030
+        <where>
+            a.status not in (1090,1030)
+            <if test="craftCategoryCode != null and craftCategoryCode!=''">
+                and c.craft_category_code=#{craftCategoryCode}
+            </if>
+            <if test="isPic != null ">
+                and ssd.is_hand_pic=#{isPic}
+            </if>
+            <if test="isVideo !=null ">
+                and ssd.is_video=#{isVideo}
+            </if>
+            <if test="status != null">
+                and a.status=#{status}
+            </if>
+            <if test="craftCode != null and craftCode!='' ">
+                and c.craft_code like concat('%',#{craftCode},'%')
+            </if>
+            <if test="partCraftCode != null and partCraftCode != '' ">
+                and a.part_craft_main_code like concat('%',#{partCraftCode},'%')
+            </if>
+        </where>
+        
+    </select>
+    <!-- 从智库款工艺查询-->
+    <select id="getFromThinkStyle" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select t.is_new,t.craft_code,t.craft_descript,t.machine_name,t.is_pic,
+        t.is_video,t.standard_time,t.standard_price,t.craft_source,
+        t.out_code,t.out_name,t.out_descript,
+        t.custom_order_no,t.production_ticket_no,t.craft_part_name,t.craft_category_name,t.update_user,t.update_time,
+        t.status_name from (
+        select c.is_new as is_new,c.craft_code,d.description craft_descript,d.machine_name,ifnull(ssd.is_hand_pic,0)
+        is_pic,
+        ifnull(ssd.is_video,0) is_video,d.standard_time,d.standard_price,'智库款工艺' craft_source,
+        a.think_style_code out_code,a.style_name out_name,a.description out_descript,
+        '' custom_order_no,''
+        production_ticket_no,a.status,d.craft_part_name,d.craft_category_code,d.craft_category_name,a.update_user,a.update_time,
+        '2' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常'
+        else '草稿' end) status_name,c.craft_flow_num
+
+        from think_style_warehouse a
+        inner join think_style_part b on a.random_code=b.style_random_code
+        inner join think_style_craft c on a.random_code=c.style_random_code and b.random_code=c.part_random_code
+        inner join sewing_craft_warehouse d on d.craft_code=c.craft_code
+        LEFT JOIN sewing_craft_warehouse_std as std on std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        where ifnull(b.is_special,0)=1 and a.status not in (1090,1030) and d.status not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="thinkTyleCode != null and thinkTyleCode != '' ">
+            and a.think_style_code like concat('%',#{thinkTyleCode},'%')
+        </if>
+        union all
+        select 0 as is_new,e.craft_code,f.description craft_descript,f.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,e.standard_time,e.standard_price,'智库款工艺' craft_source,
+        a.think_style_code out_code,a.style_name out_name,a.description out_descript,
+        '' custom_order_no,''
+        production_ticket_no,a.status,f.craft_part_name,f.craft_category_code,f.craft_category_name,a.update_user,a.update_time,
+        '2' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常'
+        else '草稿' end) status_name,e.craft_flow_num
+
+        from think_style_warehouse a
+        inner join think_style_part b on b.style_random_code=a.random_code
+        inner join part_craft_design_parts c on b.design_part_code=c.design_code
+        inner join part_craft_master_data d on c.part_craft_main_random_code=d.random_code
+        inner join part_craft_detail e on e.part_craft_main_random_code=c.part_craft_main_random_code
+        inner join sewing_craft_warehouse f on e.craft_code=f.craft_code
+        LEFT JOIN sewing_craft_warehouse_std as std on std.sewing_craft_random_code=f.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+
+        where ifnull(b.position_code,'')='' and ifnull(b.is_special,0)=0
+        and a.status not in (1090,1030) and d.status not in (1090,1030) and c.status not in (1090,1030)
+        and f.status not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and f.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and e.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="thinkTyleCode != null and thinkTyleCode != '' ">
+            and a.think_style_code like concat('%',#{thinkTyleCode},'%')
+        </if>
+        union all
+        select 0 as is_new,dd.craft_code,f.description craft_descript,f.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,dd.standard_time,dd.standard_price,'智库款工艺' craft_source,
+        a.think_style_code out_code,a.style_name out_name,a.description out_descript,
+        '' custom_order_no,''
+        production_ticket_no,a.status,f.craft_part_name,f.craft_category_code,f.craft_category_name,a.update_user,a.update_time,
+        '2' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常'
+        else '草稿' end) status_name,dd.craft_flow_num
+
+        from think_style_warehouse a
+        inner join think_style_part b on b.style_random_code=a.random_code
+        inner join part_craft_design_parts c on b.design_part_code=c.design_code
+        inner join part_craft_master_data d on c.part_craft_main_random_code=d.random_code
+        inner join part_craft_position e on e.part_craft_main_random_code=d.random_code and
+        b.position_code=e.part_position_code and position(a.clothes_category_code in e.clothing_category_code)>0
+        inner join part_craft_detail dd on dd.part_craft_main_random_code=c.part_craft_main_random_code
+        inner join sewing_craft_warehouse f on dd.craft_code=f.craft_code
+        LEFT JOIN sewing_craft_warehouse_std as std on std.sewing_craft_random_code=f.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        where ifnull(b.position_code,'')!='' and ifnull(b.is_special,0)=0
+        and a.status not in (1090,1030) and d.status not in (1090,1030) and c.status not in (1090,1030)
+        and e.status not in (1090,1030) and f.status not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and f.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and dd.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="thinkTyleCode != null and thinkTyleCode != '' ">
+            and a.think_style_code like concat('%',#{thinkTyleCode},'%')
+        </if>
+        ) t
+        
+    </select>
+
+    <!-- 从大货款式工艺查询-->
+    <select id="getFromBigStyle" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select c.is_new,c.craft_code,d.description craft_descript,d.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,d.standard_time,d.standard_price,'款式工艺路线' craft_source,
+        a.big_style_analyse_code out_code,a.style_name out_name,a.style_desc out_descript,
+        '' custom_order_no,'' production_ticket_no,a.status,d.craft_part_name,d.craft_category_code,d.craft_category_name,a.update_time,
+        '3' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        c.craft_no craft_flow_num
+        from big_style_analyse_master a
+        inner join big_style_analyse_partcraft b on b.style_random_code=a.random_code
+        INNER JOIN big_style_analyse_partcraft_detail c on c.part_craft_main_code=b.part_craft_main_code and c.style_random_code=a.random_code
+        inner join big_style_analyse_sewing_craft d on d.random_code=a.random_code and d.part_craft_main_code=b.part_craft_main_code and d.craft_code=c.craft_code
+        LEFT JOIN big_style_analyse_std as std on std.craft_code=d.craft_code and std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode!='' ">
+            and a.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="bigStyleAnalyseCode != null and bigStyleAnalyseCode != '' ">
+            and a.big_style_analyse_code like concat('%',#{bigStyleAnalyseCode},'%')
+        </if>
+        
+    </select>
+
+    <!-- 从大货款式工艺查询 通过套款款号    -->
+    <select id="getFromBigStyleByStyleCover" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select c.is_new,c.craft_code,d.description craft_descript,d.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,d.standard_time,d.standard_price,'款式工艺路线' craft_source,
+        a.big_style_analyse_code out_code,a.style_name out_name,a.style_desc out_descript,
+        '' custom_order_no,'' production_ticket_no,a.status,d.craft_part_name,d.craft_category_code,d.craft_category_name,a.update_time,
+        '3' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        c.craft_no craft_flow_num
+        from big_style_analyse_master a
+        inner  join  big_style_analyse_master_style_cover as cover on cover.style_random_code=a.random_code
+        inner join big_style_analyse_partcraft b on b.style_random_code=a.random_code
+        INNER JOIN big_style_analyse_partcraft_detail c on c.part_craft_main_code=b.part_craft_main_code and c.style_random_code=a.random_code
+        inner join big_style_analyse_sewing_craft d on d.random_code=a.random_code and d.part_craft_main_code=b.part_craft_main_code and d.craft_code=c.craft_code
+        LEFT JOIN big_style_analyse_std as std on std.craft_code=d.craft_code and std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode!='' ">
+            and cover.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="bigStyleAnalyseCode != null and bigStyleAnalyseCode != '' ">
+            and a.big_style_analyse_code like concat('%',#{bigStyleAnalyseCode},'%')
+        </if>
+
+    </select>
+
+    <!-- 从工单工艺查询-->
+    <select id="getFromBigOrder" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select c.is_new,c.craft_code,d.description craft_descript,d.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,d.standard_time,d.standard_price,'工单工艺路线' craft_source,
+        a.big_style_analyse_code out_code,a.style_name out_name,a.style_desc out_descript,
+        '' custom_order_no,a.production_ticket_no,a.status,d.craft_part_name,d.craft_category_code,d.craft_category_name,a.update_time,
+        '5' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        c.craft_no craft_flow_num,pg.production_group_name
+        from big_order_master a
+        inner join big_order_partcraft b on b.style_random_code=a.random_code
+        inner join big_order_partcraft_detail c on c.style_random_code=a.random_code and c.part_craft_main_code= b.part_craft_main_code
+        inner join big_order_sewing_craft d on d.random_code=a.random_code and d.part_craft_main_code=b.part_craft_main_code and d.craft_code=c.craft_code
+        LEFT JOIN big_order_std as std on std.craft_code=d.craft_code and std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        LEFT JOIN production_group pg on a.production_category=pg.production_group_code
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="productionTicketNo != null and productionTicketNo!='' ">
+            and a.production_ticket_no like concat('%',#{productionTicketNo},'%')
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode!='' ">
+            and a.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="bigStyleAnalyseCode != null and bigStyleAnalyseCode != '' ">
+            and a.big_style_analyse_code like concat('%',#{outCode},'%')
+        </if>
+        
+    </select>
+
+    <!-- 从工单工艺查询 通过套款款号-->
+    <select id="getFromBigOrderByStyleCover" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select c.is_new,c.craft_code,d.description craft_descript,d.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,d.standard_time,d.standard_price,'工单工艺路线' craft_source,
+        a.big_style_analyse_code out_code,a.style_name out_name,a.style_desc out_descript,
+        '' custom_order_no,a.production_ticket_no,a.status,d.craft_part_name,d.craft_category_code,d.craft_category_name,a.update_time,
+        '5' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        c.craft_no craft_flow_num
+        from big_order_master a
+        inner join  big_order_master_style_cover as cover on cover.style_random_code=a.random_code
+        inner join big_order_partcraft b on b.style_random_code=a.random_code
+        inner join big_order_partcraft_detail c on c.style_random_code=a.random_code and c.part_craft_main_code= b.part_craft_main_code
+        inner join big_order_sewing_craft d on d.random_code=a.random_code and d.part_craft_main_code=b.part_craft_main_code and d.craft_code=c.craft_code
+        LEFT JOIN big_order_std as std on std.craft_code=d.craft_code and std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="productionTicketNo != null and productionTicketNo!='' ">
+            and a.production_ticket_no like concat('%',#{productionTicketNo},'%')
+        </if>
+        <if test="ctStyleCode != null and ctStyleCode!='' ">
+            and cover.ct_style_code like concat('%',#{ctStyleCode},'%')
+        </if>
+        <if test="bigStyleAnalyseCode != null and bigStyleAnalyseCode != '' ">
+            and a.big_style_analyse_code like concat('%',#{outCode},'%')
+        </if>
+
+    </select>
+
+    <!-- 从订单工艺查询-->
+    <select id="getFromCustomerOrder" parameterType="java.util.HashMap" resultType="com.ylzs.vo.sewing.CraftAnalyseVo">
+        select 0 as is_new,c.craft_code,c.craft_descript craft_descript,c.machine_name,ifnull(ssd.is_hand_pic,0) is_pic,
+        ifnull(ssd.is_video,0) is_video,c.standard_time,c.standard_price,'订单工艺路线' craft_source,
+        a.style_code out_code,a.think_style_name out_name,a.style_descript out_descript,
+        concat(a.order_no,'-',a.order_line_id) custom_order_no,a.production_ticket_no,a.status,c.craft_part_name,c.craft_category_code,c.craft_category_name,a.update_user,a.update_time,
+        '4' source_type,(case a.status when 1000 then '草稿' when 1020 then '已发布' when 1040 then '未生效' when 1050 then '异常' else '草稿' end) status_name,
+        c.craft_flow_num,pg.production_group_name
+        from custom_style_craft_course a
+        inner join custom_style_part b on b.custom_main_random_code=a.random_code
+        inner join custom_style_part_craft c on c.style_part_random_code=b.random_code
+        left join sewing_craft_warehouse d on d.craft_code=c.craft_code
+        LEFT JOIN sewing_craft_warehouse_std as std on  std.sewing_craft_random_code=d.random_code
+        LEFT JOIN craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        LEFT JOIN production_group pg on a.production_category=pg.production_group_code
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and c.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isPic != null ">
+            and ssd.is_hand_pic=#{isPic}
+        </if>
+        <if test="isVideo !=null ">
+            and ssd.is_video=#{isVideo}
+        </if>
+        <if test="status != null">
+            and a.status=#{status}
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="customOrderNo != null and customOrderNo != ''">
+            and concat(a.order_no,'-',a.order_line_id) like concat('%',#{customOrderNo},'%')
+        </if>
+        <if test="thinkTyleCode != null and thinkTyleCode != '' ">
+            and a.style_code like concat('%',#{thinkTyleCode},'%')
+        </if>
+        order by a.order_no,a.order_line_id,cast(ifnull(c.craft_flow_num,'0') as signed)
+        
+    </select>
+
+
+    <!-- 定制建标款 -->
+    <select id="getCustomList" parameterType="com.ylzs.vo.customStandardLibrary.CustomStandardLibraryReq"
+            resultType="com.ylzs.vo.customStandardLibrary.CustomStandardResp">
+        select
+        a.random_code customRandomCode,
+        a.think_style_name,
+        a.style_descript,
+        a.style_picture,
+        a.update_user,
+        a.update_time,
+        concat(a.order_no,'-',a.order_line_id) customOrderNo,
+        a.clothes_category_name,
+        c.craft_category_code,
+        c.craft_category_name,
+        d.random_code,
+        c.craft_descript description,
+        c.machine_name,
+        c.machine_code,
+        c.standard_time,
+        c.craft_part_code,
+        c.craft_part_name,
+        c.work_type_code,
+        c.make_type_code,
+        ssd.craft_std_code,
+        ssd.ok_time,
+        ssd.create_user as stdCreateUser,
+        ifnull(ssd.is_hand_pic,0) isHandPic,
+        ifnull(ssd.is_video,0) isVideo,
+        (case ssd.craft_std_code is null when true then 10 else 20 end) as craftStdStatus,
+        c.craft_code,
+        c.craft_flow_num,
+        co.style_code thinkStyleCode
+        from custom_style_craft_course a
+        inner join custom_style_part b on b.custom_main_random_code=a.random_code
+        inner join custom_style_part_craft c on c.style_part_random_code=b.random_code
+        left join sewing_craft_warehouse d on d.craft_code=c.craft_code
+        left join sewing_craft_warehouse_std as std on  std.sewing_craft_random_code=d.random_code
+        left join craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        left join capp_pi_custom_order co on co.order_id=a.order_no and co.order_line_id=a.order_line_id
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftPartCode != null and craftPartCode!=''">
+            and c.craft_part_code=#{craftPartCode}
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and c.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isHandPic == true">
+            and ssd.is_hand_pic=1
+        </if>
+        <if test="isHandPic == false">
+            and (ssd.is_hand_pic=0 or std.craft_std_code is null)
+        </if>
+        <if test="isVideo == true">
+            and ssd.is_video=1
+        </if>
+        <if test="isVideo == false">
+            and (ssd.is_video=0 or std.craft_std_code is null)
+        </if>
+        <if test="craftStdStatus ==20 ">
+            and ssd.craft_std_code is not null
+        </if>
+        <if test="craftStdStatus ==10 ">
+            and ssd.craft_std_code is null
+        </if>
+        <if test="description != null and description!=''">
+            and c.craft_descript like concat('%',#{description},'%')
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="customOrderNo != null and customOrderNo != ''">
+            and concat(a.order_no,'-',a.order_line_id) like concat('%',#{customOrderNo},'%')
+        </if>
+        <if test="thinkStyleCode != null and thinkStyleCode != '' ">
+            and co.style_code like concat('%',#{thinkStyleCode},'%')
+        </if>
+        order by a.order_no,a.order_line_id,cast(ifnull(c.craft_flow_num,'0') as signed)
+
+    </select>
+
+
+    <select id="getCustomOrderNoNum" parameterType="com.ylzs.vo.customStandardLibrary.CustomStandardLibraryReq"
+            resultType="integer">
+        select
+        count(distinct concat(a.order_no,'-',a.order_line_id))
+        from custom_style_craft_course a
+        inner join custom_style_part b on b.custom_main_random_code=a.random_code
+        inner join custom_style_part_craft c on c.style_part_random_code=b.random_code
+        inner join sewing_craft_warehouse d on d.craft_code=c.craft_code
+        left join sewing_craft_warehouse_std as std on std.sewing_craft_random_code=d.random_code
+        left join craft_std as ssd on ssd.craft_std_code=std.craft_std_code
+        left join capp_pi_custom_order co on co.order_id=a.order_no and co.order_line_id=a.order_line_id
+        where ifnull(a.status,1000) not in (1090,1030) and ifnull(d.status,1000) not in (1090,1030)
+        <if test="craftPartCode != null and craftPartCode!=''">
+            and d.craft_part_code=#{craftPartCode}
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode!=''">
+            and d.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="isHandPic == true">
+            and ssd.is_hand_pic=1
+        </if>
+        <if test="isHandPic == false">
+            and (ssd.is_hand_pic=0 or std.craft_std_code is null)
+        </if>
+        <if test="isVideo == true">
+            and ssd.is_video=1
+        </if>
+        <if test="isVideo == false">
+            and (ssd.is_video=0 or std.craft_std_code is null)
+        </if>
+        <if test="craftStdStatus ==20 ">
+            and std.craft_std_code is not null
+        </if>
+        <if test="craftStdStatus ==10 ">
+            and std.craft_std_code is null
+        </if>
+        <if test="description != null and description!=''">
+            and d.description like concat('%',#{description},'%')
+        </if>
+        <if test="craftCode != null and craftCode!='' ">
+            and c.craft_code like concat('%',#{craftCode},'%')
+        </if>
+        <if test="customOrderNo != null and customOrderNo != ''">
+            and concat(a.order_no,'-',a.order_line_id) like concat('%',#{customOrderNo},'%')
+        </if>
+        <if test="thinkStyleCode != null and thinkStyleCode != '' ">
+            and co.style_code like concat('%',#{thinkStyleCode},'%')
+        </if>
+    </select>
+
+</mapper>

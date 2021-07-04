@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.materialCraft.MaterialCraftRuleDao">
+
+
+    <update id="updatePublishStatus" parameterType="java.util.List">
+        update material_craft_rule
+        <set>
+            update_time =CURRENT_TIMESTAMP,
+            status = 1020
+        </set>
+        where material_craft_random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateNotActiveStatus">
+        update material_craft_rule
+        <set>
+            update_time =CURRENT_TIMESTAMP,
+            status = 1030
+        </set>
+        where material_craft_random_code in
+        <foreach collection="randomCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectRuleListByCraftRandomCode"
+            resultType="com.ylzs.entity.materialCraft.MaterialCraftRule" parameterType="long">
+        select source_craft_code,source_craft_flow_num,source_craft_name,action_craft_code,action_craft_flow_num,action_craft_name,process_type,rule_index,special_plan_number,rule_type,processing_sort_num
+        from material_craft_rule where material_craft_random_code = #{parseLong}
+        group by rule_index,special_plan_number order by processing_sort_num
+    </select>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylerecord.BigStyleNodeRecordMapper">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.bigstylerecord.BigStyleNodeRecord">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="style_code" jdbcType="VARCHAR" property="styleCode" />
+    <result column="style_desc" jdbcType="VARCHAR" property="styleDesc" />
+    <result column="clothes_category_code" jdbcType="VARCHAR" property="clothesCategoryCode" />
+    <result column="clothes_category_name" jdbcType="VARCHAR" property="clothesCategoryName" />
+    <result column="sample_receive_time1" jdbcType="TIMESTAMP" property="sampleReceiveTime1" />
+    <result column="estimate_sewing_time" jdbcType="DECIMAL" property="estimateSewingTime" />
+    <result column="send_fms_time" jdbcType="TIMESTAMP" property="sendFmsTime" />
+    <result column="sample_receive_time2" jdbcType="TIMESTAMP" property="sampleReceiveTime2" />
+    <result column="product_group_code" jdbcType="VARCHAR" property="productGroupCode" />
+    <result column="product_group_name" jdbcType="VARCHAR" property="productGroupName" />
+    <result column="assign_to_user_code" jdbcType="VARCHAR" property="assignToUserCode" />
+    <result column="assign_to_user_name" jdbcType="VARCHAR" property="assignToUserName" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="TINYINT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="release_user" jdbcType="VARCHAR" property="releaseUser" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+    <result column="schedule_time" property="scheduleTime" />
+    <result column="delivery_time" property="deliveryTime" />
+    <result column="branch_begin_time" property="branchBeginTime" />
+    <result column="branch_end_time" property="branchEndTime" />
+    <result column="branch_spend" property="branchSpend" />
+    <result column="sample_stay_spend" property="sampleStaySpend" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, random_code, style_code, style_desc, clothes_category_code, clothes_category_name, sample_receive_time1,
+    estimate_sewing_time, send_fms_time, sample_receive_time2, product_group_code,product_group_name, assign_to_user_code,
+    assign_to_user_name, receive_time, remark, `status`,
+    is_invalid, audit_user, audit_time, create_user, create_time, update_user, update_time, 
+    version, release_user, release_time,schedule_time,delivery_time,branch_begin_time,branch_end_time,branch_spend,sample_stay_spend
+  </sql>
+</mapper>

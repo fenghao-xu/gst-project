@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.FmsTicketNoDao">
+    <resultMap type="FmsTicketNo" id="FmsTicketNoResult" >
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <result column="style_code" property="styleCode"/>
+        <result column="style_code_color" property="styleCodeColor"/>
+        <result column="style_type" property="styleType"/>
+        <result column="clothes_category_code" property="clothesCategoryCode"/>
+        <result column="production_category_name" property="productionCategoryName"/>
+        <result column="brand" property="brand"/>
+        <result column="factory_code" property="factoryCode"/>
+        <result column="production_category" property="productionCategory"/>
+        <result column="unit" property="unit"/>
+        <result column="custom_style_code" property="customStyleCode"/>
+        <result column="start_day" property="startDay"/>
+        <result column="end_day" property="endDay"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="mtm_order" property="mtmOrder"/>
+        <result column="number" property="number"/>
+        <result column="order_line_id" property="orderLineId" />
+        <result column="adapt_code" property="adaptCode" />
+    </resultMap>
+    <insert id="addOrUpdateData" parameterType="FmsTicketNo">
+        insert into fms_ticket_no(`number`,order_line_id,production_ticket_no,create_time,update_time,style_code,style_code_color,style_type,clothes_category_code,brand,factory_code,production_category,production_category_name,unit,custom_style_code,start_day,end_day,start_time,end_time,mtm_order,adapt_code)
+        values (#{number},#{orderLineId},#{productionTicketNo},#{createTime},#{updateTime},#{styleCode},#{styleCodeColor},#{styleType},#{clothesCategoryCode},#{brand},#{factoryCode},#{productionCategory},#{productionCategoryName},#{unit},#{customStyleCode},#{startDay},#{endDay},#{startTime},#{endTime},#{mtmOrder},#{adaptCode})
+        ON DUPLICATE KEY UPDATE
+        create_time=#{createTime},order_line_id=#{orderLineId},update_time=#{updateTime},style_code=#{styleCode},style_code_color=#{styleCodeColor},style_type=#{styleType},clothes_category_code=#{clothesCategoryCode},mtm_order=#{mtmOrder},
+        brand=#{brand},factory_code=#{factoryCode},production_category=#{productionCategory},production_category_name=#{productionCategoryName},unit=#{unit},`number`=#{number},
+        custom_style_code=#{customStyleCode},start_day=#{startDay},end_day=#{endDay},start_time=#{startTime},end_time=#{endTime},adapt_code=#{adaptCode}
+    </insert>
+    <select id="getAll" resultMap="FmsTicketNoResult" parameterType="java.util.HashMap">
+        select  * from fms_ticket_no
+        <where>
+            <if test="productionTicketNo != null and productionTicketNo !='' ">
+               and  production_ticket_no like concat('%', #{productionTicketNo},'%')
+            </if>
+            <if test="styleCode != null and styleCode !='' ">
+                and style_code like concat('%', #{styleCode},'%')
+            </if>
+            <if test="styleCodeColor != null and styleCodeColor !='' ">
+                and style_code_color like concat('%', #{styleCodeColor},'%')
+            </if>
+            <if test="mtmOrder != null and mtmOrder !='' ">
+                and mtm_order like concat('%', #{mtmOrder},'%')
+            </if>
+            <if test="customStyleCode != null and customStyleCode !='' ">
+                and custom_style_code like concat('%',#{customStyleCode},'%')
+            </if>
+            <!-- 定制工单-->
+            <if test="styleType == 10 ">
+                and mtm_order is not null
+            </if>
+            <!-- 大货工单-->
+            <if test="styleType == 20 ">
+                and mtm_order is  null
+            </if>
+            <if test="factoryCode != null and factoryCode !='' ">
+                and  factory_code = #{factoryCode}
+            </if>
+            <if test="productionCategory != null and productionCategory !='' ">
+                and  production_category = #{productionCategory}
+            </if>
+            <if test="productionCategoryName != null and productionCategoryName !='' ">
+                and  production_category_name = #{productionCategoryName}
+            </if>
+            <if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+                and   date(start_day) BETWEEN  #{createTimeBeginDate} and #{createTimeEndDate}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getBigStyleAnalyseByTicketNo" resultType="com.ylzs.vo.bigstylereport.BigStyleVO">
+        SELECT skc.style_random_code,mas.`status`,ticket.adapt_code,false  isStyleCover from big_style_analyse_master_skc as skc
+        INNER JOIN big_style_analyse_master as mas on skc.style_random_code=mas.random_code  and mas.`status` !=1090
+        LEFT JOIN fms_ticket_no as ticket on ticket.style_code_color=skc.style_skc_code and ticket.mtm_order is null
+        where ticket.production_ticket_no=#{productionTicketNo} ORDER BY skc.id desc
+    </select>
+    <select id="getBigStyleAnalyseStyleCoverByTicketNo" resultType="com.ylzs.vo.bigstylereport.BigStyleVO">
+        SELECT skc.style_random_code,mas.`status`,ticket.adapt_code ,true  isStyleCover from big_style_analyse_master_style_cover as skc
+        INNER JOIN big_style_analyse_master as mas on skc.style_random_code=mas.random_code  and mas.`status` !=1090
+        LEFT JOIN fms_ticket_no as ticket on ticket.style_code_color=skc.style_skc_code and ticket.mtm_order is null
+        where ticket.production_ticket_no=#{productionTicketNo} ORDER BY skc.id desc
+    </select>
+    <select id="getOneByProductionTicketNo" resultType="com.ylzs.entity.bigticketno.FmsTicketNo">
+        select * from fms_ticket_no where production_ticket_no=#{productionTicketNo}
+    </select>
+    <select id="getBigStyleAnalyseTicketNo" resultType="com.ylzs.entity.bigticketno.FmsTicketNo">
+        SELECT distinct ticket.* from big_style_analyse_master_skc as skc
+        INNER JOIN fms_ticket_no as ticket on ticket.style_code_color=skc.style_skc_code
+            and ticket.mtm_order is null and ticket.style_code is not null
+        where skc.style_random_code=#{bigStyleAnalyseRandomCode} ORDER BY skc.id desc
+    </select>
+    <select id="getBigStyleAnalyseStyleCoverTicketNo" resultType="com.ylzs.entity.bigticketno.FmsTicketNo">
+        SELECT distinct ticket.* from big_style_analyse_master_style_cover as skc
+        INNER JOIN fms_ticket_no as ticket on ticket.style_code_color=skc.style_skc_code
+            and ticket.mtm_order is null and ticket.style_code is not null
+        where skc.style_random_code=#{bigStyleAnalyseRandomCode} ORDER BY skc.id desc
+    </select>
+</mapper>

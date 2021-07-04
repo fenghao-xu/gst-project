@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseStdDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.sewingcraft.SewingCraftStd">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="craft_std_code" jdbcType="VARCHAR" property="craftStdCode" />
+    <result column="craft_std_name" jdbcType="VARCHAR" property="craftStdName" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="sewing_craft_random_code" jdbcType="BIGINT" property="sewingCraftRandomCode" />
+<!--    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />-->
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, craft_std_code, craft_std_name, craft_code, sewing_craft_random_code,
+--     ct_style_code,
+    part_craft_main_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_std
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_std
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftStd" useGeneratedKeys="true">
+    insert into history_big_style_analyse_std (craft_std_code, craft_std_name, craft_code, 
+      sewing_craft_random_code, ct_style_code, part_craft_main_code
+      )
+    values (#{craftStdCode,jdbcType=VARCHAR}, #{craftStdName,jdbcType=VARCHAR}, #{craftCode,jdbcType=VARCHAR}, 
+      #{sewingCraftRandomCode,jdbcType=BIGINT}, #{ctStyleCode,jdbcType=VARCHAR}, #{partCraftMainCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftStd" useGeneratedKeys="true">
+    insert into history_big_style_analyse_std
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="craftStdCode != null">
+        craft_std_code,
+      </if>
+      <if test="craftStdName != null">
+        craft_std_name,
+      </if>
+      <if test="craftCode != null">
+        craft_code,
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="craftStdCode != null">
+        #{craftStdCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftStdName != null">
+        #{craftStdName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCode != null">
+        #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.sewingcraft.SewingCraftStd">
+    update history_big_style_analyse_std
+    <set>
+      <if test="craftStdCode != null">
+        craft_std_code = #{craftStdCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftStdName != null">
+        craft_std_name = #{craftStdName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCode != null">
+        craft_code = #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.sewingcraft.SewingCraftStd">
+    update history_big_style_analyse_std
+    set craft_std_code = #{craftStdCode,jdbcType=VARCHAR},
+      craft_std_name = #{craftStdName,jdbcType=VARCHAR},
+      craft_code = #{craftCode,jdbcType=VARCHAR},
+      sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

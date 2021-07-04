@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCombCraft.PartCombCraftDao">
+
+    <resultMap type="com.ylzs.entity.partCombCraft.resp.PartCombCraftAllDataResp" id="getPartCombCraftAllData">
+        <id column="id" property="id"/>
+        <result column="random_code" property="randomCode"/>
+        <result column="part_comb_craft_code" property="partCombCraftCode"/>
+        <result column="part_comb_craft_name" property="partCombCraftName"/>
+        <result column="clothing_category_code" property="clothingCategoryCode"/>
+        <result column="clothing_category_name" property="clothingCategoryName"/>
+        <result column="part_comb_craft_desc" property="partCombCraftDesc"/>
+        <result column="part_comb_craft_number" property="partCombCraftNumber"/>
+        <result column="status" property="status"/>
+        <!-- 方案 -->
+        <collection property="details" javaType="list"
+                    ofType="com.ylzs.entity.partCombCraft.PartCombCraftProgramDetail">
+            <result column="part_comb_craft_random_code" property="partCombCraftRandomCode"/>
+            <result column="design_code" property="designCode"/>
+            <result column="design_name" property="designName"/>
+            <result column="part_position_code" property="partPositionCode"/>
+            <result column="part_position_name" property="partPositionName"/>
+            <result column="part_number" property="partNumber"/>
+            <result column="part_detail_index" property="partDetailIndex"/>
+        </collection>
+        <!-- 规则 -->
+        <collection property="rules" javaType="list" ofType="com.ylzs.entity.partCombCraft.PartCombCraftRule">
+            <result column="part_comb_craft_random_code" property="partCombCraftRandomCode"/>
+            <result column="source_craft_code" property="sourceCraftCode"/>
+            <result column="source_craft_name" property="sourceCraftName"/>
+            <result column="action_craft_code" property="actionCraftCode"/>
+            <result column="action_craft_name" property="actionCraftName"/>
+            <result column="processing_sort_num" property="processingSortNum"/>
+            <result column="source_craft_flow_num" property="sourceCraftFlowNum"/>
+            <result column="action_craft_flow_num" property="actionCraftFlowNum"/>
+            <result column="rule_index" property="ruleIndex"/>
+            <result column="process_type" property="processType"/>
+        </collection>
+    </resultMap>
+
+    <sql id="queryPartAll">
+      pcc.id,
+      pcc.random_code,
+      pcc.part_comb_craft_code ,
+      pcc.part_comb_craft_name ,
+      pcc.clothing_category_code ,
+      pcc.clothing_category_name ,
+      pcc.part_comb_craft_desc ,
+      pcc.part_comb_craft_number,
+      pcc.status,
+
+      pccpd.part_comb_craft_random_code,
+      pccpd.design_code,
+      pccpd.design_name,
+      pccpd.part_position_code,
+      pccpd.part_position_name,
+      pccpd.part_number,
+      pccpd.part_detail_index,
+
+      pccr.part_comb_craft_random_code,
+      pccr.source_craft_code,
+      pccr.source_craft_name,
+      pccr.action_craft_code,
+      pccr.action_craft_name,
+      pccr.processing_sort_num,
+      pccr.source_craft_flow_num,
+      pccr.action_craft_flow_num,
+      pccr.rule_index,
+      pccr.process_type
+    </sql>
+
+    <sql id="queryPart">
+      pcc.id ,
+      pcc.random_code,
+      pcc.part_comb_craft_code ,
+      pcc.part_comb_craft_name ,
+      pcc.clothing_category_code ,
+      pcc.clothing_category_name ,
+      pcc.part_comb_craft_desc ,
+      pcc.part_comb_craft_number,
+      pcc.status ,
+      ifnull(u.user_name,pcc.create_user) createUser,
+      pcc.create_time
+    </sql>
+
+    <select id="selectPartCombCraftChecklist" resultType="com.ylzs.entity.partCombCraft.PartCombCraft"
+            parameterType="com.ylzs.entity.partCombCraft.req.QueryPartCombCraftReq">
+        select
+        <include refid="queryPart"></include>
+        from part_comb_craft pcc
+        join part_comb_craft_program_detail pccpd on pcc.random_code = pccpd.part_comb_craft_random_code
+        left join part_comb_craft_rule pccr on pcc.random_code = pccr.part_comb_craft_random_code
+        left join user u on u.user_code = pcc.create_user
+        <where>
+            <if test="status !=null">
+                pcc.status = #{status}
+            </if>
+            <if test="searchText !=null and searchText !='' ">
+                and (pcc.part_comb_craft_name like concat('%',#{searchText},'%') or
+                pccpd.design_code like concat('%',#{searchText},'%') or
+                pccpd.design_name like concat('%',#{searchText},'%'))
+            </if>
+            <if test="partCombCraftCode != null and partCombCraftCode != ''">
+                and pcc.part_comb_craft_code like concat('%',#{partCombCraftCode},'%')
+            </if>
+            <if test="partCombCraftName != null and partCombCraftName != ''">
+                and pcc.part_comb_craft_name like concat('%',#{partCombCraftName},'%')
+            </if>
+            <if test="designPartCode != null and designPartCode != ''">
+                and pccpd.design_code like concat('%',#{designPartCode},'%')
+            </if>
+            <if test="designPartName != null and designPartName != ''">
+                and pccpd.design_name like concat('%',#{designPartName},'%')
+            </if>
+            <if test="userCode !=null and userCode !=''">
+                and pcc.create_user = #{userCode}
+            </if>
+            <if test="clothingCategoryCode != null and clothingCategoryCode !=''">
+                and pcc.clothing_category_code = #{clothingCategoryCode}
+            </if>
+            <if test="processCraft != null and processCraft !=''">
+                and (pccr.source_craft_code like concat('%',#{processCraft},'%') or
+                pccr.source_craft_name like concat('%',#{processCraft},'%'))
+            </if>
+            and pcc.status in(1000,1020) and pccpd.status in(1000,1020) and ifnull(pccr.status,1000) in (1000,1020)
+        </where>
+        group by pcc.random_code order by pcc.create_time desc
+    </select>
+
+    <select id="selectPartCreateUser" resultType="com.ylzs.entity.partCombCraft.resp.UserResp">
+        select pcc.create_user userCode,u.user_name from part_comb_craft pcc
+        left join user u on u.user_code = pcc.create_user
+        where pcc.status in(1000,1020)  GROUP BY pcc.create_user
+    </select>
+
+    <select id="selectListByCategoryCode" resultMap="getPartCombCraftAllData">
+        select
+        <include refid="queryPartAll"></include>
+        from part_comb_craft pcc
+        join part_comb_craft_program_detail pccpd on pcc.random_code = pccpd.part_comb_craft_random_code
+        join part_comb_craft_rule pccr on pcc.random_code = pccr.part_comb_craft_random_code
+        where pcc.clothing_category_code = #{clothingCategoryCode}
+        and pcc.status =1020 and pccpd.status = 1020 and pccr.status = 1020
+
+        and pcc.random_code in (
+        select distinct part_comb_craft_random_code from part_comb_craft_program_detail
+        where design_code in
+        <foreach collection="codeArray" separator="," close=")" open="(" item="code">
+            #{code}
+        </foreach>
+        )
+<!--        and pccpd.design_code in-->
+<!--        <foreach collection="codeArray" separator="," close=")" open="(" item="code">-->
+<!--            #{code}-->
+<!--        </foreach>-->
+    </select>
+
+    <select id="selectNameCount" resultType="java.lang.Integer">
+        select count(*) from part_comb_craft
+        <where>
+            part_comb_craft_name = #{name} and status not in (1030,1090)
+            <if test="randomCode !=null and randomCode != 0">
+                and random_code != #{randomCode}
+            </if>
+        </where>
+    </select>
+
+    <sql id="partCombCraftSql">
+      pcc.random_code,
+      pcc.part_comb_craft_code ,
+      pcc.part_comb_craft_name ,
+      pcc.clothing_category_code ,
+      pcc.clothing_category_name ,
+      pcc.part_comb_craft_desc ,
+      pcc.part_comb_craft_number,
+      pcc.status ,
+      u.user_name createUser,
+      pcc.create_time,
+      pcc.update_time,
+      u1.user_name updateUser
+    </sql>
+
+    <select id="selectPartCombCraft" resultType="com.ylzs.entity.partCombCraft.PartCombCraft">
+        select
+        <include refid="partCombCraftSql"></include>
+        from part_comb_craft pcc
+        left join user u on u.user_code = pcc.create_user
+        left join user u1 on u1.user_code = pcc.update_user
+        where pcc.random_code = #{randomCode}
+    </select>
+
+</mapper>

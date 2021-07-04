@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseSewingCraftDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="craft_name" jdbcType="VARCHAR" property="craftName" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="section_code" jdbcType="VARCHAR" property="sectionCode" />
+    <result column="work_type_code" jdbcType="VARCHAR" property="workTypeCode" />
+    <result column="make_type_code" jdbcType="VARCHAR" property="makeTypeCode" />
+    <result column="allowance_random_code" jdbcType="BIGINT" property="allowanceRandomCode" />
+    <result column="allowance_code" jdbcType="DECIMAL" property="allowanceCode" />
+    <result column="strapping_code" jdbcType="DECIMAL" property="strappingCode" />
+    <result column="craft_grade_code" jdbcType="VARCHAR" property="craftGradeCode" />
+    <result column="is_fabric_style_fix" jdbcType="BIT" property="isFabricStyleFix" />
+    <result column="standard_time" jdbcType="DECIMAL" property="standardTime" />
+    <result column="standard_price" jdbcType="DECIMAL" property="standardPrice" />
+<!--    <result column="craft_std_code" jdbcType="VARCHAR" property="craftStdCode" />-->
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="help_tool_code" jdbcType="VARCHAR" property="helpToolCode" />
+    <result column="make_description" jdbcType="VARCHAR" property="makeDescription" />
+    <result column="quality_spec" jdbcType="VARCHAR" property="qualitySpec" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="craft_category_code" jdbcType="VARCHAR" property="craftCategoryCode" />
+    <result column="craft_category_name" jdbcType="VARCHAR" property="craftCategoryName" />
+    <result column="craft_part_code" jdbcType="VARCHAR" property="craftPartCode" />
+    <result column="craft_part_name" jdbcType="VARCHAR" property="craftPartName" />
+    <result column="fixed_time" jdbcType="INTEGER" property="fixedTime" />
+    <result column="floating_time" jdbcType="INTEGER" property="floatingTime" />
+    <result column="sewing_length" jdbcType="INTEGER" property="sewingLength" />
+    <result column="param_length" jdbcType="INTEGER" property="paramLength" />
+    <result column="fabric_score_plan_code" jdbcType="VARCHAR" property="fabricScorePlanCode" />
+    <result column="machine_name" jdbcType="VARCHAR" property="machineName" />
+<!--    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />-->
+<!--    <result column="is_new" jdbcType="BIT" property="isNew" />-->
+    <result column="time_supplement" jdbcType="DECIMAL" property="timeSupplement" />
+    <result column="fabric_grade_code" jdbcType="INTEGER" property="fabricGradeCode" />
+    <result column="fabric_fraction" jdbcType="INTEGER" property="fabricFraction" />
+    <result column="order_grade" jdbcType="INTEGER" property="orderGrade" />
+    <result column="fabric_ratio" jdbcType="DECIMAL" property="fabricRatio" />
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+    <result column="stitch_length" jdbcType="DECIMAL" property="stitchLength" />
+    <result column="same_level_craft_numerical_code" jdbcType="VARCHAR" property="sameLevelCraftNumericalCode" />
+    <result column="is_cancel_send" jdbcType="BIT" property="isCancelSend" />
+    <result column="base_standard_time" jdbcType="DECIMAL" property="baseStandardTime" />
+    <result column="base_standard_price" jdbcType="DECIMAL" property="baseStandardPrice" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, random_code, `status`, craft_code, craft_name, description, section_code, work_type_code, 
+    make_type_code, allowance_random_code, allowance_code, strapping_code, craft_grade_code, 
+    is_fabric_style_fix, standard_time, standard_price,
+--     craft_std_code,
+    machine_code,
+    help_tool_code, make_description, quality_spec, remark, is_invalid, audit_user, audit_time, 
+    create_user, create_time, update_user, update_time, version, craft_category_code, 
+    craft_category_name, craft_part_code, craft_part_name, fixed_time, floating_time, 
+    sewing_length, param_length, fabric_score_plan_code, machine_name,
+--     ct_style_code, is_new,
+    time_supplement, fabric_grade_code, fabric_fraction, order_grade, fabric_ratio,
+    part_craft_main_code, stitch_length, same_level_craft_numerical_code, is_cancel_send, 
+    base_standard_time, base_standard_price
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_sewing_craft
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_sewing_craft
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse" useGeneratedKeys="true">
+    insert into history_big_style_analyse_sewing_craft (random_code, `status`, craft_code, 
+      craft_name, description, section_code, 
+      work_type_code, make_type_code, allowance_random_code, 
+      allowance_code, strapping_code, craft_grade_code, 
+      is_fabric_style_fix, standard_time, standard_price, 
+      craft_std_code, machine_code, help_tool_code, 
+      make_description, quality_spec, remark, 
+      is_invalid, audit_user, audit_time, 
+      create_user, create_time, update_user, 
+      update_time, version, craft_category_code, 
+      craft_category_name, craft_part_code, craft_part_name, 
+      fixed_time, floating_time, sewing_length, 
+      param_length, fabric_score_plan_code, machine_name, 
+      ct_style_code, is_new, time_supplement, 
+      fabric_grade_code, fabric_fraction, order_grade, 
+      fabric_ratio, part_craft_main_code, stitch_length, 
+      same_level_craft_numerical_code, is_cancel_send, 
+      base_standard_time, base_standard_price)
+    values (#{randomCode,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{craftCode,jdbcType=VARCHAR}, 
+      #{craftName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{sectionCode,jdbcType=VARCHAR}, 
+      #{workTypeCode,jdbcType=VARCHAR}, #{makeTypeCode,jdbcType=VARCHAR}, #{allowanceRandomCode,jdbcType=BIGINT}, 
+      #{allowanceCode,jdbcType=DECIMAL}, #{strappingCode,jdbcType=DECIMAL}, #{craftGradeCode,jdbcType=VARCHAR}, 
+      #{isFabricStyleFix,jdbcType=BIT}, #{standardTime,jdbcType=DECIMAL}, #{standardPrice,jdbcType=DECIMAL}, 
+      #{craftStdCode,jdbcType=VARCHAR}, #{machineCode,jdbcType=VARCHAR}, #{helpToolCode,jdbcType=VARCHAR}, 
+      #{makeDescription,jdbcType=VARCHAR}, #{qualitySpec,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isInvalid,jdbcType=BIT}, #{auditUser,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=VARCHAR}, #{craftCategoryCode,jdbcType=VARCHAR}, 
+      #{craftCategoryName,jdbcType=VARCHAR}, #{craftPartCode,jdbcType=VARCHAR}, #{craftPartName,jdbcType=VARCHAR}, 
+      #{fixedTime,jdbcType=INTEGER}, #{floatingTime,jdbcType=INTEGER}, #{sewingLength,jdbcType=INTEGER}, 
+      #{paramLength,jdbcType=INTEGER}, #{fabricScorePlanCode,jdbcType=VARCHAR}, #{machineName,jdbcType=VARCHAR}, 
+      #{ctStyleCode,jdbcType=VARCHAR}, #{isNew,jdbcType=BIT}, #{timeSupplement,jdbcType=DECIMAL}, 
+      #{fabricGradeCode,jdbcType=INTEGER}, #{fabricFraction,jdbcType=INTEGER}, #{orderGrade,jdbcType=INTEGER}, 
+      #{fabricRatio,jdbcType=DECIMAL}, #{partCraftMainCode,jdbcType=VARCHAR}, #{stitchLength,jdbcType=DECIMAL}, 
+      #{sameLevelCraftNumericalCode,jdbcType=VARCHAR}, #{isCancelSend,jdbcType=BIT}, 
+      #{baseStandardTime,jdbcType=DECIMAL}, #{baseStandardPrice,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse" useGeneratedKeys="true">
+    insert into history_big_style_analyse_sewing_craft
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        random_code,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="craftCode != null">
+        craft_code,
+      </if>
+      <if test="craftName != null">
+        craft_name,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="sectionCode != null">
+        section_code,
+      </if>
+      <if test="workTypeCode != null">
+        work_type_code,
+      </if>
+      <if test="makeTypeCode != null">
+        make_type_code,
+      </if>
+      <if test="allowanceRandomCode != null">
+        allowance_random_code,
+      </if>
+      <if test="allowanceCode != null">
+        allowance_code,
+      </if>
+      <if test="strappingCode != null">
+        strapping_code,
+      </if>
+      <if test="craftGradeCode != null">
+        craft_grade_code,
+      </if>
+      <if test="isFabricStyleFix != null">
+        is_fabric_style_fix,
+      </if>
+      <if test="standardTime != null">
+        standard_time,
+      </if>
+      <if test="standardPrice != null">
+        standard_price,
+      </if>
+      <if test="craftStdCode != null">
+        craft_std_code,
+      </if>
+      <if test="machineCode != null">
+        machine_code,
+      </if>
+      <if test="helpToolCode != null">
+        help_tool_code,
+      </if>
+      <if test="makeDescription != null">
+        make_description,
+      </if>
+      <if test="qualitySpec != null">
+        quality_spec,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isInvalid != null">
+        is_invalid,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code,
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name,
+      </if>
+      <if test="craftPartCode != null">
+        craft_part_code,
+      </if>
+      <if test="craftPartName != null">
+        craft_part_name,
+      </if>
+      <if test="fixedTime != null">
+        fixed_time,
+      </if>
+      <if test="floatingTime != null">
+        floating_time,
+      </if>
+      <if test="sewingLength != null">
+        sewing_length,
+      </if>
+      <if test="paramLength != null">
+        param_length,
+      </if>
+      <if test="fabricScorePlanCode != null">
+        fabric_score_plan_code,
+      </if>
+      <if test="machineName != null">
+        machine_name,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="isNew != null">
+        is_new,
+      </if>
+      <if test="timeSupplement != null">
+        time_supplement,
+      </if>
+      <if test="fabricGradeCode != null">
+        fabric_grade_code,
+      </if>
+      <if test="fabricFraction != null">
+        fabric_fraction,
+      </if>
+      <if test="orderGrade != null">
+        order_grade,
+      </if>
+      <if test="fabricRatio != null">
+        fabric_ratio,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+      <if test="stitchLength != null">
+        stitch_length,
+      </if>
+      <if test="sameLevelCraftNumericalCode != null">
+        same_level_craft_numerical_code,
+      </if>
+      <if test="isCancelSend != null">
+        is_cancel_send,
+      </if>
+      <if test="baseStandardTime != null">
+        base_standard_time,
+      </if>
+      <if test="baseStandardPrice != null">
+        base_standard_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="craftCode != null">
+        #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftName != null">
+        #{craftName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="sectionCode != null">
+        #{sectionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workTypeCode != null">
+        #{workTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="makeTypeCode != null">
+        #{makeTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="allowanceRandomCode != null">
+        #{allowanceRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="allowanceCode != null">
+        #{allowanceCode,jdbcType=DECIMAL},
+      </if>
+      <if test="strappingCode != null">
+        #{strappingCode,jdbcType=DECIMAL},
+      </if>
+      <if test="craftGradeCode != null">
+        #{craftGradeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isFabricStyleFix != null">
+        #{isFabricStyleFix,jdbcType=BIT},
+      </if>
+      <if test="standardTime != null">
+        #{standardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="standardPrice != null">
+        #{standardPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="craftStdCode != null">
+        #{craftStdCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null">
+        #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="helpToolCode != null">
+        #{helpToolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="makeDescription != null">
+        #{makeDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="qualitySpec != null">
+        #{qualitySpec,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isInvalid != null">
+        #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftPartCode != null">
+        #{craftPartCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftPartName != null">
+        #{craftPartName,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedTime != null">
+        #{fixedTime,jdbcType=INTEGER},
+      </if>
+      <if test="floatingTime != null">
+        #{floatingTime,jdbcType=INTEGER},
+      </if>
+      <if test="sewingLength != null">
+        #{sewingLength,jdbcType=INTEGER},
+      </if>
+      <if test="paramLength != null">
+        #{paramLength,jdbcType=INTEGER},
+      </if>
+      <if test="fabricScorePlanCode != null">
+        #{fabricScorePlanCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineName != null">
+        #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isNew != null">
+        #{isNew,jdbcType=BIT},
+      </if>
+      <if test="timeSupplement != null">
+        #{timeSupplement,jdbcType=DECIMAL},
+      </if>
+      <if test="fabricGradeCode != null">
+        #{fabricGradeCode,jdbcType=INTEGER},
+      </if>
+      <if test="fabricFraction != null">
+        #{fabricFraction,jdbcType=INTEGER},
+      </if>
+      <if test="orderGrade != null">
+        #{orderGrade,jdbcType=INTEGER},
+      </if>
+      <if test="fabricRatio != null">
+        #{fabricRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stitchLength != null">
+        #{stitchLength,jdbcType=DECIMAL},
+      </if>
+      <if test="sameLevelCraftNumericalCode != null">
+        #{sameLevelCraftNumericalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isCancelSend != null">
+        #{isCancelSend,jdbcType=BIT},
+      </if>
+      <if test="baseStandardTime != null">
+        #{baseStandardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="baseStandardPrice != null">
+        #{baseStandardPrice,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+    update history_big_style_analyse_sewing_craft
+    <set>
+      <if test="randomCode != null">
+        random_code = #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="craftCode != null">
+        craft_code = #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftName != null">
+        craft_name = #{craftName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="sectionCode != null">
+        section_code = #{sectionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="workTypeCode != null">
+        work_type_code = #{workTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="makeTypeCode != null">
+        make_type_code = #{makeTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="allowanceRandomCode != null">
+        allowance_random_code = #{allowanceRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="allowanceCode != null">
+        allowance_code = #{allowanceCode,jdbcType=DECIMAL},
+      </if>
+      <if test="strappingCode != null">
+        strapping_code = #{strappingCode,jdbcType=DECIMAL},
+      </if>
+      <if test="craftGradeCode != null">
+        craft_grade_code = #{craftGradeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isFabricStyleFix != null">
+        is_fabric_style_fix = #{isFabricStyleFix,jdbcType=BIT},
+      </if>
+      <if test="standardTime != null">
+        standard_time = #{standardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="standardPrice != null">
+        standard_price = #{standardPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="craftStdCode != null">
+        craft_std_code = #{craftStdCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null">
+        machine_code = #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="helpToolCode != null">
+        help_tool_code = #{helpToolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="makeDescription != null">
+        make_description = #{makeDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="qualitySpec != null">
+        quality_spec = #{qualitySpec,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isInvalid != null">
+        is_invalid = #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryCode != null">
+        craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftCategoryName != null">
+        craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="craftPartCode != null">
+        craft_part_code = #{craftPartCode,jdbcType=VARCHAR},
+      </if>
+      <if test="craftPartName != null">
+        craft_part_name = #{craftPartName,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedTime != null">
+        fixed_time = #{fixedTime,jdbcType=INTEGER},
+      </if>
+      <if test="floatingTime != null">
+        floating_time = #{floatingTime,jdbcType=INTEGER},
+      </if>
+      <if test="sewingLength != null">
+        sewing_length = #{sewingLength,jdbcType=INTEGER},
+      </if>
+      <if test="paramLength != null">
+        param_length = #{paramLength,jdbcType=INTEGER},
+      </if>
+      <if test="fabricScorePlanCode != null">
+        fabric_score_plan_code = #{fabricScorePlanCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineName != null">
+        machine_name = #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isNew != null">
+        is_new = #{isNew,jdbcType=BIT},
+      </if>
+      <if test="timeSupplement != null">
+        time_supplement = #{timeSupplement,jdbcType=DECIMAL},
+      </if>
+      <if test="fabricGradeCode != null">
+        fabric_grade_code = #{fabricGradeCode,jdbcType=INTEGER},
+      </if>
+      <if test="fabricFraction != null">
+        fabric_fraction = #{fabricFraction,jdbcType=INTEGER},
+      </if>
+      <if test="orderGrade != null">
+        order_grade = #{orderGrade,jdbcType=INTEGER},
+      </if>
+      <if test="fabricRatio != null">
+        fabric_ratio = #{fabricRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stitchLength != null">
+        stitch_length = #{stitchLength,jdbcType=DECIMAL},
+      </if>
+      <if test="sameLevelCraftNumericalCode != null">
+        same_level_craft_numerical_code = #{sameLevelCraftNumericalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isCancelSend != null">
+        is_cancel_send = #{isCancelSend,jdbcType=BIT},
+      </if>
+      <if test="baseStandardTime != null">
+        base_standard_time = #{baseStandardTime,jdbcType=DECIMAL},
+      </if>
+      <if test="baseStandardPrice != null">
+        base_standard_price = #{baseStandardPrice,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+    update history_big_style_analyse_sewing_craft
+    set random_code = #{randomCode,jdbcType=BIGINT},
+      `status` = #{status,jdbcType=INTEGER},
+      craft_code = #{craftCode,jdbcType=VARCHAR},
+      craft_name = #{craftName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      section_code = #{sectionCode,jdbcType=VARCHAR},
+      work_type_code = #{workTypeCode,jdbcType=VARCHAR},
+      make_type_code = #{makeTypeCode,jdbcType=VARCHAR},
+      allowance_random_code = #{allowanceRandomCode,jdbcType=BIGINT},
+      allowance_code = #{allowanceCode,jdbcType=DECIMAL},
+      strapping_code = #{strappingCode,jdbcType=DECIMAL},
+      craft_grade_code = #{craftGradeCode,jdbcType=VARCHAR},
+      is_fabric_style_fix = #{isFabricStyleFix,jdbcType=BIT},
+      standard_time = #{standardTime,jdbcType=DECIMAL},
+      standard_price = #{standardPrice,jdbcType=DECIMAL},
+      craft_std_code = #{craftStdCode,jdbcType=VARCHAR},
+      machine_code = #{machineCode,jdbcType=VARCHAR},
+      help_tool_code = #{helpToolCode,jdbcType=VARCHAR},
+      make_description = #{makeDescription,jdbcType=VARCHAR},
+      quality_spec = #{qualitySpec,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_invalid = #{isInvalid,jdbcType=BIT},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=VARCHAR},
+      craft_category_code = #{craftCategoryCode,jdbcType=VARCHAR},
+      craft_category_name = #{craftCategoryName,jdbcType=VARCHAR},
+      craft_part_code = #{craftPartCode,jdbcType=VARCHAR},
+      craft_part_name = #{craftPartName,jdbcType=VARCHAR},
+      fixed_time = #{fixedTime,jdbcType=INTEGER},
+      floating_time = #{floatingTime,jdbcType=INTEGER},
+      sewing_length = #{sewingLength,jdbcType=INTEGER},
+      param_length = #{paramLength,jdbcType=INTEGER},
+      fabric_score_plan_code = #{fabricScorePlanCode,jdbcType=VARCHAR},
+      machine_name = #{machineName,jdbcType=VARCHAR},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      is_new = #{isNew,jdbcType=BIT},
+      time_supplement = #{timeSupplement,jdbcType=DECIMAL},
+      fabric_grade_code = #{fabricGradeCode,jdbcType=INTEGER},
+      fabric_fraction = #{fabricFraction,jdbcType=INTEGER},
+      order_grade = #{orderGrade,jdbcType=INTEGER},
+      fabric_ratio = #{fabricRatio,jdbcType=DECIMAL},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      stitch_length = #{stitchLength,jdbcType=DECIMAL},
+      same_level_craft_numerical_code = #{sameLevelCraftNumericalCode,jdbcType=VARCHAR},
+      is_cancel_send = #{isCancelSend,jdbcType=BIT},
+      base_standard_time = #{baseStandardTime,jdbcType=DECIMAL},
+      base_standard_price = #{baseStandardPrice,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updatePartCode" >
+    UPDATE `history_big_style_analyse_sewing_craft` set craft_part_code=#{code} where id=#{id}
+  </update>
+</mapper>

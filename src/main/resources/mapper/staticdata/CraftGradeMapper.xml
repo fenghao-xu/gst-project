@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.staticdata.CraftGradeDao">
+    <resultMap type="CraftGrade" id="CraftGradeResult" >
+
+        <result column="factory_code" property="factoryCode"/>
+        <result column="factory_name" property="factoryName"/>
+        <result column="month_wage" property="monthWage"/>
+        <result column="working_day_month" property="workingDayMonth"/>
+        <result column="day_wage" property="dayWage"/>
+        <result column="working_hour_day" property="workingHourDay"/>
+        <result column="hourly_wage" property="hourlyWage"/>
+        <result column="minute_wage" property="minuteWage"/>
+        <result column="calculate_wage" property="calculateWage"/>
+        <result column="remark" property="remark"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+    <select id="getAllCraftGrade" resultMap="CraftGradeResult">
+        select * from craft_grade
+        <where>
+            <if test="keywords != null and keywords !='' ">
+                and  factory_code like concat('%', #{keywords},'%')
+                or  factory_name like concat('%', #{keywords},'%')
+                or  month_wage like concat('%', #{keywords},'%')
+                or  working_day_month like concat('%', #{keywords},'%')
+                or  day_wage like concat('%', #{keywords},'%')
+                or  working_hour_day like concat('%', #{keywords},'%')
+                or  hourly_wage like concat('%', #{keywords},'%')
+                or  minute_wage like concat('%', #{keywords},'%')
+                or  remark like concat('%', #{keywords},'%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getAllFactoryCode" resultType="java.lang.String">
+        select factory_code from craft_grade
+    </select>
+
+    <insert id="addOrUpdate" parameterType="NeedlePitch">
+        INSERT INTO craft_grade
+            (
+                factory_code,factory_name,month_wage,working_day_month,day_wage,working_hour_day,hourly_wage,minute_wage,calculate_wage,remark,create_user,create_time
+            )VALUES(
+              #{factoryCode},#{factoryName},#{monthWage},#{workingDayMonth},#{dayWage},#{workingHourDay},#{hourlyWage},#{minuteWage},#{calculateWage},#{remark}, #{createUser},#{createTime}
+            )ON DUPLICATE KEY UPDATE
+            factory_code = #{factoryCode},factory_name=#{factoryName},month_wage=#{monthWage},working_day_month=#{workingDayMonth},day_wage=#{dayWage},
+            working_hour_day=#{workingHourDay},hourly_wage=#{hourlyWage},minute_wage=#{minuteWage},calculate_wage=#{calculateWage},
+            remark=#{remark},update_user=#{updateUser},update_time=#{updateTime}
+    </insert>
+
+    <delete id="deleteBySleFactoryCode" parameterType="string">
+        delete from craft_grade where factory_code = #{sleFactoryCode}
+    </delete>
+
+
+
+
+
+
+
+
+
+</mapper>

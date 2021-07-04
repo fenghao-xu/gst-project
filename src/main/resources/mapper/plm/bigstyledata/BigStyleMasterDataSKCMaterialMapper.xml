@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.BigStyleMasterDataSKCMaterialDao">
+        <resultMap type="BigStyleMasterDataSKCMaterial" id="BigStyleMasterDataSKCMaterialResult">
+            <result column="item_code" property="itemCode" />
+            <result column="material_use" property="materialUse" />
+            <result column="material_code" property="materialCode" />
+            <result column="bom_remark" property="bomRemark" />
+            <result column="is_main_material" property="isMainMaterial" />
+            <result column="material_middle_type" property="materialMiddleType" />
+            <result column="material_small_type" property="materialSmallType" />
+            <result column="material_color" property="materialColor" />
+            <result column="color_section_code" property="colorSectionCode" />
+            <result column="material_type" property="materialType" />
+            <result column="material_style" property="materialStyle" />
+            <result column="material_grade" property="materialGrade" />
+            <result column="weight" property="weight" />
+            <result column="weight_grade" property="weightGrade" />
+            <result column="weft_elastic_grade" property="weftElasticGrade" />
+            <result column="warp_elastic_grade" property="warpElasticGrade" />
+            <result column="draping_grade" property="drapingGrade" />
+            <result column="hy_grade" property="hYGrade" />
+            <result column="style_skc_code" property="styleSkcCode" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateBigStyleDataSKCMaterialList" parameterType="BigStyleMasterDataSKCMaterial">
+		insert into capp_pi_big_style_skc_material (
+		item_code,material_use,material_code, bom_remark, is_main_material,material_middle_type,
+		material_small_type,material_color,color_section_code,material_type,material_style,material_grade,
+		weight,weight_grade,weft_elastic_grade,warp_elastic_grade,draping_grade,hy_grade,style_skc_code
+		)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.itemCode}, #{item.materialUse},#{item.materialCode}, #{item.bomRemark},#{item.isMainMaterial},#{item.materialMiddleType},
+            #{item.materialSmallType}, #{item.materialColor},#{item.colorSectionCode}, #{item.materialType},#{item.materialStyle},#{item.materialGrade},
+            #{item.weight}, #{item.weightGrade},#{item.weftElasticGrade}, #{item.warpElasticGrade},#{item.drapingGrade},#{item.hYGrade},
+            #{item.styleSkcCode}
+            )
+        </foreach>
+        on duplicate key update
+        item_code=values(item_code),material_use= values(material_use),material_code=values(material_code),
+        bom_remark= values(bom_remark),is_main_material=values(is_main_material),material_middle_type=values(material_middle_type),
+        material_small_type=values(material_small_type),material_color= values(material_color),color_section_code= values(color_section_code),
+        material_type=values(material_type),material_style= values(material_style),material_grade=values(material_grade),weight= values(weight),
+        weight_grade=values(weight_grade),weft_elastic_grade= values(weft_elastic_grade),warp_elastic_grade=values(warp_elastic_grade),
+        draping_grade= values(draping_grade),hy_grade= values(hy_grade),style_skc_code= values(style_skc_code)
+    </insert>
+    <select id="getBigStyleMasterDataSKCMaterial"
+            resultType="com.ylzs.entity.plm.BigStyleMasterDataSKCMaterial">
+        select * from capp_pi_big_style_skc_material
+            where style_skc_code=#{styleSkcCode} and concat(material_code,material_color)=#{materialCode}
+            limit 1
+    </select>
+
+
+</mapper>

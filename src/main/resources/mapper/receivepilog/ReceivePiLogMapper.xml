@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.receivepilog.ReceivePiLogDao">
+        <resultMap type="ReceivePiLog" id="ReceivePiLogResult">
+            <result column="id" property="id" />
+            <result column="receive_type" property="receiveType" />
+            <result column="data" property="data" />
+            <result column="count" property="count" />
+            <result column="return_status" property="returnStatus" />
+            <result column="return_describe" property="returnDescribe" />
+            <result column="fail_data" property="failData" />
+            <result column="fail_count" property="failCount" />
+            <result column="start_time" property="startTime" />
+            <result column="end_time" property="endTime" />
+            <result column="create_time" property="createTime" />
+            <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <select id="getList" parameterType="Map" resultType="ReceivePiLog">
+        <!--SELECT * FROM gst_receivepilog r-->
+        SELECT * FROM capp_pi_receivepilog r
+        WHERE 1=1
+        <if test="receiveType != null">
+            and r.receive_type=#{receiveType}
+        </if>
+        <if test="startTime != null and endTime != null">
+            AND r.start_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="returnStatus != null">
+            AND r.return_status=500
+        </if>
+        <if test="returnDescribe != null">
+            and r.return_describe=#{returnDescribe}
+        </if>
+        <if test="count != null">
+            and r.count=#{count}
+        </if>
+
+    </select>
+
+    <insert id="add" parameterType="ReceivePiLog"  useGeneratedKeys="true" keyProperty="id">
+		insert into <!--gst_receivepilog-->capp_pi_receivepilog
+			(receive_type,data,count,return_status,return_describe,fail_data,fail_count,start_time,end_time,create_time,update_time)
+			values
+			(#{receiveType},#{data},#{count},#{returnStatus},#{returnDescribe},#{failData},#{failCount},#{startTime},#{endTime},#{createTime},#{updateTime})
+	</insert>
+
+    <update id="updateCount">
+        update capp_pi_receivepilog set count=#{count} where id=#{id}
+    </update>
+
+    <select id="getPiReceiveTypeList" resultType="com.ylzs.entity.receivepilog.ReceivePiLog" parameterType="Map">
+        SELECT * FROM capp_pi_receivepilog
+        <where>
+            and receive_type = #{receiveType}
+            <if test="orderNo != null">
+                and `data` like concat('%',#{orderNo},'%')
+            </if>
+            <if test="styleCode != null">
+                and `data` like concat('%',#{styleCode},'%')
+            </if>
+            <if test="designCode != null">
+                and `data` like concat('%',#{designCode},'%')
+            </if>
+            <if test="createTimeBeginDate != null and createTimeEndDate != null">
+                and create_time BETWEEN #{createTimeBeginDate} and  #{createTimeEndDate}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.custom.CustomStyleCraftCourseDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.custom.CustomStyleCraftCourse" id="resultMap">
+        <result column="id" property="id" />
+        <result column="random_code" property="randomCode" />
+        <result column="status" property="status" />
+        <result column="style_code" property="styleCode" />
+        <result column="think_style_name" property="thinkStyleName" />
+        <result column="order_no" property="orderNo" />
+        <result column="order_line_id" property="orderLineId" />
+        <result column="style_descript" property="styleDescript" />
+        <result column="customer_name" property="customerName" />
+        <result column="fabrics_score" property="fabricsScore" />
+        <result column="stander_time" property="standerTime" />
+        <result column="total_price" property="totalPrice" />
+        <result column="style_picture" property="stylePicture" />
+        <result column="brand" property="brand" />
+        <result column="factory_code" property="factoryCode" />
+        <result column="factory_name" property="factoryName" />
+        <result column="production_category" property="productionCategory" />
+        <result column="main_frame_code" property="mainFrameCode" />
+        <result column="main_frame_name" property="mainFrameName" />
+        <result column="production_ticket_no" property="productionTicketNo" />
+        <result column="craft_category_code" property="craftCategoryCode" />
+        <result column="clothes_category_code" property="clothesCategoryCode" />
+        <result column="clothes_category_name" property="clothesCategoryName" />
+        <result column="main_material_code" property="mainMaterialCode" />
+        <result column="remark" property="remark" />
+        <result column="release_user" property="releaseUser" />
+        <result column="release_time" property="releaseTime" />
+        <result column="effective_time" property="effectiveTime" />
+        <result column="expiration_time" property="expirationTime" />
+        <result column="release_version" property="releaseVersion" />
+        <result column="audit_user" property="auditUser" />
+        <result column="audit_time" property="auditTime" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+        <result column="fabric_direction" property="fabricDirection" />
+        <result column="plm_order_type" property="plmOrderType" />
+        <result column="test_result" property="testResult" />
+        <result column="test_cause" property="testCause" />
+    </resultMap>
+    <resultMap type="com.ylzs.vo.bigstylereport.CraftVO" id="CraftVOResult" >
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result property="craftRemark" column="craft_remark"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result property="workOrderNo" column="work_order_no"/>
+        <result property="machineName" column="machine_name"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="order_grade" property="orderGrade"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="production_part_code" property="productionPartCode" />
+    </resultMap>
+
+    <select id="getDataForExcelReportByCustomRandomCode" resultMap="CraftVOResult" parameterType="java.lang.Long">
+        SELECT a.craft_code,a.craft_descript craft_remark,a.craft_flow_num,'' work_order_no,a.machine_name,a.order_grade,a.standard_price,a.standard_time,a.craft_grade_code,
+        e.design_part_name as craft_part_name,a.work_type_code,dic.value_desc as work_type_name,
+        d.production_part_code
+        from custom_style_part_craft a
+        INNER JOIN custom_style_part e on a.style_part_random_code=e.random_code
+        INNER JOIN custom_style_craft_course f on f.random_code= e.custom_main_random_code
+        left join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        left join sewing_craft_warehouse_workplace c on c.sewing_craft_random_code=b.random_code and c.main_frame_code=f.main_frame_code
+        left join workplace_craft d on c.workplace_craft_code=d.workplace_craft_code
+        LEFT JOIN dictionary as dic on dic.dic_value=a.work_type_code and dic.dictionary_type_code='WorkType'
+        where f.random_code=#{randomCode} and ifnull(b.status,1000)!=1090 ORDER BY a.craft_flow_num ASC
+    </select>
+
+    <select id="getDataForExcelReportOrderByCustomWorkOrder" resultMap="CraftVOResult" parameterType="java.lang.Long">
+        SELECT a.craft_code,a.craft_descript craft_remark,a.craft_flow_num,'' work_order_no,a.machine_name,a.order_grade,a.standard_price,a.standard_time,a.craft_grade_code,
+        e.design_part_name as craft_part_name,a.work_type_code,dic.value_desc as work_type_name,
+        d.production_part_code
+        from custom_style_part_craft a
+        INNER JOIN custom_style_part e on a.style_part_random_code=e.random_code
+        INNER JOIN custom_style_craft_course f on f.random_code= e.custom_main_random_code
+        left join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        left join sewing_craft_warehouse_workplace c on c.sewing_craft_random_code=b.random_code and c.main_frame_code=f.main_frame_code
+        left join workplace_craft d on c.workplace_craft_code=d.workplace_craft_code
+        LEFT JOIN dictionary as dic on dic.dic_value=a.work_type_code and dic.dictionary_type_code='WorkType'
+        where f.random_code=#{randomCode} and ifnull(b.status,1000)!=1090 ORDER BY e.id,a.craft_flow_num
+    </select>
+
+
+    <select id="searchCustomStyleCraftMasterAll" parameterType="HashMap" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse" >
+        SELECT
+            cscm.*,co.style_code thinkStyleCode,pg.adapt_code
+        FROM
+            custom_style_craft_course cscm
+        left join capp_pi_custom_order co
+        on co.order_id=cscm.order_no and co.order_line_id=cscm.order_line_id
+        left join fms_ticket_no ftn on cscm.production_ticket_no=ftn.production_ticket_no and ifnull(ftn.production_ticket_no,'')!=''
+        left join production_group pg on ftn.production_category=pg.production_group_code
+        <if test="queryDesignData != null">
+            LEFT JOIN custom_style_part  AS csp ON csp.custom_main_random_code = cscm.random_code
+            <if test="status !=null">
+               AND  csp.`status` = #{status}
+            </if>
+        </if>
+
+       <where>
+           <if test="customOrderNo != null and customOrderNo != ''">
+               AND concat(cscm.`order_no`,'-',cscm.order_line_id) like CONCAT('%',#{customOrderNo},'%')
+           </if>
+           <if test="styleCode != null and styleCode != ''">
+               AND cscm.style_code like CONCAT('%',#{styleCode},'%')
+           </if>
+           <if test="productionTicketNo != null and productionTicketNo != ''">
+               AND cscm.production_ticket_no like CONCAT('%',#{productionTicketNo},'%')
+           </if>
+           <if test="thinkStyleCode != null and thinkStyleCode != ''">
+               AND co.style_code like CONCAT('%',#{thinkStyleCode},'%')
+           </if>
+           <if test="status !=null">
+               AND  cscm.`status` = #{status}
+           </if>
+           <if test="mainFrameCode != null and mainFrameCode != ''">
+               AND cscm.main_frame_code = #{mainFrameCode}
+           </if>
+           <if test="craftCode != null and craftCode !=''">
+               AND cscm.craft_category_code = #{craftCode}
+           </if>
+           <if test="clothingCode != null and clothingCode !=''">
+               AND cscm.clothes_category_code = #{clothingCode}
+           </if>
+           <if test="queryDesignData != null">
+               AND (csp.`design_part_code` like CONCAT('%',#{queryDesignData},'%')
+               OR csp.`design_part_name` like CONCAT('%',#{queryDesignData},'%')
+           </if>
+           <if test="factoryName != null">
+              AND cscm.`factory_name` = #{factoryName}
+           </if>
+
+           <if test="clothesCategoryCodeList !=null and clothesCategoryCodeList.size()>0">
+               and (cscm.clothes_category_code is null or cscm.clothes_category_code in
+               <foreach collection="clothesCategoryCodeList" item="clothesCategoryCode" open="(" close=")"
+                        separator=",">
+                   #{clothesCategoryCode}
+               </foreach>
+               )
+           </if>
+           <if test="factoryCodeList !=null and factoryCodeList.size()>0">
+               and (cscm.factory_code is null or cscm.factory_code in
+               <foreach collection="factoryCodeList" item="factoryCode" open="(" close=")" separator=",">
+                   #{factoryCode}
+               </foreach>
+               )
+           </if>
+           <if test="subBrandList !=null and subBrandList.size()>0">
+               and (cscm.brand is null or cscm.brand in
+               <foreach collection="subBrandList" item="subBrand" open="(" close=")" separator=",">
+                   #{subBrand}
+               </foreach>
+               )
+           </if>
+
+
+           <if test="productionCategory != null">
+               AND cscm.`production_category` = LIKE  CONCAT('%'#{productionCategory},'%')
+           </if>
+           <if test="createTime != null">
+              AND  date(cscm.create_time ) = #{createTime}
+           </if>
+           <if test="releaseUser != null">
+               AND cscm.`release_user` = #{releaseUser}
+           </if>
+           <if test="releaseTimeStart != null and releaseTimEnd != null">
+               AND cscm.`release_time` <![CDATA[ >= ]]> releaseTimeStart AND cscm.`release_time` <![CDATA[ <= ]]> #{releaseTimEnd}
+           </if>
+       </where>
+            ORDER BY cscm.`create_time` DESC
+    </select>
+    <delete id="deleteByRandomList">
+        DELETE FROM custom_style_craft_course WHERE random_code in
+        <foreach collection="arrays" open="(" close=")" separator="," item="code">
+            #{code}
+        </foreach>
+    </delete>
+    <select id="getOrderCustmStyleBaseList" parameterType="java.lang.String" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+        SELECT
+           *
+        FROM
+            custom_style_craft_course
+        WHERE
+            `order_no` = #{orderNo} AND `order_line_id` = #{orderLineId}
+            order by version ASC
+    </select>
+
+    <select id="getCustomOrderLine" resultType="java.lang.Integer">
+        SELECT count(*) FROM custom_style_craft_course WHERE order_no = #{orderNo} AND order_line_id = #{orderLineId};
+    </select>
+    <select id="getDataByUniqueKey" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+    SELECT
+           *
+        FROM
+            custom_style_craft_course
+        WHERE
+            `order_no` = #{orderNo} AND `order_line_id` = #{orderLineId} and release_version = #{releaseVersion}
+    </select>
+    <select id="getOrderCustomStyleByVersion" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+        SELECT
+            *
+        FROM
+            custom_style_craft_course
+        WHERE
+            order_no = #{orderNo}
+            AND order_line_id = #{orderLineId}
+            AND release_version = #{releaseVersion}
+    </select>
+    <select id="getOrderCustomStyleByRandomCode" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+        SELECT * FROM custom_style_craft_course WHERE random_code = #{randomCode}
+    </select>
+    <select id="queryCustomOrderForTheCurrentDateList" resultType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+        SELECT * FROM custom_style_craft_course WHERE release_time >= CURRENT_DATE() AND status = 1040
+    </select>
+    <select id="isCustomOrderExist" resultType="java.lang.Boolean">
+        select exists(select 1 from custom_style_craft_course
+            where order_no=#{orderNo}
+                and order_line_id=#{orderLineId}
+                and release_version=#{releaseVersion})
+    </select>
+    <select id="getThinkStyleSAM" resultType="java.lang.String">
+        select max(concat(a.order_no,'-',a.order_line_id)) sam from custom_style_craft_course a
+        inner join think_style_warehouse b on left(a.style_code,6)=b.style_code
+        where a.order_no like 'SAM%' and a.status=1020 group by b.style_code;
+    </select>
+
+    <update id="updateCustomMaster" parameterType="com.ylzs.entity.custom.CustomStyleCraftCourse">
+        UPDATE custom_style_craft_course
+        SET
+        `random_code` = #{randomCode},
+        `status` = #{status},
+        `style_code` = #{styleCode},
+        `think_style_name` = #{thinkStyleName},
+        `order_no` = #{orderNo},
+        `order_line_id` = #{orderLineId},
+        `customer_name` = #{customerName},
+        `fabrics_score` = #{fabricsScore},
+        `stander_time` = #{standerTime},
+        `total_price` = #{totalPrice},
+        `style_picture` = #{stylePicture},
+        `brand` = #{brand},
+        `factory_code` = #{factoryCode},
+        `factory_name` = #{factoryName},
+        `production_category` = #{productionCategory},
+        `main_frame_code` = #{mainFrameCode},
+        `main_frame_name` = #{mainFrameName},
+        `production_ticket_no` = #{productionTicketNo},
+        `craft_category_code` = #{craftCategoryCode},
+        `craft_category_name` = #{craftCategoryName},
+        `clothes_category_code` = #{clothesCategoryCode},
+        `clothes_category_name` = #{clothesCategoryName},
+        `main_material_code` = #{mainMaterialCode},
+        `remark` = #{remark},
+        `is_invalid` = #{isInvalid},
+        `audit_user` = #{auditUser},
+        `audit_time` = #{auditTime},
+        `release_user` = #{releaseUser},
+        `ideas` = #{ideas},
+
+        <choose>
+         <when test="fabricDirection != null">
+             `fabric_direction` = #{fabricDirection},
+         </when>
+        </choose>
+
+        <choose>
+            <when test="releaseTime != null">
+                `release_time  = #{releaseTime},
+            </when>
+            <otherwise>
+                `release_time` = NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="effectiveTime != null">
+                `effective_time` = #{effectiveTime},
+            </when>
+            <otherwise>
+                `effective_time` = NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="expirationTime != null">
+                `expiration_time` = #{expirationTime},
+            </when>
+            <otherwise>
+                `expiration_time` = NULL,
+            </otherwise>
+        </choose>
+        `release_version` = #{releaseVersion},
+        `create_user` = #{createUser},
+        `create_time` = #{createTime},
+        `update_user` = #{updateUser},
+        `update_time` = #{updateTime},
+        `version` = #{version}
+        WHERE
+        `id`= #{id}
+    </update>
+    <update id="updateTestResult" parameterType="hashmap">
+        update custom_style_craft_course set
+            test_result=#{testResult},
+            test_cause=#{testCause},
+            update_user=#{updateUser},
+            update_time=#{updateTime}
+        where random_code=#{randomCode}
+    </update>
+
+    <select id="isExistByFCodeAndPGCode" parameterType="string" resultType="string">
+        select 1 from custom_style_craft_course where factory_code = #{factoryCode} and production_category = #{productionGroupCode} limit 1;
+    </select>
+
+</mapper>

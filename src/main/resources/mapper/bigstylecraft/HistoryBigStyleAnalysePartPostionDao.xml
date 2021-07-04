@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalysePartPostionDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.sewingcraft.SewingCraftPartPosition">
+<!--    <id column="id" jdbcType="BIGINT" property="id" />-->
+<!--    <result column="random_code" jdbcType="BIGINT" property="randomCode" />-->
+    <result column="sewing_craft_random_code" jdbcType="BIGINT" property="sewingCraftRandomCode" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="part_position_code" jdbcType="VARCHAR" property="partPositionCode" />
+    <result column="part_position_name" jdbcType="VARCHAR" property="partPositionName" />
+<!--    <result column="status" jdbcType="INTEGER" property="status" />-->
+<!--    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />-->
+<!--    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />-->
+<!--    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />-->
+<!--    <result column="create_user" jdbcType="VARCHAR" property="createUser" />-->
+<!--    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />-->
+<!--    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />-->
+<!--    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />-->
+<!--    <result column="version" jdbcType="VARCHAR" property="version" />-->
+<!--    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />-->
+    <result column="part_craft_main_code" jdbcType="VARCHAR" property="partCraftMainCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+--     id, random_code,
+    sewing_craft_random_code, craft_code, part_position_code, part_position_name,
+--     `status`, is_invalid, audit_user, audit_time, create_user, create_time, update_user,
+--     update_time, version, ct_style_code,
+    part_craft_main_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_part_postion
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_part_postion
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftPartPosition" useGeneratedKeys="true">
+    insert into history_big_style_analyse_part_postion (random_code, sewing_craft_random_code, 
+      craft_code, part_position_code, part_position_name, 
+      `status`, is_invalid, audit_user, 
+      audit_time, create_user, create_time, 
+      update_user, update_time, version, 
+      ct_style_code, part_craft_main_code)
+    values (#{randomCode,jdbcType=BIGINT}, #{sewingCraftRandomCode,jdbcType=BIGINT}, 
+      #{craftCode,jdbcType=VARCHAR}, #{partPositionCode,jdbcType=VARCHAR}, #{partPositionName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{isInvalid,jdbcType=BIT}, #{auditUser,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=VARCHAR}, 
+      #{ctStyleCode,jdbcType=VARCHAR}, #{partCraftMainCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.sewingcraft.SewingCraftPartPosition" useGeneratedKeys="true">
+    insert into history_big_style_analyse_part_postion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        random_code,
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code,
+      </if>
+      <if test="craftCode != null">
+        craft_code,
+      </if>
+      <if test="partPositionCode != null">
+        part_position_code,
+      </if>
+      <if test="partPositionName != null">
+        part_position_name,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="isInvalid != null">
+        is_invalid,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="randomCode != null">
+        #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partPositionCode != null">
+        #{partPositionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partPositionName != null">
+        #{partPositionName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.sewingcraft.SewingCraftPartPosition">
+    update history_big_style_analyse_part_postion
+    <set>
+      <if test="randomCode != null">
+        random_code = #{randomCode,jdbcType=BIGINT},
+      </if>
+      <if test="sewingCraftRandomCode != null">
+        sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="craftCode != null">
+        craft_code = #{craftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partPositionCode != null">
+        part_position_code = #{partPositionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partPositionName != null">
+        part_position_name = #{partPositionName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="isInvalid != null">
+        is_invalid = #{isInvalid,jdbcType=BIT},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partCraftMainCode != null">
+        part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.sewingcraft.SewingCraftPartPosition">
+    update history_big_style_analyse_part_postion
+    set random_code = #{randomCode,jdbcType=BIGINT},
+      sewing_craft_random_code = #{sewingCraftRandomCode,jdbcType=BIGINT},
+      craft_code = #{craftCode,jdbcType=VARCHAR},
+      part_position_code = #{partPositionCode,jdbcType=VARCHAR},
+      part_position_name = #{partPositionName,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      is_invalid = #{isInvalid,jdbcType=BIT},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=VARCHAR},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      part_craft_main_code = #{partCraftMainCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

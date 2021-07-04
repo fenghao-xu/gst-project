@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.system.UserRoleDao">
+
+    <resultMap type="UserRole" id="UserRoleResult">
+        <result column="user_code" property="userCode"/>
+        <result column="role_id" property="roleId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <select id="getUserRoleById" resultMap="UserRoleResult">
+        select * from user_role
+        where user_code=#{userCode} and rule_id=#{roleId}
+    </select>
+
+    <delete id="deleteUserRole">
+        delete from user_role
+        where user_code=#{userCode}
+        <if test="roleId != null">
+            and rule_id=#{roleId}
+        </if>
+
+    </delete>
+
+    <select id="getUserRoleByPage" resultMap="UserRoleResult">
+        select * from user_role
+        where 1=1
+        <if test="keywords!=null and keywords!=''">
+            and (user_code like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        order by id desc
+    </select>
+
+
+    <update id="updateUserRole">
+        UPDATE
+        user_role
+        <set>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        WHERE user_code = #{userCode}
+        AND role_id = #{roleId}
+    </update>
+
+    <insert id="addUserRoles" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT IGNORE INTO user_role (
+        user_code,
+        role_id,
+        update_time,
+        update_user
+        )
+        VALUES
+        <foreach collection="userRoles" item="itm" index="index" separator=",">
+            (
+            #{itm.userCode},
+            #{itm.roleId},
+            #{itm.updateTime},
+            #{itm.updateUser}
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.staticdata.PartPositionDao">
+    <resultMap type="PartPosition" id="PartPositionResult" >
+
+        <result column="part_type" property="partType"/>
+        <result column="part_position_code" property="partPositionCode"/>
+        <result column="part_position_name" property="partPositionName"/>
+        <result column="remark" property="remark"/>
+        <result column="clothing_category_code" property="clothingCategoryCode"/>
+        <result column="clothing_category_name" property="clothingCategoryName"/>
+
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+
+
+
+    <!--获取所有的缝边位置,或者根据服装品类获取缝边位置 -->
+    <select id="getSewingPartPositions" resultMap="PartPositionResult" parameterType="string">
+        select part_type,part_position_code,part_position_name,clothing_category_code,dic.value_desc as clothing_category_name  from part_position
+        LEFT JOIN dictionary as dic on dic.dic_value=clothing_category_code and dic.dictionary_type_code='ClothesCategory'
+        where part_type ='sewing'
+        <if test="param != null and param !='' ">
+            and (part_position_code like concat('%',#{param},'%') or part_position_name like concat('%',#{param},'%'))
+        </if>
+    </select>
+    <!--获取所有的部件位置 -->
+    <select id="getAllPartPositions" resultMap="PartPositionResult">
+        select part_type,part_position_code,part_position_name,clothing_category_code from part_position
+    </select>
+
+    <select id="getAllPartPositionByCategory" resultMap="PartPositionResult" parameterType="String">
+        select part_type,part_position_code,part_position_name,clothing_category_code from part_position where clothing_category_code =#{0}
+    </select>
+    <select id="getPartPositionByPartType" resultMap="PartPositionResult">
+        select part_type,part_position_code,part_position_name,remark,clothing_category_code,id,status from part_position
+        <where>
+            ifnull(is_invalid,0)=0
+            <if test="partType != null and partType !=''">
+                and part_type =#{partType}
+            </if>
+<!--            <if test="partType == 'bjposition'">-->
+<!--                and part_position_code not in (select part_position_code from part_position where part_type !=#{partType})-->
+<!--            </if>-->
+            <if test="clothesCategoryCode != null and clothesCategoryCode!=''">
+                and clothing_category_code=#{clothesCategoryCode}
+            </if>
+        </where>
+    </select>
+    <!-- 根据指定类型查询部件位置数据 -->
+    <select id="getPartPositonDataList" resultType="com.ylzs.vo.PartPositionVo" parameterType="HashMap">
+        SELECT
+        pp.`id` AS id,
+        pp.`random_code` AS randomCode,
+        pp.`part_type` AS partType,
+        t.`value_desc` AS partTypeName,
+        pp.`part_position_code` AS partPositionCode,
+        pp.`part_position_name` AS partPositionName,
+        pp.`clothing_category_code` AS clothingCategoryCode,
+        tx.`value_desc` AS clothingCategoryName,
+        pp.`remark` AS remark,
+        pp.`version` AS version
+        FROM
+        part_position pp
+        LEFT JOIN dictionary t ON t.`dic_value` = pp.part_type
+        AND t.`dictionary_type_code` = 'PostionType'
+        LEFT JOIN dictionary tx ON tx.dic_value = pp.clothing_category_code
+        AND tx.`dictionary_type_code` = 'ClothesCategory'
+        WHERE
+        ifnull(pp.`is_invalid`,0) = 0
+        <if test="partType != null ">
+            AND  pp.`part_type` = #{partType}
+        </if>
+        <if test="clothingCode != null">
+            AND pp.clothing_category_code = #{clothingCode}
+        </if>
+        <if test="params != null">
+            AND (pp.part_position_code LIKE CONCAT('%',#{params},'%')
+            OR  pp.part_position_name LIKE CONCAT('%',#{params},'%'))
+        </if>
+    </select>
+
+    <select id="getAll" resultMap="PartPositionResult">
+        select * from part_position
+    </select>
+
+    <insert id="addPartPosition" parameterType="list">
+        insert into part_position (
+        part_type,part_position_code,part_position_name, clothing_category_code,create_user,create_time,is_invalid
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.partType}, #{item.partPositionCode},#{item.partPositionName},#{item.clothingCategoryCode}, #{item.createUser},#{item.createTime},#{item.isInvalid}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updatePartPosition" parameterType="java.util.List">
+        <foreach collection="partPositionList" separator=";" index="index">
+            update part_position set
+            <if test="index.partType != null">
+                part_type = #{index.partType},
+            </if>
+            <if test="index.partPositionCode != null">
+                part_position_code = #{index.partPositionCode},
+            </if>
+            <if test="index.partPositionName != null">
+                part_position_name = #{index.partPositionName},
+            </if>
+            <if test="index.clothingCategoryCode != null">
+                clothing_category_code = #{index.clothingCategoryCode},
+            </if>
+            <if test="index.updateUser != null">
+                updateUser = #{index.updateUser},
+            </if>
+            <if test="index.updateTime != null">
+                update_time = #{index.updateTime}
+            </if>
+            <if test="index.id != null">
+                where id = #{index.id}
+            </if>
+        </foreach>
+    </update>
+
+    <insert id="addOrUpdatePartPosition" parameterType="java.util.List">
+        insert into part_position(part_type,part_position_code,part_position_name,clothing_category_code,create_time,create_user,is_invalid)
+        values
+        <foreach collection="allPartPositionList" item="item" separator=",">
+            (#{item.partType},#{item.partPositionCode},#{item.partPositionName},#{item.clothingCategoryCode},#{item.createTime},#{item.createUser},#{item.isInvalid})
+        </foreach>
+        on duplicate key update
+        part_type= values(part_type),part_position_code=values(part_position_code),part_position_name=values(part_position_name),
+        clothing_category_code=values(clothing_category_code),update_time= values(update_time),update_user= values(update_user),is_invalid = values(is_invalid)
+    </insert>
+
+
+</mapper>

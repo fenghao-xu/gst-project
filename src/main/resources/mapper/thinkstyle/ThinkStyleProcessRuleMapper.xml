@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStyleProcessRuleDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStyleProcessRule">
+    <!--@mbg.generated-->
+    <id column="random_code" property="randomCode" />
+    <result column="id" property="id" />
+    <result column="style_random_code" property="styleRandomCode" />
+    <result column="part_random_code" property="partRandomCode" />
+    <result column="process_type" property="processType" />
+    <result column="source_craft_code" property="sourceCraftCode" />
+    <result column="source_craft_name" property="sourceCraftName" />
+    <result column="source_craft_random_code" property="sourceCraftRandomCode" />
+    <result column="action_craft_code" property="actionCraftCode" />
+    <result column="action_craft_name" property="actionCraftName" />
+    <result column="action_craft_random_code" property="actionCraftRandomCode" />
+    <result property="processingSortNum" column="processing_sort_num"/>
+    <result column="status" property="status" />
+    <result column="is_invalid" property="isInvalid" />
+    <result column="create_user" property="createUser" />
+    <result column="create_time" property="createTime" />
+    <result column="update_user" property="updateUser" />
+    <result column="update_time" property="updateTime" />
+    <result column="audit_user" property="auditUser" />
+    <result column="audit_time" property="auditTime" />
+    <result column="version" property="version" />
+    <result property="sourceCraftFlowNum" column="source_craft_flow_num" />
+    <result property="actionCraftFlowNum" column="action_craft_flow_num" />
+  </resultMap>
+</mapper>

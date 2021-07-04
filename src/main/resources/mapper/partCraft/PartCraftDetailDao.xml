@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCraft.PartCraftDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.partCraft.PartCraftDetail" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="craftCode" column="craft_code"/>
+        <result property="craftName" column="craft_name"/>
+        <result property="craftRemark" column="craft_remark"/>
+        <result property="craftFlowNum" column="craft_flow_num"/>
+        <result property="machineCode" column="machine_code"/>
+        <result property="standardTime" column="standard_time"/>
+        <result property="standardPrice" column="standard_price"/>
+        <result property="partCraftMainRandomCode" column="part_craft_main_random_code"/>
+        <result property="remark" column="remark"/>
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="lockData" column="lock_data"/>
+        <result property="craftGradeCode" column="craft_grade_code" />
+    </resultMap>
+    <resultMap type="com.ylzs.vo.partCraft.PartCraftCraftFlowVO" id="changeMap">
+        <result property="partCraftMainRandomCode" column="part_craft_main_random_code"/>
+        <result property="craftCode" column="craft_code"/>
+        <result property="craftRemark" column="craft_remark"/>
+        <result property="craftFlowNum" column="craft_flow_num"/>
+        <result property="standardTime" column="standard_time"/>
+        <result property="standardPrice" column="standard_price"/>
+        <result property="partCraftMainCode" column="part_craft_main_code"/>
+        <result property="craftCategoryCode" column="craft_category_code"/>
+        <result column="main_frame_name" property="mainFrameName"/>
+        <result column="main_frame_code" property="mainFrameCode"/>
+        <result column="machine_name" property="machineName"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+    </resultMap>
+    <select id="getThinkStyleCraftVos" resultType="com.ylzs.vo.thinkstyle.ThinkStyleCraftVo">
+        select b.random_code craft_random_code,a.craft_code,b.craft_name,a.craft_remark craft_desc,
+        a.craft_flow_num,b.standard_price,b.standard_time
+        from part_craft_detail a
+        left join sewing_craft_warehouse b on a.craft_code=b.craft_code
+        where a.part_craft_main_random_code=#{partCraftMainRandomCode} order by a.craft_flow_num
+    </select>
+
+    <select id="getPartCraftDetailRandomList" resultType="com.ylzs.entity.partCraft.PartCraftDetail">
+        SELECT * FROM
+            part_craft_detail
+        WHERE
+          random_code in
+          <foreach collection="randomCodes" separator="," open="(" close=")" item="randomCode">
+              #{randomCode}
+          </foreach>
+    </select>
+
+    <select id="getPartCraftDetailBatchList" resultType="com.ylzs.vo.partCraft.PartCraftDetailVo">
+        SELECT * FROM
+            part_craft_detail
+        WHERE
+        status != 1030
+        AND part_craft_main_random_code in
+        <if test="mainRandomCodes">
+            <foreach collection="mainRandomCodes" separator="," open="(" close=")" item="randomCode">
+                #{randomCode}
+            </foreach>
+        </if>
+    </select>
+    <!-- 工序词库里面数据变了，要同步更新部件工艺的-->
+    <update id="updateCraftRemarkAndName" parameterType="java.util.HashMap">
+        update part_craft_detail set craft_name = #{craftName},craft_remark=#{craftRemark}
+        <if test="standardTime != null">
+            ,standard_time=#{standardTime}
+        </if>
+        <if test="standardPrice != null">
+            ,standard_price=#{standardPrice}
+        </if>
+        <if test="machineName != null">
+            ,machine_name=#{machineName}
+        </if>
+        <if test="machineCode != null">
+            ,machine_code=#{machineCode}
+        </if>
+        <if test="craftGradeCode != null">
+            ,craft_grade_code=#{craftGradeCode}
+        </if>
+        where craft_code = #{craftCode}
+    </update>
+    <!-- 通过工序编码，查到需要更新的部件工艺数据-->
+    <select id="getNeededChangedData" resultMap="changeMap" parameterType="java.lang.String">
+        SELECT detail.craft_code,detail.part_craft_main_random_code,detail.craft_flow_num,detail.craft_remark,detail.machine_name,detail.machine_code,detail.craft_grade_code,
+        mas.standard_price,mas.standard_time,mas.part_craft_main_code,mas.craft_category_code,frame.main_frame_code,frame.main_frame_name
+        FROM `part_craft_detail` as detail
+        INNER JOIN part_craft_master_data as mas on detail.part_craft_main_random_code=mas.random_code
+        left JOIN craft_main_frame as frame on frame.craft_category_code=mas.craft_category_code and frame.is_default=1
+        where detail.craft_code=#{craftCode}   GROUP BY mas.part_craft_main_code
+    </select>
+    
+    <update id="updateCraftFlowNum" parameterType="java.util.HashMap">
+       update part_craft_detail set craft_flow_num = #{craftFlowNum}   where craft_code = #{craftCode} AND part_craft_main_random_code =#{partCraftMainRandomCode} and  lock_data = false
+    </update>
+
+    <update id="updatePartCraftDetailStatus">
+        update part_craft_detail set status = 1030
+        where random_code in
+        <foreach collection="detailRandomCodes" separator="," open="(" close=")" item="randomCode">
+            #{randomCode}
+        </foreach>
+    </update>
+
+    <delete id="deleteDataByPartMainRandomCodes">
+        DELETE  FROM part_craft_detail WHERE part_craft_main_random_code=#{partCraftMainRandomCode}
+    </delete>
+</mapper>

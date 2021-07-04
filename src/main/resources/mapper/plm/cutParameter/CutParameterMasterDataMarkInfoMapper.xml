@@ -1,0 +1,97 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.ylzs.dao.plm.cutParameter.CutParameterMasterDataMarketInfoDao">
+    <resultMap type = "CutParameterMasterDataMarkInfo" id = "CutParameterMasterDataMarkInfoResult">
+            <result column = "id" property = "id" />
+            <result column = "order_id" property = "orderId" />
+            <result column = "order_line_id" property = "orderLineId" />
+			<result column = "perimeter" property = "perimeter" />
+			<result column = "dot_count" property = "dotCount" />
+			<result column = "single_perimeter" property = "singlePerimeter" />
+			<result column = "knife_edge_count" property = "knifeEdgeCount" />
+			<result column = "count" property = "count" />
+			<result column = "plies" property = "plies" />
+    </resultMap>
+
+    <insert id = "addOrUpdateCutParameterMasterDataMarketInfo" parameterType = "CutParameterMasterDataMarkInfo">
+
+		insert into capp_pi_cut_parameter_markerinfo (
+			order_id,
+			order_line_id,
+			`count`,
+			packages,
+			plies,
+			perimeter,
+			corner_count,
+			cut_parts_count,
+			dot_count,
+			knife_edge_count,
+			spread_type,
+			fusibleInterlining,
+			zp_count1,
+			zp_count2,
+			zp_count3,
+			zp_count4,
+			j_count1,
+			j_count2,
+			ed_count1,
+			ed_count2,
+			ed_count3,
+			pltzjs,
+			pltzcd,
+			zds,
+			dcpzs,
+			dcpdpzc,
+			edcds,
+			hxzpps,
+			zxzpps,
+			zpzps,
+			djdcps
+			)
+			VALUES(
+			#{orderId}, #{orderLineId},#{count},
+			#{packages},#{plies},#{perimeter},
+			#{cornerCount},#{cutPartsCount},#{dotCount},
+			#{knifeEdgeCount},#{spreadType},#{fusibleInterlining},
+			#{zpCount1},#{zpCount2},#{zpCount3},#{zpCount4}, #{jCount1},#{jCount2},
+			#{edCount1}, #{edCount2}, #{edCount3},#{pltzjs},#{pltzcd},
+			#{zds},#{dcpzs},#{dcpdpzc},#{edcds},#{hxzpps},#{zxzpps},#{zpzps},#{djdcps}
+			)on duplicate key update
+			order_id = #{orderId},
+			order_line_id = #{orderLineId},
+			`count` = #{count},
+			packages = #{packages},
+			plies = #{plies},
+			perimeter = #{perimeter},
+			corner_count = #{cornerCount},
+			cut_parts_count = #{cutPartsCount},
+			dot_count = #{dotCount},
+			knife_edge_count = #{knifeEdgeCount},
+			spread_type = #{spreadType},
+			fusibleInterlining = #{fusibleInterlining},
+			zp_count1 = #{zpCount1},
+			zp_count2 = #{zpCount2},
+			zp_count3 = #{zpCount3},
+			zp_count4 = #{zpCount4},
+			j_count1 = #{jCount1},
+			j_count2 = #{jCount2},
+			ed_count1 = #{edCount1},
+			ed_count2 = #{edCount2},
+			ed_count3 = #{edCount3},pltzjs = #{pltzjs},
+			pltzcd = #{pltzcd},
+			zds = #{zds},
+			dcpzs = #{dcpzs},
+			dcpdpzc = #{dcpdpzc},
+			edcds = #{edcds},
+			hxzpps = #{hxzpps},
+			zxzpps = #{zxzpps},
+			zpzps = #{zpzps},
+			djdcps = #{djdcps}
+	</insert>
+
+
+
+
+</mapper>

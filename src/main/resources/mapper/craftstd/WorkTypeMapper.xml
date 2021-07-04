@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.WorkTypeDao">
+    <resultMap type="WorkType" id="WorkTypeResult">
+        <result column="id" property="id"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="section_name" property="sectionName" />
+        <collection property="makeTypes" javaType="java.util.ArrayList" ofType="com.ylzs.entity.craftstd.MakeType">
+            <id column="make_type_id" property="id"/>
+            <result column="make_type_code" property="makeTypeCode"/>
+            <result column="make_type_name" property="makeTypeName"/>
+            <result column="work_type_id" property="workTypeId"/>
+            <result column="make_type_numerical_code" property="makeTypeNumericalCode"/>
+        </collection>
+    </resultMap>
+    <select id="getWorkTypeAndMakeType" resultMap="WorkTypeResult">
+        select  a.id,a.value_desc as work_type_name,a.dic_value as work_type_code,b.id as make_type_id,b.make_type_code,
+        b.make_type_name,b.work_type_id,b.make_type_numerical_code
+         from dictionary as a
+        left  join  make_type as b on b.work_type_id=a.id
+        where a.dictionary_type_code='WorkType'
+    </select>
+    <select id="getWorkTypeMap" resultMap="WorkTypeResult">
+        select work_type_code,work_type_name,section_code,section_name from work_type
+    </select>
+    <select id="getSewingWorkType" resultMap="WorkTypeResult">
+        select work_type_code,work_type_name from work_type where section_code='0040' order by work_type_code asc
+    </select>
+
+</mapper>

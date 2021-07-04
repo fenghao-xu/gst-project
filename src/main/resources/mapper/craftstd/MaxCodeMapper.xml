@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.MaxCodeDao">
+    <resultMap type="MaxCode" id="MaxCodeResult">
+        <result column="id" property="id"/>
+        <result column="module_code" property="moduleCode"/>
+        <result column="pre_str" property="preStr"/>
+        <result column="max_id" property="maxId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="getOneByCode" resultMap="MaxCodeResult">
+        select * from max_code where module_code=#{moduleCode} and pre_str=#{preStr}
+    </select>
+
+    <delete id="deleteMaxCode" parameterType="integer">
+        delete from max_code where id=#{id}
+    </delete>
+
+    <update id="updateMaxCode">
+        UPDATE
+        max_code
+        <set>
+            <if test="moduleCode != null">
+                module_code = #{moduleCode},
+            </if>
+
+            <if test="preStr != null">
+                pre_str = #{preStr},
+            </if>
+
+            <if test="maxId != null">
+                max_id = #{maxId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <update id="updateMaxId"  parameterType="MaxCode">
+        <selectKey keyProperty='maxId' resultType='java.lang.Integer' order='BEFORE'>
+            SELECT
+            (select max_id FROM max_code WHERE module_code=#{moduleCode} and pre_str=#{preStr}) max_id
+            from DUAL
+<!--            select max_id FROM max_code WHERE module_code=#{moduleCode} and pre_str=#{preStr}-->
+        </selectKey>
+
+        UPDATE
+        max_code
+        set max_id=max_id+1,update_time=now()
+        WHERE module_code=#{moduleCode} and pre_str=#{preStr}
+    </update>
+
+    <select id="selectMaxId" resultType="Integer">
+        SELECT
+        (select max_id FROM max_code WHERE module_code=#{moduleCode} and pre_str=#{preStr}) max_id
+        from DUAL
+    </select>
+
+
+
+
+    <insert id="addMaxCode">
+        INSERT IGNORE INTO max_code (
+        module_code,
+        pre_str,
+        max_id,
+        create_time
+        )
+        VALUES
+        (
+        #{moduleCode},
+        #{preStr},
+        #{maxId},
+        #{createTime}
+        )
+    </insert>
+
+
+    <select id="getOneById" resultMap="MaxCodeResult">
+        select * from max_code where id=#{id}
+    </select>
+
+
+</mapper>

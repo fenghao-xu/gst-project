@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigticketno.BigOrderSewingCraftWarehouseDao">
+    <resultMap type="SewingCraftWarehouse" id="SewingCraftWarehouseResult" >
+
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_category_code" property="craftCategoryCode"/>
+        <result column="craft_category_name" property="craftCategoryName"/>
+        <result column="craft_part_code" property="craftPartCode"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result column="description" property="description"/>
+        <result column="section_code" property="sectionCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="allowance_code" property="allowanceCode"/>
+        <result column="strapping_code" property="strappingCode"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+        <result column="is_fabric_style_fix" property="isFabricStyleFix"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="base_standard_time" property="baseStandardTime"/>
+        <result column="base_standard_price" property="baseStandardPrice"/>
+        <result column="remark" property="remark"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="help_tool_code" property="helpToolCode"/>
+        <result column="make_description" property="makeDescription"/>
+        <result column="quality_spec" property="qualitySpec"/>
+        <result column="fabric_score_plan_code" property="fabricScorePlanCode"/>
+        <result column="stitch_length" property="stitchLength"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="part_detail_id" property="partDetailId"/>
+        <result column="is_cancel_send" property="isCancelSend" />
+
+        <result column="sysn_status" property="sysnStatus" />
+        <result column="sysn_time" property="sysnTime" />
+
+        <result column="time_supplement" property="timeSupplement"/>
+        <result column="fabric_fraction" property="fabricFraction"/>
+        <result column="fabric_grade_code" property="fabricGradeCode"/>
+        <result column="order_grade" property="orderGrade"/>
+        <result column="fabric_ratio" property="fabricRatio"/>
+        <result column="part_craft_main_code" property="partCraftMainCode"/>
+        <result column="same_level_craft_numerical_code" property="sameLevelCraftNumericalCode" />
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <!-- 公共部分-->
+        <result column="id" property="id"/>
+        <result column="audit_user" property="auditUser"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="random_code" property="randomCode"/>
+    </resultMap>
+    <resultMap type="com.ylzs.vo.bigstylereport.CraftVO" id="CraftVOResult" >
+        <result column="craft_code" property="craftCode"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_part_name" property="craftPartName"/>
+        <result property="craftRemark" column="craft_remark"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result property="workOrderNo" column="work_order_no"/>
+        <result property="machineName" column="machine_name"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+        <result column="craft_flow_num" property="craftFlowNum"/>
+        <result column="order_grade" property="orderGrade"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+    </resultMap>
+    <resultMap type="com.ylzs.vo.bigstylereport.WorkTypeReport" id="WorkTypeReportResult" >
+        <result column="craft_code" property="craftCode"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="production_ticket_no" property="productionTicketNo"/>
+        <result column="factory_code" property="factoryCode"/>
+        <result column="factory_name" property="factoryName"/>
+        <result column="production_category" property="productionCategory"/>
+        <result column="production_category_name" property="productionCategoryName"/>
+        <result column="ct_style_code" property="ctStyleCode"/>
+        <result column="standard_time" property="standardTime"/>
+        <result column="standard_price" property="standardPrice"/>
+    </resultMap>
+    <resultMap id="SewingCraftResourceResult" type="com.ylzs.vo.SewingCraftResource">
+        <result column="resouceType" property="resouceType"/>
+        <result column="url" property="url"/>
+    </resultMap>
+
+    <select id="getDataForExcelReport" resultMap="CraftVOResult" parameterType="java.lang.Long">
+        SELECT b.craft_code,b.craft_remark,b.craft_no as craft_flow_num,b.work_order_no,a.machine_name,a.order_grade,a.standard_price,a.standard_time,b.craft_grade_code,part.part_craft_main_name as craft_part_name,a.work_type_code,dic.value_desc as work_type_name,
+        wpc.production_part_code
+        FROM  big_order_partcraft_detail as b
+        LEFT JOIN  `big_order_sewing_craft` as a on b.craft_code=a.craft_code and a.random_code=b.style_random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code = a.part_craft_main_code and part.style_random_code=a.random_code and b.part_craft_main_code=part.part_craft_main_code
+        LEFT JOIN dictionary as dic on dic.dic_value=a.work_type_code and dic.dictionary_type_code='WorkType'
+
+        left join big_order_master mas on mas.random_code= b.style_random_code
+        left join big_order_workplace wp on wp.sewing_craft_random_code=b.style_random_code and wp.craft_code=a.craft_code and wp.main_frame_code=mas.main_frame_code
+        left join workplace_craft wpc on wpc.workplace_craft_code=wp.workplace_craft_code
+        where b.style_random_code=#{randomCode} ORDER BY b.craft_no ASC
+    </select>
+    <select id="getDataForExcelReportOrderByWorkOrder" resultMap="CraftVOResult" parameterType="java.lang.Long">
+        SELECT b.craft_code,b.craft_remark,b.craft_no as craft_flow_num,b.work_order_no,a.machine_name,a.order_grade,a.standard_price,a.standard_time,b.craft_grade_code,part.part_craft_main_name as craft_part_name,a.work_type_code,dic.value_desc as work_type_name,
+        wpc.production_part_code
+        FROM  big_order_partcraft_detail as b
+        LEFT JOIN  `big_order_sewing_craft` as a on b.craft_code=a.craft_code and a.random_code=b.style_random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code = a.part_craft_main_code and part.style_random_code=a.random_code and b.part_craft_main_code=part.part_craft_main_code
+        LEFT JOIN dictionary as dic on dic.dic_value=a.work_type_code and dic.dictionary_type_code='WorkType'
+
+        left join big_order_master mas on mas.random_code= b.style_random_code
+        left join big_order_workplace wp on wp.sewing_craft_random_code=b.style_random_code and wp.craft_code=a.craft_code and wp.main_frame_code=mas.main_frame_code
+        left join workplace_craft wpc on wpc.workplace_craft_code=wp.workplace_craft_code
+        where b.style_random_code=#{randomCode} ORDER BY   part.import_order ASC,b.order_num ASC, b.craft_no ASC
+    </select>
+
+    <select id="getDataForFinanceByWorkOrder" resultMap="CraftVOResult" parameterType="java.lang.Long">
+        SELECT b.craft_code,b.craft_remark,b.craft_no as craft_flow_num,b.work_order_no,a.machine_name,a.order_grade,a.standard_price,a.standard_time,b.craft_grade_code,part.part_craft_main_name as craft_part_name,a.work_type_code
+        FROM  big_order_partcraft_detail as b
+        LEFT JOIN  `big_order_sewing_craft` as a on b.craft_code=a.craft_code and a.random_code=b.style_random_code
+        INNER JOIN big_order_partcraft as part on part.part_craft_main_code = a.part_craft_main_code and part.style_random_code=a.random_code and b.part_craft_main_code=part.part_craft_main_code
+        left join big_order_master mas on mas.random_code= b.style_random_code
+        where b.style_random_code=#{randomCode} ORDER BY   CAST(b.work_order_no AS UNSIGNED)    asc,part.import_order ASC,b.order_num ASC, b.craft_no ASC
+    </select>
+    <select id="getSewingStdPicAndVedio" resultMap="SewingCraftResourceResult" parameterType="long">
+        SELECT c.file_url as url,c.resource_type as resouceType FROM big_order_sewing_craft as a
+            LEFT JOIN craft_std as b on b.craft_std_code=a.craft_std_code
+            LEFT JOIN craft_file as c on c.key_id=b.id
+            where a.sewing_craft_random_code=#{0} and c.resource_type != 20
+    </select>
+
+    <insert id="addSewingCraftWarehouse" parameterType="hashmap">
+        insert into big_order_sewing_craft
+        (sysn_time,sysn_status,base_standard_time,base_standard_price,is_cancel_send,stitch_length,part_craft_main_code,random_code,craft_code,work_type_code,craft_name,craft_category_code,craft_category_name,craft_part_code,craft_part_name,description,make_type_code,allowance_code,allowance_random_code,strapping_code,craft_grade_code,is_fabric_style_fix,standard_time,standard_price,machine_code,machine_name,help_tool_code,make_description,quality_spec,fabric_score_plan_code,fixed_time,floating_time,sewing_length,param_length,create_user,create_time,status,time_supplement,fabric_fraction,fabric_grade_code,order_grade,fabric_ratio,update_user,update_time,same_level_craft_numerical_code)
+        values
+        (#{sysnTime},#{sysnStatus},#{baseStandardTime},#{baseStandardPrice},#{isCancelSend},#{stitchLength},#{partCraftMainCode},#{randomCode},#{craftCode},#{workTypeCode},#{craftName},#{craftCategoryCode},#{craftCategoryName},#{craftPartCode},#{craftPartName},#{description},#{makeTypeCode},#{allowanceCode},#{allowanceRandomCode},#{strappingCode},#{craftGradeCode},#{isFabricStyleFix},#{standardTime},#{standardPrice},#{machineCode},#{machineName},#{helpToolCode},#{makeDescription},#{qualitySpec},#{fabricScorePlanCode},#{fixedTime},#{floatingTime},#{sewingLength},#{paramLength},#{createUser},#{createTime},#{status},#{timeSupplement},#{fabricFraction},#{fabricGradeCode},#{orderGrade},#{fabricRatio},#{updateUser},#{updateTime},#{sameLevelCraftNumericalCode})
+    </insert>
+
+    <insert id="insertSewingCraftWarehouseForeach" parameterType="java.util.List">
+        insert into big_order_sewing_craft
+        (sysn_time,sysn_status,base_standard_time,base_standard_price,
+        is_cancel_send,stitch_length,part_craft_main_code,random_code,craft_code,
+        work_type_code,craft_name,craft_category_code,craft_category_name,craft_part_code,
+        craft_part_name,description,make_type_code,allowance_code,allowance_random_code,
+        strapping_code,craft_grade_code,is_fabric_style_fix,standard_time,standard_price,
+        machine_code,machine_name,help_tool_code,make_description,quality_spec,
+        fabric_score_plan_code,fixed_time,floating_time,sewing_length,param_length,
+        create_user,create_time,status,time_supplement,fabric_fraction,fabric_grade_code,
+        order_grade,fabric_ratio,update_user,update_time,same_level_craft_numerical_code)
+        values
+        <foreach collection="sewList" item="sew" separator=",">
+            (#{sew.sysnTime},#{sew.sysnStatus},#{sew.baseStandardTime},#{sew.baseStandardPrice},
+            #{sew.isCancelSend},#{sew.stitchLength},#{sew.partCraftMainCode},#{sew.randomCode},#{sew.craftCode},
+            #{sew.workTypeCode},#{sew.craftName},#{sew.craftCategoryCode},#{sew.craftCategoryName},#{sew.craftPartCode},
+            #{sew.craftPartName},#{sew.description},#{sew.makeTypeCode},#{sew.allowanceCode},#{sew.allowanceRandomCode},
+            #{sew.strappingCode},#{sew.craftGradeCode},#{sew.isFabricStyleFix},#{sew.standardTime},#{sew.standardPrice},
+            #{sew.machineCode},#{sew.machineName},#{sew.helpToolCode},#{sew.makeDescription},#{sew.qualitySpec},
+            #{sew.fabricScorePlanCode},#{sew.fixedTime},#{sew.floatingTime},#{sew.sewingLength},#{sew.paramLength},
+            #{sew.createUser},#{sew.createTime},#{sew.status},#{sew.timeSupplement},#{sew.fabricFraction},#{sew.fabricGradeCode},
+            #{sew.orderGrade},#{sew.fabricRatio},#{sew.updateUser},#{sew.updateTime},#{sew.sameLevelCraftNumericalCode})
+        </foreach>
+    </insert>
+
+    <select id="getDataByRandom" resultMap="SewingCraftWarehouseResult" parameterType="java.lang.Long" >
+        select  * from big_order_sewing_craft where random_code = #{0}
+    </select>
+    <delete id="deleteDataByRandomCodeAndPartCraftMainCode" >
+        delete  from big_order_sewing_craft where  random_code = #{randomCode} and part_craft_main_code = #{partCraftMainCode}
+    </delete>
+    <delete id="deleteDataByIds" >
+        delete  from big_order_sewing_craft where
+        id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id_">
+            #{id_}
+        </foreach>
+    </delete>
+    <select id="getIdsByRandomCodeAndPartCraftMainCode" resultType="java.lang.Long">
+        select  id from big_order_sewing_craft where  random_code = #{randomCode} and part_craft_main_code = #{partCraftMainCode}
+    </select>
+    <select id="getIdsByRandomCodeAndPartCraftMainCodeAndCraftCode" resultType="java.lang.Long">
+        select  id from big_order_sewing_craft where  random_code = #{randomCode} and part_craft_main_code = #{partCraftMainCode} and craft_code=#{craftCode}
+    </select>
+    <select id="getDataByCraftCodeList" resultMap="SewingCraftWarehouseResult" parameterType="java.util.List" >
+        select  * from big_order_sewing_craft
+        <where>
+            craft_code in
+            <foreach collection="codeList" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+    </select>
+    <update id="updateStatus">
+        update  big_order_sewing_craft set status=#{status} where random_code = #{randomCode}
+    </update>
+    <select id="getDataByPartDetailIds" resultMap="SewingCraftWarehouseResult" parameterType="java.util.List" >
+        SELECT sew.*,detail.id as part_detail_id FROM `big_order_sewing_craft` as sew
+        LEFT JOIN big_order_partcraft_detail as detail on detail.style_random_code=sew.random_code and detail.craft_code = sew.craft_code
+        INNER  join big_order_partcraft as part on part.part_craft_main_code = sew.part_craft_main_code and part.style_random_code=sew.random_code
+        <where>
+            detail.id in
+            <foreach collection="idList" open="(" close=")" separator="," item="id_">
+                #{id_}
+            </foreach>
+        </where>
+    </select>
+    <select id="getSewingCraftWarehouse" resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+        select c.* from big_order_master a
+        inner join big_order_partcraft b on a.random_code=b.style_random_code
+        inner join big_order_sewing_craft c on b.style_random_code=c.random_code and b.part_craft_main_code=c.part_craft_main_code
+        where a.random_code=#{styleRandomCode}
+    </select>
+
+    <select id="getSewingCraftWarehouseNewCraft" resultType="com.ylzs.entity.sewingcraft.SewingCraftWarehouse">
+        select c.* from big_order_partcraft a
+        inner join big_order_partcraft_detail b on a.style_random_code=b.style_random_code
+        inner join big_order_sewing_craft c on b.style_random_code=c.random_code and b.part_craft_main_code=c.part_craft_main_code and b.craft_code=c.craft_code
+        where a.style_random_code=#{styleRandomCode} and b.is_new=1
+
+    </select>
+    <!--- 财务统计工种报表 -->
+    <select id="selectWorkTypeReport" resultMap="WorkTypeReportResult" parameterType="java.util.HashMap">
+        SELECT mas.production_category,if(mas.factory_code='8081','于都','龙华')as factory_name,sew.standard_price,sew.craft_code,sew.standard_time,sew.make_type_code,
+        sew.work_type_code,dic.value_desc as work_type_name,mas.production_ticket_no,mas.ct_style_code
+        FROM big_order_master as mas
+        INNER JOIN big_order_partcraft as part on mas.random_code=part.style_random_code
+        INNER JOIN big_order_sewing_craft as sew on sew.random_code=mas.random_code and sew.part_craft_main_code= part.part_craft_main_code
+        LEFT JOIN dictionary as dic on dic.dic_value=sew.work_type_code and dic.dictionary_type_code='WorkType'
+        <where>
+               mas.`status`=1020
+              <if test="createTimeBeginDate !=null">
+                  and  <![CDATA[ date(mas.create_time)  >= #{createTimeBeginDate} ]]>
+              </if>
+              <if test="createTimeEndDate !=null">
+                  and  <![CDATA[ date(mas.create_time) <= #{createTimeEndDate} ]]>
+              </if>
+              <if test="productionTicketNo !=null and productionTicketNo !=''">
+                  and  mas.production_ticket_no = #{productionTicketNo}
+              </if>
+             <if test="groupList !=null and groupList.size()>0">
+                 and   mas.production_category in
+                    <foreach collection="groupList" open="(" item="gro_" separator="," close=")">
+                        #{gro_}
+                    </foreach>
+                </if>
+              <if test="factoryCode !=null and factoryCode !=''">
+                  and  mas.factory_code = #{factoryCode}
+              </if>
+              <if test="ctStyleCode !=null and ctStyleCode !=''">
+                  and  mas.ct_style_code like concat('%', #{ctStyleCode},'%')
+              </if>
+              <if test="adaptCode == '10' ">
+                  and  mas.adapt_code ='10'
+              </if>
+              <if test="adaptCode == '30' ">
+                  and  (mas.adapt_code ='30' or mas.adapt_code is null)
+              </if>
+          </where>
+      </select>
+
+    <!--- 财务统计工种报表  通过套款 -->
+    <select id="selectWorkTypeReportByStyleCover" resultMap="WorkTypeReportResult" parameterType="java.util.HashMap">
+        SELECT mas.production_category,if(mas.factory_code='8081','于都','龙华')as factory_name,sew.standard_price,sew.craft_code,sew.standard_time,sew.make_type_code,
+        sew.work_type_code,dic.value_desc as work_type_name,mas.production_ticket_no,mas.ct_style_code
+        FROM big_order_master as mas
+        INNER JOIN big_order_partcraft as part on mas.random_code=part.style_random_code
+        INNER JOIN big_order_sewing_craft as sew on sew.random_code=mas.random_code and sew.part_craft_main_code= part.part_craft_main_code
+        INNER JOIN big_order_master_style_cover as cover on cover.style_random_code=mas.random_code
+        LEFT JOIN dictionary as dic on dic.dic_value=sew.work_type_code and dic.dictionary_type_code='WorkType'
+        <where>
+            mas.`status`=1020
+            <if test="createTimeBeginDate !=null">
+                and  <![CDATA[ date(mas.create_time)  >= #{createTimeBeginDate} ]]>
+            </if>
+            <if test="createTimeEndDate !=null">
+                and  <![CDATA[ date(mas.create_time) <= #{createTimeEndDate} ]]>
+            </if>
+                <!--注意这里是not in -->
+            <if test="productionTicketNoList !=null and productionTicketNoList.size()>0">
+                and   mas.production_ticket_no not in
+                <foreach collection="productionTicketNoList" open="(" item="gro_" separator="," close=")">
+                    #{gro_}
+                </foreach>
+            </if>
+            <if test="groupList !=null and groupList.size()>0">
+                and   mas.production_category in
+                <foreach collection="groupList" open="(" item="gro_" separator="," close=")">
+                    #{gro_}
+                </foreach>
+            </if>
+            <if test="factoryCode !=null and factoryCode !=''">
+                and  mas.factory_code = #{factoryCode}
+            </if>
+            <if test="ctStyleCode !=null and ctStyleCode !=''">
+                and  cover.ct_style_code like concat('%', #{ctStyleCode},'%')
+            </if>
+            <if test="adaptCode == '10' ">
+                and  mas.adapt_code ='10'
+            </if>
+            <if test="adaptCode == '30' ">
+                and  (mas.adapt_code ='30' or mas.adapt_code is null)
+            </if>
+        </where>
+    </select>
+
+    <select id="getDataByBigStyleAnalyseCodeList" resultMap="SewingCraftWarehouseResult"  >
+        select
+        craft.id,
+        craft.random_code,
+        craft.status,
+        craft.craft_code,
+        craft.craft_name,
+        craft.description,
+        craft.section_code,
+        craft.work_type_code,
+        craft.make_type_code,
+        craft.allowance_random_code,
+        craft.allowance_code,
+        craft.strapping_code,
+        craft.craft_grade_code,
+        craft.is_fabric_style_fix,
+        craft.standard_time,
+        craft.standard_price,
+        craft.craft_std_code,
+        craft.machine_code,
+        craft.help_tool_code,
+        craft.make_description,
+        craft.quality_spec,
+        craft.remark,
+        craft.is_invalid,
+        craft.audit_user,
+        craft.audit_time,
+        craft.create_user,
+        craft.create_time,
+        craft.update_user,
+        craft.update_time,
+        craft.version,
+        craft.craft_category_code,
+        craft.craft_category_name,
+        craft.craft_part_code,
+        craft.craft_part_name,
+        craft.fixed_time,
+        craft.floating_time,
+        craft.sewing_length,
+        craft.param_length,
+        craft.fabric_score_plan_code,
+        craft.machine_name,
+        craft.ct_style_code,
+        craft.is_new,
+        craft.time_supplement,
+        craft.fabric_grade_code,
+        craft.fabric_fraction,
+        craft.order_grade,
+        craft.fabric_ratio,
+        craft.part_craft_main_code,
+        craft.stitch_length,
+        craft.same_level_craft_numerical_code,
+        craft.is_cancel_send,
+        craft.base_standard_time,
+        craft.base_standard_price,mas.production_ticket_no
+         from big_order_sewing_craft as craft
+        INNER JOIN big_order_master as mas on mas.random_code=craft.random_code
+        INNER  join big_order_partcraft as part on part.part_craft_main_code = craft.part_craft_main_code and part.style_random_code=craft.random_code
+        <where>
+            mas.production_ticket_no in
+            <foreach collection="codeList" open="(" close=")" separator="," item="code">
+                #{code}
+            </foreach>
+        </where>
+    </select>
+
+
+    <select id="isExistByNeedlePitchValue" parameterType="string" resultType="string">
+        select 1 from big_order_sewing_craft where stitch_length = #{needlePitchValue} limit 1;
+    </select>
+
+
+    <!-- 一年一次刷数据-->
+    <update id="updateCraftLevelAndPrice" parameterType="hashmap">
+        update  big_order_sewing_craft
+        set
+        <if test="craftGradeCode !=null">
+            craft_grade_code=#{craftGradeCode}
+        </if>
+        where craft_code = #{craftCode}
+    </update>
+    <update id="updateCraftMakeTypeCode" parameterType="hashmap">
+        update  big_order_sewing_craft
+        set
+        <if test="makeTypeCode !=null">
+            make_type_code=#{makeTypeCode}
+        </if>
+        where craft_code = #{craftCode}
+    </update>
+    <update id="updatePriceById">
+         update  big_order_sewing_craft set standard_price = #{standardPrice}  where id = #{id}
+    </update>
+    <select id="getAllData" resultMap="SewingCraftWarehouseResult"  >
+        select  * from big_order_sewing_craft where random_code is not null
+    </select>
+
+  </mapper>

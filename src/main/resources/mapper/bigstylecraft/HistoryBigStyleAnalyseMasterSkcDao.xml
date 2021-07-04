@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.bigstylecraft.HistoryBigStyleAnalyseMasterSkcDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.bigstylecraft.BigStyleAnalyseSkc">
+    <id column="id" jdbcType="BIGINT" property="id" />
+<!--    <result column="style_skc_code" jdbcType="VARCHAR" property="styleSkcCode" />-->
+    <result column="style_random_code" jdbcType="BIGINT" property="styleRandomCode" />
+    <result column="ct_style_code" jdbcType="VARCHAR" property="ctStyleCode" />
+    <result column="skc_color_code" jdbcType="VARCHAR" property="skcColorCode" />
+    <result column="skc_color_name" jdbcType="VARCHAR" property="skcColorName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,
+--     style_skc_code,
+    style_random_code, ct_style_code, skc_color_code, skc_color_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_big_style_analyse_master_skc
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from history_big_style_analyse_master_skc
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseSkc" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master_skc (style_skc_code, style_random_code, ct_style_code, 
+      skc_color_code, skc_color_name)
+    values (#{styleSkcCode,jdbcType=VARCHAR}, #{styleRandomCode,jdbcType=BIGINT}, #{ctStyleCode,jdbcType=VARCHAR}, 
+      #{skcColorCode,jdbcType=VARCHAR}, #{skcColorName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseSkc" useGeneratedKeys="true">
+    insert into history_big_style_analyse_master_skc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="styleSkcCode != null">
+        style_skc_code,
+      </if>
+      <if test="styleRandomCode != null">
+        style_random_code,
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code,
+      </if>
+      <if test="skcColorCode != null">
+        skc_color_code,
+      </if>
+      <if test="skcColorName != null">
+        skc_color_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="styleSkcCode != null">
+        #{styleSkcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="styleRandomCode != null">
+        #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skcColorCode != null">
+        #{skcColorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skcColorName != null">
+        #{skcColorName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseSkc">
+    update history_big_style_analyse_master_skc
+    <set>
+      <if test="styleSkcCode != null">
+        style_skc_code = #{styleSkcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="styleRandomCode != null">
+        style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      </if>
+      <if test="ctStyleCode != null">
+        ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skcColorCode != null">
+        skc_color_code = #{skcColorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skcColorName != null">
+        skc_color_name = #{skcColorName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ylzs.entity.bigstylecraft.BigStyleAnalyseSkc">
+    update history_big_style_analyse_master_skc
+    set style_skc_code = #{styleSkcCode,jdbcType=VARCHAR},
+      style_random_code = #{styleRandomCode,jdbcType=BIGINT},
+      ct_style_code = #{ctStyleCode,jdbcType=VARCHAR},
+      skc_color_code = #{skcColorCode,jdbcType=VARCHAR},
+      skc_color_name = #{skcColorName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

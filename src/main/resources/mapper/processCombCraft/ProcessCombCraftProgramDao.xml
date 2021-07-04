@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.processCombCraft.ProcessCombCraftProgramDao">
+
+
+    <!--<select id="selectProgramListByCraftRandomCode"
+            resultType="com.ylzs.entity.processCombCraft.resp.QueryProcessCombCraftProgramResp" parameterType="long">
+        SELECT
+        GROUP_CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(pccp.process_craft_codes,'#',b.help_topic_id + 1),'#',-1),'-',SUBSTRING_INDEX(SUBSTRING_INDEX(pccp.process_craft_names,'#',b.help_topic_id + 1),'#',-1)) processCraftCodesAndNames,
+        pccp.process_index,pccp.process_number
+        FROM process_comb_craft_program pccp 
+        JOIN mysql.help_topic b
+        ON b.help_topic_id <![CDATA[< ( LENGTH(pccp.process_craft_codes)-LENGTH(REPLACE(pccp.process_craft_codes,'#',''))+1)]]>
+        WHERE pccp.process_comb_craft_random_code =#{parseLong}
+        GROUP BY pccp.process_index
+    </select>-->
+
+    <select id="selectProgramListByCraftRandomCode"
+    resultType="com.ylzs.entity.processCombCraft.resp.QueryProcessCombCraftProgramResp" parameterType="long">
+        select process_index,process_number,
+        group_concat(process_craft_code,'-',process_craft_name) processCraftCodesAndNames
+        FROM process_comb_craft_program
+        WHERE process_comb_craft_random_code =#{parseLong}
+        group by process_comb_craft_random_code,process_number,process_index
+    </select>
+
+    <select id="selectProgramListByRandomCodes"
+            resultType="com.ylzs.entity.processCombCraft.ProcessCombCraftProgram">
+        select * from process_comb_craft_program
+        where 1=1
+        <if test="randomCodes!=null and randomCodes.size()>0">
+            process_comb_craft_random_code in
+            <foreach collection="list" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+    </select>
+</mapper>

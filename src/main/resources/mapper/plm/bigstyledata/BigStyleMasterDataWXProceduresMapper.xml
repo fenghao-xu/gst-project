@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.plm.BigStyleMasterDataWXProceduresDao">
+        <resultMap type="BigStyleMasterDataWXProcedures" id="BigStyleMasterDataWXProceduresResult">
+            <result column="procedure_id" property="procedureID" />
+            <result column="procedure_code" property="procedureCode" />
+            <result column="procedure_type" property="procedureType" />
+            <result column="procedure_name" property="procedureName" />
+            <result column="procedure_price" property="procedurePrice" />
+            <result column="wx_supplier_name" property="wXSupplierName" />
+            <result column="wx_supplier_address" property="wXSupplierAddress" />
+            <result column="wx_supplier_contacts" property="wXSupplierContacts" />
+            <result column="wx_supplier_telephone" property="wXSupplierTelephone" />
+            <result column="ct_style_code" property="ctStyleCode" />
+    </resultMap>
+
+
+    <insert id="addOrUpdateBigStyleDataWXProceduresList" parameterType="BigStyleMasterDataWXProcedures">
+		insert into capp_pi_big_style_wxprocedures (
+		procedure_id,procedure_code,procedure_type, procedure_name, procedure_price,wx_supplier_name,
+		wx_supplier_address,wx_supplier_contacts,wx_supplier_telephone,ct_style_code
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.procedureID},#{item.procedureCode},#{item.procedureType},#{item.procedureName},#{item.procedurePrice},
+			#{item.wXSupplierName},#{item.wXSupplierAddress},#{item.wXSupplierContacts},#{item.wXSupplierTelephone},
+			#{item.ctStyleCode}
+			)
+		</foreach>
+		on duplicate key update
+		procedure_id=values(procedure_id),procedure_code= values(procedure_code),procedure_type=values(procedure_type),
+		procedure_name= values(procedure_name),procedure_price=values(procedure_price),wx_supplier_name=values(wx_supplier_name),
+		wx_supplier_address=values(wx_supplier_address),wx_supplier_contacts= values(wx_supplier_contacts),
+		wx_supplier_telephone=values(wx_supplier_telephone),ct_style_code= values(ct_style_code)
+	</insert>
+
+
+
+
+</mapper>

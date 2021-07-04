@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.LineDao">
+    <resultMap type="Line" id="LineResult">
+        <result column="id" property="id"/>
+        <result column="line_code" property="lineCode"/>
+        <result column="line_name" property="lineName"/>
+        <result column="convert_rate" property="convertRate"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="line_position_id" property="linePositionId"/>
+        <result column="line_name_id" property="lineNameId"/>
+        <result column="line_position_code" property="linePositionCode"/>
+        <result column="line_position_name" property="linePositionName"/>
+        <result column="line_name_code" property="lineNameCode"/>
+        <result column="line_name_name" property="lineNameName"/>
+    </resultMap>
+
+
+    <resultMap type="Line" id="LineDictionaryResult">
+        <result column="id" property="id"/>
+        <result column="line_code" property="lineCode"/>
+        <result column="line_name" property="lineName"/>
+        <result column="convert_rate" property="convertRate"/>
+        <result column="remark" property="remark"/>
+        <result column="is_invalid" property="isInvalid"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="line_position_id" property="linePositionId"/>
+        <result column="line_name_id" property="lineNameId"/>
+        <association property="linePosition" javaType="Dictionary">
+            <result column="line_position_id1" property="id"/>
+            <result column="line_position_code" property="dicValue"/>
+            <result column="line_position_name" property="valueDesc"/>
+        </association>
+        <association property="lineNameObj" javaType="Dictionary">
+            <result column="line_name_id1" property="id"/>
+            <result column="line_name_code" property="dicValue"/>
+            <result column="line_name_name" property="valueDesc"/>
+        </association>
+    </resultMap>
+
+    <select id="getAllLine" resultMap="LineDictionaryResult">
+        select a.*,
+            b.id line_position_id1,b.dic_value line_position_code,b.value_desc line_position_name,
+            c.id line_name_id1,c.dic_value line_name_code,c.value_desc line_name_name
+         from line a inner join dictionary b on a.line_position_id=b.id
+        inner join dictionary c on a.line_name_id=c.id
+        order by a.line_position_id,a.line_name_id,a.id
+    </select>
+
+
+    <select id="getLineByCode" resultMap="LineResult">
+        select a.*
+        ,b.dic_value line_position_code,b.value_desc line_position_name,
+        c.dic_value line_name_code,c.value_desc line_name_name
+        from line a
+        left join dictionary b on a.line_position_id=b.id
+        left join dictionary c on a.line_name_id=c.id
+
+        where IFNULL(a.is_invalid,0)=0 and a.line_code in
+        <foreach collection="lineCodes" separator="," open="(" close=")" item="lineCode">
+            #{lineCode}
+        </foreach>
+    </select>
+
+    <delete id="deleteLine" parameterType="string">
+        delete from line where line_code=#{lineCode}
+    </delete>
+
+    <update id="updateLine">
+        UPDATE
+        line
+        <set>
+            <if test="lineCode != null">
+                line_code = #{lineCode},
+            </if>
+            <if test="lineName != null">
+                line_name = #{lineName},
+            </if>
+            <if test="convertRate != null">
+                convert_rate = #{convertRate},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="linePositionId != null">
+                line_position_id = #{linePositionId},
+            </if>
+            <if test="lineNameId != null">
+                line_name_id = #{lineNameId},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        WHERE line_code = #{lineCode}
+
+    </update>
+    <insert id="addLine">
+        INSERT IGNORE INTO line (
+        line_code,
+        line_name,
+        convert_rate,
+        line_position_id,
+        line_name_id,
+        remark,
+        is_invalid,
+        update_user,
+        update_time
+        )
+        VALUES
+        (
+        #{lineCode},
+        #{lineName},
+        #{convertRate},
+        #{linePositionId},
+        #{lineNameId},
+        #{remark},
+        #{isInvalid},
+        #{updateUser},
+        #{updateTime}
+        )
+
+
+    </insert>
+    <select id="getLineByPage" resultMap="LineResult">
+        select a.*
+        ,b.dic_value line_position_code,b.value_desc line_position_name,
+        c.dic_value line_name_code,c.value_desc line_name_name
+        from line a
+        left join dictionary b on a.line_position_id=b.id
+        left join dictionary c on a.line_name_id=c.id
+
+        where IFNULL(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.line_code like concat('%',#{keywords},'%')
+            or a.line_name like concat('%',#{keywords},'%')
+            or a.update_user in (select user_code from user where user_name like concat('%',#{keywords},'%'))
+            or a.remark like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        order by a.id desc
+    </select>
+
+    <select id="getStitchCountByCode" resultType="integer">
+        select count(*) from stitch_length a inner join line b on a.line_id=b.id where b.line_code=#{lineCode}
+    </select>
+
+
+
+
+</mapper>

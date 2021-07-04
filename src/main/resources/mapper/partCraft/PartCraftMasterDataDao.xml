@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ylzs.dao.partCraft.PartCraftMasterDataDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.entity.partCraft.PartCraftMasterData" id="resultMap">
+        <result property="id" column="id"/>
+        <result property="randomCode" column="random_code"/>
+        <result property="status" column="status"/>
+        <result property="partCraftMainCode" column="part_craft_main_code"/>
+        <result property="partCraftMainName" column="part_craft_main_name"/>
+        <result property="craftCategoryCode" column="craft_category_code"/>
+        <result property="craftPartCode" column="craft_part_code"/>
+        <result property="partType" column="part_type"/>
+        <result property="businessType" column="business_type"/>
+        <result property="standardTime" column="standard_time"/>
+        <result property="standardPrice" column="standard_price"/>
+        <result property="remark" column="remark"/>
+        <result property="releaseUser" column="release_user"/>
+        <result property="releaseTime" column="release_time"/>
+        <result property="auditUser" column="audit_user"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+
+    <resultMap id="resultPartCraftBasicVo" type="com.ylzs.vo.partCraft.PartCraftMasterBasicVo">
+        <result property="id" column="ma_id"/>
+        <result property="randomCode" column="ma_randomCode"/>
+        <result property="status" column="ma_status"/>
+        <result property="partCraftMainCode" column="ma_partCraftMainCode"/>
+        <result property="partCraftMainName" column="ma_partCraftMainName"/>
+        <result property="craftCategoryCode" column="ma_craftCategoryCode"/>
+        <result property="craftCategoryName" column="ma_craftCategoryName"/>
+        <result property="craftPartCode" column="ma_craftPartCode"/>
+        <result property="craftPartName" column="ma_craftPartName"/>
+        <result property="partType" column="ma_partType"/>
+        <result property="businessType" column="ma_business_type"/>
+        <result property="standardTime" column="ma_standardTime"/>
+        <result property="standardPrice" column="ma_standardPrice"/>
+        <result property="remark" column="ma_remark"/>
+        <result property="releaseUser" column="ma_release_user"/>
+        <result property="releaseTime" column="ma_release_time"/>
+        <result property="version" column="ma_version"/>
+        <result property="createUser" column="ma_create_user"/>
+        <result property="createTime" column="ma_create_time"/>
+        <result property="updateUser" column="ma_update_user"/>
+        <result property="updateTime" column="ma_update_time"/>
+        <result property="designCode" column="designCode"/>
+        <result property="designName" column="designName"/>
+
+
+        <collection property="partCraftDetails" resultMap="partCraftDetails"/>
+        <collection property="partCraftRules" resultMap="partCraftRules"/>
+        <collection property="craftPositions" resultMap="craftPositions"/>
+        <collection property="craftDesignParts" resultMap="craftDesignParts"/>
+        <collection property="pictures" resultMap="partCraftPictureMap"/>
+
+    </resultMap>
+
+    <resultMap type="com.ylzs.vo.partCraft.PartCraftDetailVo" id="partCraftDetails">
+        <result property="id" column="d_id"/>
+        <result property="randomCode" column="d_random_code"/>
+        <result property="status" column="d_status"/>
+        <result property="pad" column="d_pad"/>
+        <result property="craftCode" column="d_craft_code"/>
+        <result property="craftName" column="d_craft_name"/>
+        <result property="craftRemark" column="d_craft_remark"/>
+        <result property="craftFlowNum" column="d_craft_flow_num"/>
+        <result property="machineCode" column="d_machine_code"/>
+        <result property="machineName" column="d_machine_name"/>
+        <result property="standardTime" column="d_standard_time"/>
+        <result property="standardPrice" column="d_standard_price"/>
+        <result property="craftMainFrameCode" column="d_craft_main_frame_code"/>
+        <result property="partCraftMainRandomCode" column="d_part_craft_main_random_code"/>
+        <result property="lockData" column="d_lock_data"/>
+        <result property="remark" column="d_remark"/>
+        <result property="version" column="d_version"/>
+        <result column="craft_name" property="craftName"/>
+        <result column="craft_grade_code" property="craftGradeCode"/>
+    </resultMap>
+    <resultMap id="partCraftRules" type="com.ylzs.vo.partCraft.PartCraftRuleVo">
+        <result property="id" column="r_id"/>
+        <result property="randomCode" column="r_random_code"/>
+        <result property="status" column="r_status"/>
+        <result property="sourceCraftCode" column="r_source_craft_code"/>
+        <result property="sourceCraftName" column="r_source_craft_name"/>
+        <result property="actionCraftCode" column="r_action_craft_code"/>
+        <result property="actionCraftName" column="r_action_craft_name"/>
+        <result property="processType" column="r_process_type"/>
+        <result property="partCraftMainRandomCode" column="r_part_craft_main_random_code"/>
+        <result property="version" column="r_version"/>
+    </resultMap>
+    <resultMap id="craftPositions" type="com.ylzs.vo.partCraft.PartCraftPositionVo">
+        <result property="id" column="p_id"/>
+        <result property="randomCode" column="p_random_code"/>
+        <result property="status" column="p_status"/>
+        <result property="partPositionCode" column="p_part_position_code"/>
+        <result property="partPositionName" column="p_part_position_name"/>
+        <result property="clothingCategoryCode" column="p_clothing_category_code"/>
+        <result property="clothingCategoryName" column="p_clothing_category_name"/>
+        <result property="partCraftMainRandomCode" column="p_part_craft_main_random_code"/>
+        <result property="version" column="p_version"/>
+    </resultMap>
+    <resultMap id="craftDesignParts" type="com.ylzs.vo.partCraft.PartCraftDesignPartsVo">
+        <result property="id" column="ds_id"/>
+        <result property="randomCode" column="ds_random_code"/>
+        <result property="status" column="ds_status"/>
+        <result property="designCode" column="ds_design_code"/>
+        <result property="designName" column="ds_design_name"/>
+        <result property="patternMode" column="ds_pattern_mode"/>
+        <result property="patternType" column="ds_pattern_type"/>
+        <result property="patternTechnology" column="ds_pattern_technology"/>
+        <result property="partCraftMainRandomCode" column="ds_part_craft_main_random_code"/>
+        <result property="version" column="ds_version"/>
+    </resultMap>
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ylzs.vo.partCraft.PartCraftMasterPictureVo" id="partCraftPictureMap">
+        <result property="id" column="pic_id"/>
+        <result property="status" column="pic_status"/>
+        <result property="randomCode" column="pic_random_code"/>
+        <result property="pictureUrl" column="pic_picture_url"/>
+        <result property="partCraftMainRandomCode" column="pic_part_craft_main_random_code"/>
+        <result property="remark" column="pic_remark"/>
+        <result property="version" column="pic_version"/>
+    </resultMap>
+
+    <select id="searchPartCraftInfo" parameterType="HashMap" resultMap="resultPartCraftBasicVo">
+        SELECT
+        mas.`id` AS  `ma_id`,
+        mas.`random_code` AS `ma_randomCode`,
+        mas.`status` AS  `ma_status`,
+        mas.`part_craft_main_code` AS  `ma_partCraftMainCode`,
+        mas.`part_craft_main_name` AS `ma_partCraftMainName`,
+        mas.`craft_category_code` AS `ma_craftCategoryCode`,
+        mas.`craft_part_code` AS `ma_craftPartCode`,
+        mas.`part_type` AS `ma_partType`,
+        mas.`business_type` AS `ma_business_type`,
+        mas.`standard_time` AS `ma_standardTime`,
+        mas.`standard_price` AS `ma_standardPrice`,
+        mas.`create_user` AS `ma_create_user`,
+        mas.`create_time` AS `ma_create_time`,
+        mas.`release_user` AS `ma_release_user`,
+        mas.`release_time` AS `ma_release_time`,
+        mas.`update_user` AS `ma_update_user`,
+        mas.`update_time` AS `ma_update_time`,
+        mas.`remark` AS `ma_remark`,
+        mas.`version` AS `ma_version`,
+        CONCAT(ccc.`craft_category_name`) AS `ma_craftCategoryName`,
+        CONCAT(crp.`craft_part_name` )AS `ma_craftPartName`
+        FROM part_craft_master_data mas
+
+        LEFT JOIN craft_category ccc ON ccc.craft_category_code = mas.craft_category_code
+        LEFT JOIN craft_part crp ON crp.craft_part_code = mas.craft_part_code
+        <if test="queryData != null">
+            LEFT JOIN part_craft_design_parts des ON des.part_craft_main_random_code = mas.random_code AND des.`status` != 1030
+            <choose>
+                <when test="defaultStatus == 1">
+
+                </when>
+                <when test="defaultStatus ==2">
+                    AND des.`status` = 1020
+                </when>
+                <otherwise>
+                    AND des.`status` = 1000
+                </otherwise>
+            </choose>
+        </if>
+        WHERE
+        mas.`status` != 1030
+        <choose>
+            <when test="defaultStatus == 1">
+            </when>
+            <when test="defaultStatus ==2">
+                AND mas.`status` = 1020
+            </when>
+            <otherwise>
+                AND mas.`status` = 1000
+            </otherwise>
+        </choose>
+        <if test="categoryCode != null">
+            AND mas.`craft_category_code` = #{categoryCode}
+        </if>
+        <if test="craftPartCode != null">
+            AND mas.`craft_part_code` = #{craftPartCode}
+        </if>
+        <if test="businessType != null and businessType !='' ">
+            AND mas.`business_type` = #{businessType}
+        </if>
+        <if test="queryData != null">
+            AND (mas.`part_craft_main_code` LIKE  CONCAT('%',#{queryData},'%')
+            OR mas.`part_craft_main_name` LIKE  CONCAT('%',#{queryData},'%')
+            OR des.`design_code` LIKE  CONCAT('%',#{queryData},'%')
+            OR des.`design_name` LIKE  CONCAT('%',#{queryData},'%'))
+        </if>
+        <if test="createUser !=null and createUser !=''  ">
+            and  mas.create_user  like concat('%',#{createUser},'%')
+        </if>
+        <if test="createTimeBeginDate !=null and createTimeEndDate != null ">
+            and   date(mas.create_time) BETWEEN  #{createTimeBeginDate} and #{createTimeEndDate}
+        </if>
+        <if test="partCraftMainCode != null and partCraftMainCode != ''">
+            and mas.part_craft_main_code like concat('%',#{partCraftMainCode},'%')
+        </if>
+        <if test="partCraftMainName != null and partCraftMainName != ''">
+            and mas.part_craft_main_name like concat('%',#{partCraftMainName},'%')
+        </if>
+        <if test="designPartCode != null and designPartCode != ''">
+            and mas.random_code in (select part_craft_main_random_code
+                from part_craft_design_parts where ifnull(status,1000) not in (1030,1090) and design_code like concat('%',#{designPartCode},'%'))
+        </if>
+        <if test="designPartName != null and designPartName != ''">
+            and mas.random_code in (select part_craft_main_random_code
+                from part_craft_design_parts where ifnull(status,1000) not in (1030,1090) and design_name like concat('%',#{designPartName},'%'))
+        </if>
+        <if test="partPositionCode != null and partPositionCode != ''">
+            and mas.random_code in (select part_craft_main_random_code
+                from part_craft_position where ifnull(status,1000) not in (1030,1090) and part_position_code like concat('%',#{partPositionCode},'%'))
+        </if>
+        <if test="partPositionName != null and partPositionName != ''">
+            and mas.random_code in (select part_craft_main_random_code
+                from part_craft_position where ifnull(status,1000) not in (1030,1090) and part_position_name like concat('%',#{partPositionName},'%'))
+        </if>
+        ORDER BY mas.`create_time` DESC
+    </select>
+
+
+
+    <select id="getPartCraftMasterRandomCode" resultType="Long">
+        select a.part_craft_main_random_code from part_craft_design_parts a
+        inner join part_craft_master_data b on a.part_craft_main_random_code=b.random_code
+        where a.design_code=#{designCode} and a.status in (null,1000,1020)
+        <if test="businessType != null and businessType != ''">
+            and b.business_type=#{businessType}
+        </if>
+        <if test="partPostion != null and partPostion != ''">
+            and exists(select 1 from part_craft_position b
+                where b.part_craft_main_random_code=a.part_craft_main_random_code
+                    and part_position_code=#{partPostion} and position(#{clothesCategoryCode} in clothing_category_code)>0)
+        </if>
+        <if test="partPostion == null or partPostion == ''">
+            and not exists(select 1 from part_craft_position b
+            where b.part_craft_main_random_code=a.part_craft_main_random_code)
+        </if>
+         order by a.status desc limit 1
+    </select>
+    <!-- 紧紧查找部件工艺主表和详情表的数据-->
+    <select id="searchPartCraftAndDetailInfo" parameterType="HashMap" resultMap="resultPartCraftBasicVo">
+        SELECT
+        mas.`id` AS  `ma_id`,
+        mas.`random_code` AS `ma_randomCode`,
+        mas.`status` AS  `ma_status`,
+        mas.`part_craft_main_code` AS  `ma_partCraftMainCode`,
+        mas.`part_craft_main_name` AS `ma_partCraftMainName`,
+        mas.`craft_category_code` AS `ma_craftCategoryCode`,
+        mas.`craft_part_code` AS `ma_craftPartCode`,
+        mas.`part_type` AS `ma_partType`,
+        mas.`business_type` AS `ma_business_type`,
+        mas.`standard_time` AS `ma_standardTime`,
+        mas.`standard_price` AS `ma_standardPrice`,
+        mas.`create_user` AS `ma_create_user`,
+        mas.`create_time` AS `ma_create_time`,
+        mas.`release_user` AS `ma_release_user`,
+        mas.`release_time` AS `ma_release_time`,
+        mas.`update_user` AS `ma_update_user`,
+        mas.`update_time` AS `ma_update_time`,
+        mas.`remark` AS `ma_remark`,
+        mas.`version` AS `ma_version`,
+        CONCAT(ccc.`craft_category_name`) AS `ma_craftCategoryName`,
+        CONCAT(crp.`craft_part_name` )AS `ma_craftPartName`,
+        pcdt.`id` AS `d_id`,
+        pcdt.`random_code` AS `d_random_code`,
+        pcdt.`status` AS `d_status`,
+        pcdt.`pad` AS `pad`,
+        pcdt.`craft_code` AS `d_craft_code`,
+        pcdt.`craft_remark` AS `d_craft_remark`,
+        pcdt.`craft_flow_num` AS `d_craft_flow_num`,
+        pcdt.`machine_code` AS `d_machine_code`,
+        pcdt.`craft_main_frame_code` AS `d_craft_main_frame_code`,
+        pcdt.`machine_name` AS `d_machine_name`,
+        pcdt.`standard_time` AS `d_standard_time`,
+        pcdt.`standard_price` AS `d_standard_price`,
+        pcdt.`part_craft_main_random_code` AS `d_part_craft_main_random_code`,
+        pcdt.`craft_remark` AS `d_remark`,
+        pcdt.`version` AS `d_version`,
+        pcdt.lock_data as d_lock_data,
+        sew.craft_name,sew.craft_grade_code,
+        des.`design_code` AS designCode,
+        des.`design_name` AS designName
+        FROM part_craft_master_data mas
+        LEFT JOIN craft_category ccc ON ccc.craft_category_code = mas.craft_category_code
+        LEFT JOIN craft_part crp ON crp.craft_part_code = mas.craft_part_code
+        LEFT JOIN part_craft_detail pcdt ON pcdt.part_craft_main_random_code = mas.random_code
+        LEFT JOIN sewing_craft_warehouse as sew on sew.craft_code = pcdt.craft_code
+        LEFT JOIN part_craft_design_parts des ON des.part_craft_main_random_code = mas.random_code AND des.`status` != 1030
+        WHERE
+        mas.`status` = 1020
+        <if test="codeList != null and codeList.size()>0">
+            and (mas.part_craft_main_code in
+            <foreach collection="codeList" item="code_" open="(" separator="," close=")">
+                #{code_}
+            </foreach>)
+        </if>
+        <if test="partCraftMainCode != null and partCraftMainCode !=''">
+            AND (mas.`part_craft_main_code` LIKE  CONCAT('%',#{partCraftMainCode},'%')
+            OR des.`design_code` LIKE  CONCAT('%',#{partCraftMainCode},'%'))
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode !=''">
+            AND mas.`craft_category_code` = #{craftCategoryCode}
+        </if>
+        <if test="partCraftMainName != null and partCraftMainName !='' ">
+            AND ( mas.`part_craft_main_name` LIKE  CONCAT('%',#{partCraftMainName},'%')
+            OR des.`design_name` LIKE  CONCAT('%',#{partCraftMainName},'%'))
+        </if>
+        <if test="businessType != null and businessType !='' ">
+            AND mas.`business_type` = #{businessType}
+        </if>
+        <if test="partCraftDesc != null and partCraftDesc != ''">
+            AND mas.remark like concat('%', #{partCraftDesc},'%')
+        </if>
+        <if test="craftCode != null and craftCode != ''">
+            and mas.random_code in (select part_craft_main_random_code from part_craft_detail where craft_code like concat('%', #{craftCode},'%'))
+        </if>
+        <if test="craftDesc != null and craftDesc != ''">
+            and mas.random_code in (select part_craft_main_random_code from part_craft_detail where craft_remark like concat('%', #{craftDesc},'%'))
+        </if>
+        ORDER BY mas.`part_craft_main_code` ASC,pcdt.`craft_flow_num` ASC
+    </select>
+    <!-- 紧紧查找部件工艺主表的数据-->
+    <select id="searchOnlyPartCraftInfo" parameterType="HashMap" resultMap="resultPartCraftBasicVo">
+        SELECT
+        mas.`id` AS  `ma_id`,
+        mas.`random_code` AS `ma_randomCode`,
+        mas.`status` AS  `ma_status`,
+        mas.`part_craft_main_code` AS  `ma_partCraftMainCode`,
+        mas.`part_craft_main_name` AS `ma_partCraftMainName`,
+        mas.`craft_category_code` AS `ma_craftCategoryCode`,
+        mas.`craft_part_code` AS `ma_craftPartCode`,
+        mas.`part_type` AS `ma_partType`,
+        mas.`business_type` AS `ma_business_type`,
+        mas.`standard_time` AS `ma_standardTime`,
+        mas.`standard_price` AS `ma_standardPrice`,
+        mas.`create_user` AS `ma_create_user`,
+        mas.`create_time` AS `ma_create_time`,
+        mas.`release_user` AS `ma_release_user`,
+        mas.`release_time` AS `ma_release_time`,
+        mas.`update_user` AS `ma_update_user`,
+        mas.`update_time` AS `ma_update_time`,
+        mas.`remark` AS `ma_remark`,
+        mas.`version` AS `ma_version`
+        FROM part_craft_master_data mas
+        LEFT JOIN part_craft_design_parts des ON des.part_craft_main_random_code = mas.random_code AND des.`status` != 1030
+        WHERE
+        mas.`status` = 1020
+        <if test="partCraftMainCode != null and partCraftMainCode !=''">
+            AND (mas.`part_craft_main_code` LIKE  CONCAT('%',#{partCraftMainCode},'%')
+            OR des.`design_code` LIKE  CONCAT('%',#{partCraftMainCode},'%'))
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode !=''">
+            AND mas.`craft_category_code` = #{craftCategoryCode}
+        </if>
+        <if test="partCraftMainName != null and partCraftMainName !='' ">
+            AND ( mas.`part_craft_main_name` LIKE  CONCAT('%',#{partCraftMainName},'%')
+            OR des.`design_name` LIKE  CONCAT('%',#{partCraftMainName},'%'))
+        </if>
+        <if test="businessType != null and businessType !='' ">
+            AND mas.`business_type` = #{businessType}
+        </if>
+        <if test="partCraftDesc != null and partCraftDesc != ''">
+            AND mas.remark like concat('%', #{partCraftDesc},'%')
+        </if>
+        <if test="craftCode != null and craftCode != ''">
+            and mas.random_code in (select part_craft_main_random_code from part_craft_detail where craft_code like concat('%', #{craftCode},'%'))
+        </if>
+        <if test="craftDesc != null and craftDesc != ''">
+            and mas.random_code in (select part_craft_main_random_code from part_craft_detail where craft_remark like concat('%', #{craftDesc},'%'))
+        </if>
+    </select>
+
+    <select id="searchPartCraftInfoRandomCode" resultType="HashMap" parameterType="HashMap" resultMap="resultPartCraftBasicVo">
+        SELECT
+            mas.`id` AS `ma_id`,
+            mas.`random_code` AS `ma_randomCode`,
+            mas.`status` AS `ma_status`,
+            mas.`part_craft_main_code` AS `ma_partCraftMainCode`,
+            mas.`part_craft_main_name` AS `ma_partCraftMainName`,
+            mas.`craft_category_code` AS `ma_craftCategoryCode`,
+            mas.`craft_part_code` AS `ma_craftPartCode`,
+            mas.`part_type` AS `ma_partType`,
+            mas.`business_type` AS `ma_business_type`,
+            mas.`standard_time` AS `ma_standardTime`,
+            mas.`standard_price` AS `ma_standardPrice`,
+            mas.`create_user` AS `ma_create_user`,
+            mas.`create_time` AS `ma_create_time`,
+            mas.`release_user` AS `ma_release_user`,
+            mas.`release_time` AS `ma_release_time`,
+            mas.`update_user` AS `ma_update_user`,
+            mas.`update_time` AS `ma_update_time`,
+            mas.`remark` AS `ma_remark`,
+            mas.`version` AS `ma_version`,
+            CONCAT( ccc.`craft_category_name` ) AS `ma_craftCategoryName`,
+            CONCAT( crp.`craft_part_name` ) AS `ma_craftPartName`
+        FROM
+            part_craft_master_data mas
+            LEFT JOIN craft_category ccc ON ccc.craft_category_code = mas.craft_category_code
+            LEFT JOIN craft_part crp ON crp.craft_part_code = mas.craft_part_code
+        WHERE
+            mas.`status` = #{status}
+            AND mas.`random_code` = #{randomCode}
+            LIMIT 1
+    </select>
+
+    <select id="getPartCraftCodeNameAll" resultType="java.lang.String">
+        SELECT
+            part_craft_main_name
+        FROM
+            part_craft_master_data WHERE status !=1030 AND `status` != 1090
+    </select>
+    <update id="updatePaartCraftMaster" parameterType="com.ylzs.entity.partCraft.PartCraftMasterData">
+        UPDATE part_craft_master_data
+        SET
+            `random_code` = #{randomCode},
+            `status` = #{status},
+            `part_craft_main_code` = #{partCraftMainCode},
+            `part_craft_main_name` = #{partCraftMainName},
+            `craft_category_code` = #{craftCategoryCode},
+            `craft_part_code` = #{craftPartCode},
+            `part_type` = #{partType},
+             `business_type` = #{businessType},
+            `standard_time` = #{standardTime},
+            `standard_price` = #{standardPrice},
+            <choose>
+                <when test="remark != null and remark !=''">
+                    `remark` = #{remark},
+                </when>
+                <otherwise>
+                    `remark` = NULL,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="isInvalid != null">
+                    `is_invalid` = #{isInvalid},
+                </when>
+                <otherwise>
+                    `is_invalid` = NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="releaseUser != null and releaseUser !=''">
+                    `release_user` = #{releaseUser},
+                </when>
+                <otherwise>
+                    `release_user` = NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="releaseTime != null">
+                    `release_time` = #{releaseTime},
+                </when>
+                <otherwise>
+                    `release_time` = NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="auditUser != null">
+                    `audit_user` = #{auditUser},
+                </when>
+                <otherwise>
+                    `audit_user` = NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="auditTime != null">
+                    `audit_time` = #{auditTime},
+                </when>
+                <otherwise>
+                    `audit_time` = NULL,
+                </otherwise>
+            </choose>
+
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="createUser != null">
+                `create_user` = #{createUser},
+            </if>
+            `update_time` = #{updateTime},
+            `update_user` = #{updateUser},
+            `version`  = #{version}
+            WHERE
+	        `id` = #{id}
+    </update>
+    <select id="isThinkStyleUsed" parameterType="long" resultType="boolean">
+        select exists(
+        select 1 a from part_craft_master_data a
+        inner join part_craft_design_parts b on a.random_code=b.part_craft_main_random_code
+        inner join think_style_part c on b.design_code=c.design_part_code
+        inner join think_style_warehouse d on c.style_random_code=d.random_code
+        where a.random_code=#{randomCode} and d.status=1020 and b.status!=1030
+        ) from DUAL
+    </select>
+
+    <select id="isDelDesignPartUsed" resultType="boolean">
+        select exists(
+        select 1 a from part_craft_master_data a
+        inner join part_craft_design_parts b on a.random_code=b.part_craft_main_random_code
+        inner join think_style_part c on b.design_code=c.design_part_code
+        inner join think_style_warehouse d on c.style_random_code=d.random_code
+        where a.random_code=#{masterRandomCode} and d.status=1020 and b.status!=1030
+        <if test="designCodes != null and designCodes.size() != 0">
+            and b.design_code in
+            <foreach collection="designCodes" separator="," open="(" close=")" item="designCode">
+                #{designCode}
+            </foreach>
+        </if>
+        <if test="positionCodes != null and positionCodes.size() != 0">
+            and c.position_code in
+            <foreach collection="positionCodes" separator="," open="(" close=")" item="positionCode">
+                #{positionCode}
+            </foreach>
+        </if>
+
+        ) from DUAL
+    </select>
+    <update id="updatePriceAndTime" parameterType="com.ylzs.vo.partCraft.PartCraftCraftFlowVO">
+        update part_craft_master_data set
+        `standard_time` = #{standardTime},
+            `standard_price` = #{standardPrice} where `part_craft_main_code` = #{partCraftMainCode}
+    </update>
+    <update id="updateStatusByDesignPartCode">
+        update part_craft_master_data a
+        inner join part_craft_design_parts b on a.random_code=b.part_craft_main_random_code
+        set a.status=#{status}
+        where b.design_code=#{designPartCode} and a.status not in (1090,1030)
+    </update>
+    <select id="isPartCraftNameUsed" resultType="boolean">
+        select exists(
+        select 1  from part_craft_master_data a
+        where a.status!=1090
+        <if test="masterRandomCode != null">
+            and a.random_code!=#{masterRandomCode}
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode != ''">
+            and a.craft_category_code=#{craftCategoryCode}
+        </if>
+        <if test="partCraftName != null and partCraftName != ''">
+            and a.part_craft_main_name=#{partCraftName}
+        </if>
+
+        ) from DUAL
+    </select>
+    <select id="getOtherPartCraftByDesignPartCode" resultType="java.lang.String">
+        select distinct pcmd.part_craft_main_code from part_craft_design_parts pcdp
+            inner join part_craft_master_data pcmd on pcdp.part_craft_main_random_code=pcmd.random_code
+        <where>
+            ifnull(pcmd.status,1000) not in (1090,1030)
+            and ifnull(pcdp.status,1000) not in (1090,1030)
+            <if test="curRandomCode != null">
+                and pcmd.random_code != #{curRandomCode}
+            </if>
+            <if test="partCraftType != null and partCraftType != ''">
+                and pcmd.part_type = #{partCraftType}
+            </if>
+            <if test="designPartCodes != null and designPartCodes.size() != 0">
+                and pcdp.design_code in
+                <foreach collection="designPartCodes" separator="," open="(" close=")" item="designPartCode">
+                    #{designPartCode}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+</mapper>

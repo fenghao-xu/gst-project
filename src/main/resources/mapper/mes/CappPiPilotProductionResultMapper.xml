@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.mes.CappPiPilotProductionResultDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.mes.CappPiPilotProductionResult">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="style_code" jdbcType="VARCHAR" property="styleCode" />
+    <result column="last_check_route_time" jdbcType="TIMESTAMP" property="lastCheckRouteTime" />
+    <result column="confirm_time" jdbcType="TIMESTAMP" property="confirmTime" />
+    <result column="feedback_msg" jdbcType="VARCHAR" property="feedbackMsg" />
+    <result column="feedback_url" jdbcType="VARCHAR" property="feedbackUrl" />
+    <result column="worker" jdbcType="VARCHAR" property="worker" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, style_code, last_check_route_time, confirm_time, feedback_msg, feedback_url, 
+    worker, receive_time
+  </sql>
+</mapper>

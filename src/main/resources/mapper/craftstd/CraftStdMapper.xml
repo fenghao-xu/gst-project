@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.craftstd.CraftStdDao">
+    <resultMap type="CraftStd" id="CraftStdResult">
+        <result column="id" property="id"/>
+        <result column="craft_std_code" property="craftStdCode"/>
+        <result column="craft_std_name" property="craftStdName"/>
+        <result column="source_code" property="sourceCode"/>
+        <result column="suggest_code" property="suggestCode"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="work_type_id" property="workTypeId"/>
+        <result column="make_type_id" property="makeTypeId"/>
+        <result column="require_quality" property="requireQuality"/>
+        <result column="line_id" property="lineId"/>
+        <result column="iron_temperature" property="ironTemperature"/>
+        <result column="make_desc" property="makeDesc"/>
+        <result column="stitch_length_code" property="stitchLengthId"/>
+        <result column="is_effect_pic" property="isEffectPic"/>
+        <result column="is_hand_pic" property="isHandPic"/>
+        <result column="machine_id" property="machineId"/>
+        <result column="is_video" property="isVideo"/>
+        <result column="status" property="status"/>
+        <result column="is_invalid" property="isInvalid"/>
+
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="ok_user" property="okUser"/>
+        <result column="ok_time" property="okTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="extract_user" property="extractUser"/>
+        <result column="extract_time" property="extractTime"/>
+        <result column="remark" property="remark"/>
+        <result column="reject_reason" property="rejectReason"/>
+
+        <result column="video_urls" property="videoUrls"/>
+        <result column="hand_pic_urls" property="handPicUrls"/>
+        <result column="effect_pic_urls" property="effectPicUrls"/>
+
+        <result column="is_part_share" property="isPartShare"/>
+        <result column="is_category_share" property="isCategoryShare"/>
+
+        <result column="is_key_craft" property="isKeyCraft" />
+        <result column="is_normal_craft" property="isNormalCraft" />
+
+
+        <result column="commit_user" property="commitUser"/>
+        <result column="commit_time" property="commitTime"/>
+
+<!--        <result column="craft_category_id" property="craftCategoryId"/>-->
+<!--        <result column="craft_part_id" property="craftPartId"/>-->
+<!--        <result column="craft_category_code" property="craftCategoryCode"/>-->
+        <result column="craft_category_names" property="craftCategoryNames"/>
+        <result column="craft_category_codes" property="craftCategoryCodes"/>
+
+<!--        <result column="craft_part_code" property="craftPartCode"/>-->
+        <result column="craft_part_names" property="craftPartNames"/>
+
+        <result column="craft_category_ids" property="craftCategoryIds" />
+        <result column="craft_part_ids" property="craftPartIds" />
+
+        <result column="section_code" property="sectionCode"/>
+        <result column="section_name" property="sectionName"/>
+        <result column="work_type_code" property="workTypeCode"/>
+        <result column="work_type_name" property="workTypeName"/>
+        <result column="make_type_code" property="makeTypeCode"/>
+        <result column="make_type_name" property="makeTypeName"/>
+        <result column="line_code" property="lineCode"/>
+        <result column="line_name" property="lineName"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="machine_name_cn" property="machineNameCn"/>
+        <result column="save_source" property="saveSource"/>
+        <result column="expand_field" property="expandField"/>
+    </resultMap>
+
+    <resultMap type="CraftStdStatistic" id="CraftStdStatisticResult">
+        <result column="commit_count" property="commitCount"/>
+        <result column="audit_count" property="auditCount"/>
+        <result column="extract_count" property="extractCount"/>
+        <result column="lack_pic_count" property="lackPicCount"/>
+        <result column="lack_video_count" property="lackVideoCount"/>
+    </resultMap>
+
+
+    <insert id="addCraftStd" parameterType="CraftStd" useGeneratedKeys="true" keyProperty="id">
+        INSERT IGNORE INTO craft_std(
+        craft_std_code,
+        craft_std_name,
+        source_code,
+        suggest_code,
+        section_id,
+        work_type_id,
+        make_type_id,
+        require_quality,
+        line_id,
+        iron_temperature,
+        make_desc,
+        stitch_length_id,
+        is_effect_pic,
+        is_hand_pic,
+        machine_id,
+        is_video,
+        status,
+        is_invalid,
+        create_user,
+        create_time,
+        ok_user,
+        ok_time,
+        update_user,
+        update_time,
+        extract_user,
+        extract_time,
+        remark,
+        commit_user,
+        commit_time,
+        reject_reason,
+        is_part_share,
+        is_category_share,
+        is_key_craft,
+        is_normal_craft,
+        save_source
+        )
+        VALUES
+        (
+        #{craftStdCode},
+        #{craftStdName},
+        #{sourceCode},
+        #{suggestCode},
+        #{sectionId},
+        #{workTypeId},
+        #{makeTypeId},
+        #{requireQuality},
+        #{lineId},
+        #{ironTemperature},
+        #{makeDesc},
+        #{stitchLengthId},
+        #{isEffectPic},
+        #{isHandPic},
+        #{machineId},
+        #{isVideo},
+        #{status},
+        #{isInvalid},
+        #{createUser},
+        #{createTime},
+        #{okUser},
+        #{okTime},
+        #{updateUser},
+        #{updateTime},
+        #{extractUser},
+        #{extractTime},
+        #{remark},
+        #{commitUser},
+        #{commitTime},
+        #{rejectReason},
+        #{isPartShare},
+        #{isCategoryShare},
+        #{isKeyCraft},
+        #{isNormalCraft},
+        #{saveSource}
+        );
+
+    </insert>
+
+    <insert id="addCraftStdRawDataById">
+        insert into craft_std_raw_data select * from craft_std where id = #{id}
+    </insert>
+
+    <delete id="deleteCraftStd" parameterType="long">
+        delete from craft_std where id=#{id}
+    </delete>
+
+    <delete id="deleteCraftStdRawDataById">
+        delete from craft_std_raw_data where id=#{id}
+    </delete>
+
+    <update id="updateCraftStd">
+        UPDATE
+        craft_std
+        <set>
+            <if test="craftStdCode != null">
+                craft_std_code= #{craftStdCode},
+            </if>
+            <if test="craftStdName != null">
+                craft_std_name = #{craftStdName},
+            </if>
+            <if test="sourceCode != null">
+                source_code = #{sourceCode},
+            </if>
+            <if test="suggestCode != null">
+                suggest_code = #{suggestCode},
+            </if>
+            <if test="sectionId != null">
+                section_id = #{sectionId},
+            </if>
+            <if test="workTypeId != null">
+                work_type_id = #{workTypeId},
+            </if>
+            <if test="makeTypeId != null">
+                make_type_id = #{makeTypeId},
+            </if>
+            <if test="requireQuality != null">
+                require_quality = #{requireQuality},
+            </if>
+            <if test="lineId != null">
+                line_id = #{lineId},
+            </if>
+            <if test="ironTemperature != null">
+                iron_temperature = #{ironTemperature},
+            </if>
+            <if test="makeDesc != null">
+                make_desc = #{makeDesc},
+            </if>
+            <if test="stitchLengthId != null">
+                stitch_length_id = #{stitchLengthId},
+            </if>
+            <if test="isEffectPic != null">
+                is_effect_pic = #{isEffectPic},
+            </if>
+            <if test="isHandPic != null">
+                is_hand_pic = #{isHandPic},
+            </if>
+            <if test="machineId != null">
+                machine_id = #{machineId},
+            </if>
+            <if test="isVideo != null">
+                is_video = #{isVideo},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="isInvalid != null">
+                is_invalid = #{isInvalid},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="okUser != null">
+                ok_user = #{okUser},
+            </if>
+            <if test="okTime != null">
+                ok_time = #{okTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="commitUser != null">
+                commit_user=#{commitUser},
+            </if>
+            <if test="commitTime != null">
+                commit_time=#{commitTime},
+            </if>
+            <if test="extractUser != null">
+                extract_user = #{extractUser},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="extractTime != null">
+                extract_time = #{extractTime},
+            </if>
+            <if test="rejectReason != null">
+                reject_reason = #{rejectReason},
+            </if>
+            <if test="isPartShare != null">
+                is_part_share=#{isPartShare},
+            </if>
+            <if test="isCategoryShare != null">
+                is_category_share=#{isCategoryShare},
+            </if>
+            <if test="isKeyCraft != null">
+                is_key_craft=#{isKeyCraft},
+            </if>
+            <if test="isNormalCraft != null">
+                is_normal_craft=#{isNormalCraft},
+            </if>
+            <if test="saveSource != null">
+                save_source=#{saveSource},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateCraftStdResourceValue">
+        update craft_std
+        <set>
+            <choose>
+                <when test="resourceType == 10">
+                    is_hand_pic=#{value}
+                </when>
+                <when test="resourceType == 20">
+                    is_effect_pic=#{value}
+                </when>
+                <when test="resourceType == 30">
+                    is_video=#{value}
+                </when>
+            </choose>
+        </set>
+        <where>
+            <if test="craftStdId != null">
+                and id=#{craftStdId}
+            </if>
+            <if test="craftStdCode != null and craftStdCode != ''">
+                and craft_std_code=#{craftStdCode}
+            </if>
+        </where>
+
+    </update>
+    <update id="updateFieldOkNull">
+        update craft_std set ok_user=null,ok_time=null where id=#{id}
+    </update>
+    <update id="updateFieldCommitNull">
+        update craft_std set commit_user=null,commit_time=null where id=#{id}
+    </update>
+
+    <update id="updateCraftStdRawDataById">
+        update craft_std_raw_data set status=#{stdStatus} where id=#{id}
+    </update>
+
+    <update id="updateStdSaveResourceById">
+        update craft_std set save_source =#{saveResource}  where id = #{id}
+    </update>
+
+    <select id="getCraftStdById" resultMap="CraftStdResult">
+        select a.*,
+        d.dic_value session_code,d.value_desc session_name,
+        e.dic_value work_type_code,e.value_desc work_type_name,
+        f.make_type_code make_type_code,f.make_type_name make_type_name,
+        g.line_code line_code,g.line_name line_name,
+        h.machine_code machine_code,h.machine_name_cn machine_name_cn,a.reject_reason,
+        (select group_concat(distinct craft_part_id) from craft_std_part where craft_std_id=a.id) craft_part_ids,
+        (select group_concat(distinct craft_category_id) from craft_std_part where craft_std_id=a.id) craft_category_ids,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=30 and
+        key_id=a.id) video_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=10 and
+        key_id=a.id) hand_pic_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=20 and
+        key_id=a.id) effect_pic_urls
+        from craft_std a
+        left join dictionary d on a.section_id=d.id
+        left join dictionary e on a.work_type_id=e.id
+        left join make_type f on a.make_type_id=f.id
+        left join line g on a.line_id=g.id
+        left join machine h on a.machine_id=h.id
+        where a.id in
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getCraftStdByCode" resultMap="CraftStdResult">
+        select a.*,
+        d.dic_value session_code,d.value_desc session_name,
+        e.dic_value work_type_code,e.value_desc work_type_name,
+        f.make_type_code make_type_code,f.make_type_name make_type_name,
+        g.line_code line_code,g.line_name line_name,
+        h.machine_code machine_code,h.machine_name_cn machine_name_cn,a.reject_reason,
+        (select group_concat(distinct craft_part_id) from craft_std_part where craft_std_id=a.id) craft_part_ids,
+        (select group_concat(distinct craft_category_id) from craft_std_part where craft_std_id=a.id) craft_category_ids,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=30 and
+        key_id=a.id) video_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=10 and
+        key_id=a.id) hand_pic_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=20 and
+        key_id=a.id) effect_pic_urls
+
+        from craft_std a
+        left join dictionary d on a.section_id=d.id
+        left join dictionary e on a.work_type_id=e.id
+        left join make_type f on a.make_type_id=f.id
+        left join line g on a.line_id=g.id
+        left join machine h on a.machine_id=h.id
+        where a.craft_std_code in
+        <foreach collection="craftStdCodes" separator="," open="(" close=")" item="craftStdCode">
+            #{craftStdCode}
+        </foreach>
+    </select>
+
+    <select id="getCraftStdByPage" resultMap="CraftStdResult">
+        select a.*,
+        d.dic_value session_code,d.value_desc session_name,
+        e.dic_value work_type_code,e.value_desc work_type_name,
+        f.make_type_code make_type_code,f.make_type_name make_type_name,
+        g.line_code line_code,g.line_name line_name,
+        h.machine_code machine_code,h.machine_name_cn machine_name_cn,a.reject_reason,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=30 and
+        key_id=a.id) video_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=10 and
+        key_id=a.id) hand_pic_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=20 and
+        key_id=a.id) effect_pic_urls,
+        a.is_part_share,a.is_category_share,
+        (select group_concat(j.craft_part_name) from craft_std_part i inner join craft_part j on i.craft_part_id=j.id where i.craft_std_id=a.id) craft_part_names,
+        (select group_concat(distinct jj.craft_category_name) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=a.id) craft_category_names
+
+        from craft_std a
+        left join dictionary d on a.section_id=d.id
+        left join dictionary e on a.work_type_id=e.id
+        left join make_type f on a.make_type_id=f.id
+        left join line g on a.line_id=g.id
+        left join machine h on a.machine_id=h.id
+
+        where ifnull(a.is_invalid,0)=0
+        <if test="keywords!=null and keywords!=''">
+            and (a.craft_std_name like concat('%',#{keywords},'%')
+            or a.craft_std_code like concat('%',#{keywords},'%')
+            or a.require_quality like concat('%',#{keywords},'%'))
+        </if>
+        <if test="beginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{beginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{endDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="id != null">
+            and a.id=#{id}
+        </if>
+        order by a.id desc
+    </select>
+
+    <select id="getDeletedCraftStd" resultMap="CraftStdResult">
+        select a.*,
+        d.dic_value session_code,d.value_desc session_name,
+        e.dic_value work_type_code,e.value_desc work_type_name,
+        f.make_type_code make_type_code,f.make_type_name make_type_name,
+        g.line_code line_code,g.line_name line_name,
+        h.machine_code machine_code,h.machine_name_cn machine_name_cn,a.reject_reason,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=30 and key_id=a.id) video_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=10 and key_id=a.id) hand_pic_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=20 and key_id=a.id) effect_pic_urls,
+        a.is_part_share,a.is_category_share,
+        (select group_concat(j.craft_part_name) from craft_std_part i inner join craft_part j on i.craft_part_id=j.id where i.craft_std_id=a.id) craft_part_names,
+        (select group_concat(distinct jj.craft_category_name) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=a.id) craft_category_names
+        from craft_std a
+        left join dictionary d on a.section_id=d.id
+        left join dictionary e on a.work_type_id=e.id
+        left join make_type f on a.make_type_id=f.id
+        left join line g on a.line_id=g.id
+        left join machine h on a.machine_id=h.id
+         where ifnull(a.is_invalid,0)=1
+    </select>
+
+    <select id="getIsVideoById" parameterType="long" resultType="boolean">
+        select ifnull(is_video,0) from craft_std where id=#{id}
+    </select>
+
+    <select id="getCraftStdByCondition" resultMap="CraftStdResult">
+        select a.*,
+        d.dic_value session_code,d.value_desc session_name,
+        e.dic_value work_type_code,e.value_desc work_type_name,
+        f.make_type_code make_type_code,f.make_type_name make_type_name,
+        g.line_code line_code,g.line_name line_name,
+        h.machine_code machine_code,h.machine_name_cn machine_name_cn,a.reject_reason,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=30 and
+        key_id=a.id) video_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=10 and
+        key_id=a.id) hand_pic_urls,
+        (select group_concat(file_url) from craft_file where ifnull(is_invalid,0)=0 and resource_type=20 and
+        key_id=a.id) effect_pic_urls,
+        a.is_part_share,a.is_category_share,
+        (select group_concat(j.craft_part_name) from craft_std_part i inner join craft_part j on i.craft_part_id=j.id where i.craft_std_id=a.id) craft_part_names,
+        (select group_concat(distinct jj.craft_category_name) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=a.id) craft_category_names
+
+        from craft_std a
+        left join dictionary d on a.section_id=d.id
+        left join dictionary e on a.work_type_id=e.id
+        left join make_type f on a.make_type_id=f.id
+        left join line g on a.line_id=g.id
+        left join machine h on a.machine_id=h.id
+
+        where ifnull(a.is_invalid,0)=0
+        <if test="craftStdCode != null and craftStdCode != ''">
+            and a.craft_std_code like CONCAT('%',#{craftStdCode},'%')
+        </if>
+        <if test="craftStdName != null and craftStdName != ''">
+            and a.craft_std_name like CONCAT('%',#{craftStdName},'%')
+        </if>
+        <if test="styleCode != null and styleCode != ''">
+            and (a.suggest_code like CONCAT('%',#{styleCode},'%')
+            or a.source_code like CONCAT('%',#{styleCode},'%'))
+        </if>
+        <if test="requireQuality != null and requireQuality != ''">
+            and a.require_quality like CONCAT('%',#{requireQuality},'%')
+        </if>
+        <if test="makeDesc != null and makeDesc != ''">
+            and a.make_desc like CONCAT('%',#{makeDesc},'%')
+        </if>
+        <if test="status != null and status != ''">
+            and a.status=#{status}
+        </if>
+        <if test="createTimeBeginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.create_time, '%Y-%m-%d')>=DATE_FORMAT(#{createTimeBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="createTimeEndDate != null">
+            <![CDATA[   and DATE_FORMAT(a.create_time, '%Y-%m-%d')<=DATE_FORMAT(#{createTimeEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="okTimeBeginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.ok_time, '%Y-%m-%d')>=DATE_FORMAT(#{okTimeBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="okTimeEndDate != null">
+            <![CDATA[   and DATE_FORMAT(a.ok_time, '%Y-%m-%d')<=DATE_FORMAT(#{okTimeEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="updateTimeBeginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')>=DATE_FORMAT(#{updateTimeBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="updateTimeEndDate != null">
+            <![CDATA[   and DATE_FORMAT(a.update_time, '%Y-%m-%d')<=DATE_FORMAT(#{updateTimeEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+
+        <if test="commitTimeBeginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.commit_time, '%Y-%m-%d')>=DATE_FORMAT(#{commitTimeBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="commitTimeEndDate != null">
+            <![CDATA[   and DATE_FORMAT(a.commit_time, '%Y-%m-%d')<=DATE_FORMAT(#{commitTimeEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+
+        <if test="extractTimeBeginDate != null">
+            <![CDATA[   and DATE_FORMAT(a.extract_time, '%Y-%m-%d')>=DATE_FORMAT(#{extractTimeBeginDate}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="extractTimeEndDate != null">
+            <![CDATA[   and DATE_FORMAT(a.extract_time, '%Y-%m-%d')<=DATE_FORMAT(#{extractTimeEndDate}, '%Y-%m-%d')   ]]>
+        </if>
+
+        <if test="user != null and user != ''">
+            and (a.create_user like CONCAT('%',#{user},'%')
+            or a.ok_user like CONCAT('%',#{user},'%')
+            or a.update_user like CONCAT('%',#{user},'%')
+            or a.extract_user like CONCAT('%',#{user},'%')
+            or a.commit_user like CONCAT('%',#{user},'%'))
+        </if>
+        <if test="remark != null and remark != ''">
+            and a.remark like CONCAT('%',#{remark},'%')
+        </if>
+        <if test="isVideo != null">
+            and ifnull(a.is_video,0)=#{isVideo}
+        </if>
+        <if test="isPic != null ">
+            and ifnull(a.is_hand_pic,0)=#{isPic}
+        </if>
+        <if test="craftCategoryId != null">
+            and exists(select 1 from craft_std_part aa
+            inner join craft_part bb on aa.craft_part_id=bb.id
+            where aa.craft_std_id=a.id and bb.craft_category_id=#{craftCategoryId})
+        </if>
+        <if test="craftPartId != null">
+            and exists(select 1 from craft_std_part where craft_std_id=a.id and craft_part_id=#{craftPartId})
+        </if>
+        <if test="craftCategoryCode != null and craftCategoryCode != ''">
+            and exists(select 1 from craft_std_part aa
+            inner join craft_part bb on aa.craft_part_id=bb.id
+            where aa.craft_std_id=a.id and bb.craft_category_code=#{craftCategoryCode})
+        </if>
+        <if test="craftPartCode != null and craftPartCode != ''">
+            and exists(select 1 from craft_std_part csp
+            inner join craft_part cp on csp.craft_part_id=cp.id
+            where csp.craft_std_id=a.id and cp.craft_part_code=#{craftPartCode})
+        </if>
+        order by a.id desc
+    </select>
+
+    <select id="isCraftStdExist" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM craft_std WHERE id=#{id})
+    </select>
+
+    <select id="getNoVideoCraftStd" resultMap="CraftStdResult">
+        select * from craft_std where ifnull(is_video,0)=0
+            and (ifnull(craft_std_code,'')=#{craftStdCode} or ifnull(craft_std_name,'')=#{craftStdName})
+    </select>
+
+    <select id="getNoHandleImageCraftStd" resultMap="CraftStdResult">
+        select * from craft_std where ifnull(is_hand_pic,0)=0
+            and ifnull(craft_std_code,'')=#{craftStdCode}
+    </select>
+
+    <select id="getNoVideoCraftStdCount" resultType="Integer">
+        select
+        (select count(1) from craft_std where (ifnull(is_invalid,0)=0 or ifnull(create_user,'')='GST') and (ifnull(is_video,0)=0 or ifnull(is_hand_pic,0)=0)) count
+        from DUAL
+    </select>
+
+
+
+    <select id="getCraftStdStatistic" resultMap="CraftStdStatisticResult">
+        select
+        (select count(1) from craft_std where ifnull(is_invalid,0)=0 and ifnull(status,'0')>'0') commit_count,
+        (select count(1) from craft_std where ifnull(is_invalid,0)=0 and ifnull(status,'0')>'1') audit_count,
+        (select count(1) from craft_std where ifnull(is_invalid,0)=0 and extract_time is not null) extract_count,
+        (select count(1) from craft_std where ifnull(is_invalid,0)=0 and ifnull(is_hand_pic,0)=0 and ifnull(is_effect_pic,0)=0) lack_pic_count,
+        (select count(1) from craft_std where ifnull(is_invalid,0)=0 and ifnull(is_video,0)=0) lack_video_count
+        from DUAL
+    </select>
+    <select id="getCraftStdByLikeParam" resultMap="CraftStdResult" parameterType="hashmap">
+        select  std.* ,
+        (select group_concat(j.craft_part_name) from craft_std_part i inner join craft_part j on i.craft_part_id=j.id where i.craft_std_id=std.id) craft_part_names,
+        (select group_concat(distinct jj.craft_category_name) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=std.id) craft_category_names,
+        (select group_concat(distinct jj.craft_category_code) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=std.id) craft_category_codes
+        from craft_std as std
+        LEFT JOIN  craft_std_part as part on std.id=part.craft_std_id
+        <if test="(craftCategoryCode !=null and craftCategoryCode !='') or (craftCategoryList !=null and craftCategoryList.size>0) ">
+            INNER JOIN craft_category as cat on cat.id=part.craft_category_id
+        </if>
+        <if test="craftPartCode !=null and craftPartCode !='' ">
+            INNER JOIN craft_part as cp  on part.craft_part_id=cp.id
+        </if>
+        <where>
+            <if test="status != null and status.length>0 ">
+                and  std.`status` in
+                <foreach collection="status" open="(" separator="," close=")" item="status_">
+                    #{status_}
+                </foreach>
+            </if>
+            <if test="param != null and param !='' ">
+               and ( craft_std_code like concat('%',#{param},'%') or craft_std_name  like concat('%',#{param},'%'))
+            </if>
+
+            <if test="styleCode !=null and styleCode !='' ">
+                and source_code like concat('%',#{styleCode},'%')
+            </if>
+            <if test="craftStdCode !=null and craftStdCode !='' ">
+                and  craft_std_code  like concat('%',#{craftStdCode},'%')
+            </if>
+            <if test="craftStdName !=null and craftStdName !='' ">
+                and  craft_std_name  like concat('%',#{craftStdName},'%')
+            </if>
+
+            <if test="craftCategoryCode !=null and craftCategoryCode !='' ">
+              and  cat.craft_category_code=#{craftCategoryCode}
+            </if>
+            <if test="craftCategoryList !=null and craftCategoryList.size>0 ">
+                and  cat.craft_category_code in
+                <foreach collection="craftCategoryList" open="(" separator="," close=")" item="code_">
+                    #{code_}
+                </foreach>
+            </if>
+            <if test="craftPartCode !=null and craftPartCode !='' ">
+               and cp.craft_part_code =#{craftPartCode}
+            </if>
+        </where>
+        GROUP BY part.craft_std_id
+    </select>
+
+    <select id="getCraftStdForSewingParam" resultMap="CraftStdResult" parameterType="hashmap">
+        select  std.* ,
+        (select group_concat(j.craft_part_name) from craft_std_part i inner join craft_part j on i.craft_part_id=j.id where i.craft_std_id=std.id) craft_part_names,
+        (select group_concat(distinct jj.craft_category_name) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=std.id) craft_category_names,
+        (select group_concat(distinct jj.craft_category_code) from craft_std_part ii inner join craft_category jj on ii.craft_category_id=jj.id where ii.craft_std_id=std.id) craft_category_codes
+        from craft_std as std
+        LEFT JOIN  craft_std_part as part on std.id=part.craft_std_id
+        <if test="(craftCategoryCode !=null and craftCategoryCode !='') or (craftCategoryList !=null and craftCategoryList.size>0) ">
+            INNER JOIN craft_category as cat on cat.id=part.craft_category_id
+        </if>
+        <if test="craftPartCode !=null and craftPartCode !='' ">
+            INNER JOIN craft_part as cp  on part.craft_part_id=cp.id
+        </if>
+        <where>
+            <if test="status != null and status.length>0  ">
+                and  std.`status` in
+                <foreach collection="status" open="(" separator="," close=")" item="status_">
+                    #{status_}
+                </foreach>
+            </if>
+            <if test="param != null and param !='' ">
+                and (craft_std_code =#{param} or craft_std_name  like concat('%',#{param},'%'))
+            </if>
+
+            <if test="styleCode !=null and styleCode !='' ">
+                and  source_code like concat('%',#{styleCode},'%')
+            </if>
+            <if test="craftStdCode !=null and craftStdCode !='' ">
+                and  craft_std_code  like concat('%',#{craftStdCode},'%')
+            </if>
+            <if test="craftStdName !=null and craftStdName !='' ">
+                and  craft_std_name  like concat('%',#{craftStdName},'%')
+            </if>
+
+            <if test="craftCategoryCode !=null and craftCategoryCode !='' ">
+                and  cat.craft_category_code=#{craftCategoryCode}
+            </if>
+            <if test="craftCategoryList !=null and craftCategoryList.size>0 ">
+                and  cat.craft_category_code in
+                <foreach collection="craftCategoryList" open="(" separator="," close=")" item="code_">
+                    #{code_}
+                </foreach>
+            </if>
+            <if test="craftPartCode !=null and craftPartCode !='' ">
+                and cp.craft_part_code =#{craftPartCode}
+            </if>
+        </where>
+        GROUP BY part.craft_std_id
+    </select>
+
+
+    <select id="getCraftStdInUsed" resultType="java.lang.String">
+    select distinct group_concat(t.myname separator ',')  from (
+            select distinct concat('工序',b.craft_code) myname from sewing_craft_warehouse_std a
+                inner join sewing_craft_warehouse b on a.sewing_craft_random_code=b.random_code
+                where b.status!=1090 and a.craft_std_code=#{craftStdCode}
+        ) t
+
+    </select>
+
+    <select id="getCraftStdByStdCode" resultMap="CraftStdResult">
+        select  * from craft_std where craft_std_code = #{code}
+    </select>
+
+    <select id="getCraftStdRawDataByStdCode" resultType="com.ylzs.entity.craftstd.CraftStd">
+        select  * from craft_std_raw_data where craft_std_code = #{craftStdCode}
+    </select>
+
+    <select id="getRawDataCountById" resultType="java.lang.Integer">
+        select count(*) from craft_std_raw_data where id = #{id} and `status` in('1','7')
+    </select>
+
+    <select id="getCraftStdCountById" resultType="java.lang.Integer">
+        select count(*) from craft_std where id = #{id} and `status` in('2','8')
+    </select>
+
+</mapper>

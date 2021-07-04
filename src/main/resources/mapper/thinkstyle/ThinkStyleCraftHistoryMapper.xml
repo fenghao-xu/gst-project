@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ylzs.dao.thinkstyle.ThinkStyleCraftHistoryDao">
+  <resultMap id="BaseResultMap" type="com.ylzs.entity.thinkstyle.ThinkStyleCraftHistory">
+    <!--@mbg.generated-->
+    <id column="random_code" jdbcType="BIGINT" property="randomCode" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="line_no" jdbcType="INTEGER" property="lineNo" />
+    <result column="is_new" jdbcType="BIT" property="isNew" />
+    <result column="style_random_code" jdbcType="BIGINT" property="styleRandomCode" />
+    <result column="part_random_code" jdbcType="BIGINT" property="partRandomCode" />
+    <result column="craft_random_code" jdbcType="BIGINT" property="craftRandomCode" />
+    <result column="craft_code" jdbcType="VARCHAR" property="craftCode" />
+    <result column="craft_name" jdbcType="VARCHAR" property="craftName" />
+    <result column="craft_desc" jdbcType="VARCHAR" property="craftDesc" />
+    <result column="craft_flow_num" jdbcType="INTEGER" property="craftFlowNum" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="remove_user" jdbcType="VARCHAR" property="removeUser" />
+    <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_invalid" jdbcType="BIT" property="isInvalid" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+  </resultMap>
+
+
+  <resultMap id="CraftHistoryVoResultMap" type="com.ylzs.vo.thinkstyle.ThinkStyleCraftHistoryVo">
+    <result column="line_no" property="lineNo" />
+    <result column="craft_code" property="craftCode" />
+    <result column="craft_name" property="craftName" />
+    <result column="craft_desc" property="craftDesc" />
+    <result column="craft_flow_num" property="craftFlowNum" />
+    <result column="remove_user" property="removeUser" />
+    <result column="remove_time" property="removeTime" />
+    <result column="old_craft_flow_num" property="oldCraftFlowNum" />
+    <result column="operation_type" property="operationType" />
+  </resultMap>
+
+
+
+
+  <select id="getThinkStyleCraftHistoryVos" resultMap="CraftHistoryVoResultMap">
+    select  a.* from think_style_craft_history a
+     where a.part_random_code=#{partRandomCode} order by a.remove_time desc
+  </select>
+</mapper>
